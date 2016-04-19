@@ -1,12 +1,14 @@
 package com.terrasystems.emedics.model;
 
+
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
 
+
 @Entity
-@Table(name = "patients")
-public class Patient {
+@Table(name = "doctors")
+public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -19,5 +21,4 @@ public class Patient {
     @Column(name = "password")
     @NotNull
     private String password;
-
 }
