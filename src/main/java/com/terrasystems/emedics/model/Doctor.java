@@ -8,8 +8,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "doctors")
-public class Doctor {
-    @Id
+@DiscriminatorValue("doctor")
+public class Doctor extends User{
+    /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
@@ -20,5 +21,12 @@ public class Doctor {
 
     @Column(name = "password")
     @NotNull
-    private String password;
+    private String password;*/
+    public Doctor(){}
+
+    public Doctor(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

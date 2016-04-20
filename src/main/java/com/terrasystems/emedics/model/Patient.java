@@ -6,8 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "patients")
-public class Patient {
-    @Id
+@DiscriminatorValue("patient")
+public class Patient extends User {
+    /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
@@ -19,5 +20,14 @@ public class Patient {
     @Column(name = "password")
     @NotNull
     private String password;
+*/
+    public Patient() {}
+
+    public Patient(String username, String email, String password){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
 
 }
