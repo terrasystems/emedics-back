@@ -15,7 +15,7 @@ public class UserAuthentication implements Authentication {
     public UserAuthentication(User user) {
         this.user = user;
     }
-
+    //TODO Change Username to Email Principals
     @Override
     public String getName() {
         return user.getUsername();

@@ -22,6 +22,16 @@ public class Doctor extends User{
     @Column(name = "password")
     @NotNull
     private String password;*/
+    private String clinic;
+
+    public String getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(String clinic) {
+        this.clinic = clinic;
+    }
+
     public Doctor(){}
 
     public Doctor(String username, String email, String password) {

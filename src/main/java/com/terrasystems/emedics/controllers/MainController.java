@@ -10,9 +10,12 @@ import com.terrasystems.emedics.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 @RequestMapping(value = "/")
-public class MainController {
+public class MainController  {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -43,9 +46,13 @@ public class MainController {
     @RequestMapping(value = "/rest/doctors/create/{role}", method = RequestMethod.POST)
     @ResponseBody
     public String createDoctor(@RequestBody Doctor doctor, @PathVariable String role) {
-        User loadedUser = doctor;
+        Doctor loadedUser = doctor;
+        loadedUser.setClinic("test");
         Role newrole = new Role(role);
         newrole.setUser(loadedUser);
+        Set<Role> roles = new HashSet<>();
+        roles.add(newrole);
+        loadedUser.setRoles(roles);
         try {
             userRepository.save(loadedUser);
             roleRepository.save(newrole);
@@ -53,12 +60,12 @@ public class MainController {
         catch (Exception ex) {
             return "Error creating the user: " + ex.toString();
         }
-        return "succesfully created! (name = " + loadedUser.getUsername() + ")";
+        return "succesfully created! (name = " + loadedUser.getRoles() + ")";
     }
 
-    @RequestMapping(value = "/rest/patients/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/test}", method = RequestMethod.GET)
     @ResponseBody
-    public User getPatientByName(@PathVariable String name) {
-        return userRepository.findByUsername(name);
+    public String getPatientByName(@PathVariable String name) {
+        return "hello";
     }
 }

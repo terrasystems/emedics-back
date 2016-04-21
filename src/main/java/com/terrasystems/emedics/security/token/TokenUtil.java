@@ -6,7 +6,9 @@ package com.terrasystems.emedics.security.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,9 +22,10 @@ import java.util.Date;
 
 final class TokenUtil {
 
+
     private static final String HMAC_ALGO = "HmacSHA256";
-    private static final String SEPARATOR = ".";
-    private static final String SEPARATOR_SPLITTER = "\\.";
+    private static final String SEPARATOR = ":";
+    private static final String SEPARATOR_SPLITTER = ":";
 
     private final Mac hmac;
 
@@ -35,33 +38,24 @@ final class TokenUtil {
         }
     }
 
-    public User parseUserFromToken(String token) {
+    public String parseUserFromToken(String token) {
         final String[] parts = token.split(SEPARATOR_SPLITTER);
         if (parts.length == 2 && parts[0].length() > 0 && parts[1].length() > 0) {
-            try {
-                final byte[] userBytes = fromBase64(parts[0]);
-                final byte[] hash = fromBase64(parts[1]);
+            final String email = parts[0];
+            return email;
 
-                boolean validHash = Arrays.equals(createHmac(userBytes), hash);
-                if (validHash) {
-                    final User user = fromJSON(userBytes);
-                    if (new Date().getTime() < user.getExpires()) {
-                        return user;
-                    }
                 }
-            } catch (IllegalArgumentException e) {
-            }
-        }
         return null;
     }
 
+
+
     public String createTokenForUser(User user) {
-        byte[] userBytes = toJSON(user);
-        byte[] hash = createHmac(userBytes);
+
         final StringBuilder sb = new StringBuilder(170);
-        sb.append(toBase64(userBytes));
+        sb.append(user.getEmail());
         sb.append(SEPARATOR);
-        sb.append(toBase64(hash));
+        sb.append(user.getPassword());
         return sb.toString();
     }
 

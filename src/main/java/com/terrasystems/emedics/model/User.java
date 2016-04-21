@@ -18,7 +18,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
 //@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public abstract class User implements UserDetails {
+public  class User implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -28,15 +28,12 @@ public abstract class User implements UserDetails {
 
 
     @NotNull
-    @XmlElement
     protected String username;
 
     @NotNull
-    @XmlElement
     protected String password;
 
     @NotNull
-    @XmlElement
     protected String email;
 
     @Transient
@@ -44,6 +41,14 @@ public abstract class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Long getExpires() {
         return expires;
@@ -60,6 +65,7 @@ public abstract class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
     public String getEmail() {
         return email;
     }
@@ -68,6 +74,7 @@ public abstract class User implements UserDetails {
         this.email = email;
     }
 
+    //TODO add fields for accaunt disabelin(Expirision, Locked etc)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -85,21 +92,21 @@ public abstract class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

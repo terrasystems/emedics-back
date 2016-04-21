@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.security.token;
 
 
+import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.security.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
+import java.util.Date;
 
 @Service
 public class TokenAuthService {
@@ -18,6 +20,8 @@ public class TokenAuthService {
     private static final long TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
 
     private final TokenUtil tokenUtil;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public TokenAuthService(@Value("${token.secret}") String secret) {
@@ -33,11 +37,13 @@ public class TokenAuthService {
     public Authentication getAuthentication(HttpServletRequest request) {
         final String token = request.getHeader(AUTH_HEADER_NAME);
         if (token != null) {
-            final User user = tokenUtil.parseUserFromToken(token);
-            if (user != null) {
+            final String email = tokenUtil.parseUserFromToken(token);
+            User user = userRepository.findByEmail(email);
+            if (user != null || (new Date().getTime() < user.getExpires())) {
                 return new UserAuthentication(user);
             }
         }
+        //TODO deadl with NullPointerException
         return null;
     }
 }

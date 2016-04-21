@@ -39,11 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .servletApi().and()
                 .headers().cacheControl();
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/rest/public/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/rest/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/rest/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/rest/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN").and()
+                .antMatchers(HttpMethod.GET, "/admin/**").hasRole("PATIENT").and()
                 //{"username":"<name>","password":"<password>"}
                 .addFilterBefore(new LoginFilter("/rest/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new AuthenticationFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class);
