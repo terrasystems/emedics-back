@@ -46,7 +46,7 @@ public class MainController  {
     @RequestMapping(value = "/rest/doctors/create/{role}", method = RequestMethod.POST)
     @ResponseBody
     public String createDoctor(@RequestBody Doctor doctor, @PathVariable String role) {
-        Doctor loadedUser = doctor;
+        Doctor loadedUser = new Doctor(doctor.getUsername(), doctor.getPassword(), doctor.getEmail());
         loadedUser.setClinic("test");
         Role newrole = new Role(role);
         newrole.setUser(loadedUser);
@@ -55,7 +55,7 @@ public class MainController  {
         loadedUser.setRoles(roles);
         try {
             userRepository.save(loadedUser);
-            roleRepository.save(newrole);
+            //roleRepository.save(newrole);
         }
         catch (Exception ex) {
             return "Error creating the user: " + ex.toString();

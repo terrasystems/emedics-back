@@ -19,6 +19,12 @@ import java.util.Set;
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
 //@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public  class User implements UserDetails {
+    public User(){}
+    public User(String username, String password, String email){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -49,6 +55,8 @@ public  class User implements UserDetails {
     public void setId(String id) {
         this.id = id;
     }
+
+
 
     public Long getExpires() {
         return expires;
@@ -85,9 +93,13 @@ public  class User implements UserDetails {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -108,5 +120,12 @@ public  class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+
+    public String resetPassword(String newPass) {
+        setPassword(newPass);
+        return newPass;
     }
 }

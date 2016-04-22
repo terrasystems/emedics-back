@@ -24,10 +24,14 @@ public class Patient extends User {
     public Patient() {}
 
     public Patient(String username, String email, String password){
+        super(username, email, password);
+    }
+
+    /*public Patient(String username, String email, String password){
         this.username = username;
         this.email = email;
         this.password = password;
-    }
+    }*/
 
 
 }

@@ -40,7 +40,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
         final User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
         final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword());
+                user.getEmail(), user.getPassword());
         return getAuthenticationManager().authenticate(loginToken);
     }
 

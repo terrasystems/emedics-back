@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.security.token;
 
 
+
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.security.UserAuthentication;
@@ -12,12 +13,14 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.util.Date;
 
 @Service
 public class TokenAuthService {
     private static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
     private static final long TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
+    private static final String RESPONSE_JSON_CONTENT_TYPE = "application/json";
 
     private final TokenUtil tokenUtil;
     @Autowired
@@ -31,7 +34,17 @@ public class TokenAuthService {
     public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
         final User user = authentication.getDetails();
         user.setExpires(System.currentTimeMillis() + TEN_DAYS);
-        response.addHeader(AUTH_HEADER_NAME, tokenUtil.createTokenForUser(user));
+        String token = tokenUtil.createTokenForUser(user);
+        response.addHeader(AUTH_HEADER_NAME, token);
+        response.setContentType(RESPONSE_JSON_CONTENT_TYPE);
+        try {
+            response.getWriter().write(String.format("{\"email\":\"%s\",\"token\":\"%s\"}", user.getEmail(), token));
+            //response.getWriter().write();
+            response.getWriter().flush();
+            response.getWriter().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Authentication getAuthentication(HttpServletRequest request) {

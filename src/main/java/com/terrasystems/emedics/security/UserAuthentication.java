@@ -18,7 +18,7 @@ public class UserAuthentication implements Authentication {
     //TODO Change Username to Email Principals
     @Override
     public String getName() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UserAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override

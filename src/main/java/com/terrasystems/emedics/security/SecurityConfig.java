@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http
                 .exceptionHandling().and()
                 .anonymous().and()
@@ -40,12 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().cacheControl();
         http.authorizeRequests()
                 .antMatchers("/rest/public/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/rest/login").permitAll()
+                //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/rest/**").authenticated()
-                .antMatchers(HttpMethod.POST, "/rest/**").permitAll()
+                //.antMatchers(HttpMethod.POST, "/rest/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/admin/**").hasRole("PATIENT").and()
                 //{"username":"<name>","password":"<password>"}
-                .addFilterBefore(new LoginFilter("/rest/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LoginFilter("/rest/public/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new AuthenticationFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class);
     }
 

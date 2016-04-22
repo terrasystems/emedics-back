@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "doctors")
 @DiscriminatorValue("doctor")
-public class Doctor extends User{
+public class Doctor extends User {
     /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -32,11 +32,16 @@ public class Doctor extends User{
         this.clinic = clinic;
     }
 
-    public Doctor(){}
+    public Doctor(){
+        super();
+    }
+    public Doctor(String username, String password, String email) {
+        super(username, password, email);
+    }
 
-    public Doctor(String username, String email, String password) {
+    /*public Doctor(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-    }
+    }*/
 }
