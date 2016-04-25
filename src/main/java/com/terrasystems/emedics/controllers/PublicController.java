@@ -19,6 +19,8 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/rest/public")
 public class PublicController {
+
+
     @Autowired
     RegistrationService registrationService;
 
@@ -29,14 +31,21 @@ public class PublicController {
         String type = registerDto.getType();
         switch (type) {
             case "org":
-                msg =registrationService.registerOrganisation("mock");
+                msg = registrationService.registerOrganisation("mock");
                 break;
             default:
                msg = registrationService.registerUser(getUserDto(registerDto), type);
         }
 
 
-        return msg;
+        return String.format("{\"message\":\"%s\"}", msg);
+    }
+
+    @RequestMapping(value = "reset_pass", method = RequestMethod.POST)
+    @ResponseBody
+    public String resetPass(@RequestBody String email) {
+
+        return String.format("{\"newPassword\":\"%s\"}",registrationService.resetPassword(email));
     }
 
     public UserDto getUserDto(RegisterDto registerDto) {

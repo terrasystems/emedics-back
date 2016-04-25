@@ -122,6 +122,13 @@ public  class User implements UserDetails {
         return true;
     }
 
+    @Transient
+    public String getDiscriminatorValue(){
+        DiscriminatorValue val = this.getClass().getAnnotation( DiscriminatorValue.class );
+
+        return val == null ? null : val.value();
+    }
+
 
 
     public String resetPassword(String newPass) {

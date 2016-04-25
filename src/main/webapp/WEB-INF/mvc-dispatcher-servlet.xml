@@ -10,10 +10,16 @@
     <context:component-scan base-package="com.terrasystems.emedics"/>
     <context:property-placeholder location="classpath*:application.properties"/>
     <mvc:annotation-driven />
+
     <jpa:repositories base-package="com.terrasystems.emedics.dao"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="defaultPersistenceUnit"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+            </props>
+        </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

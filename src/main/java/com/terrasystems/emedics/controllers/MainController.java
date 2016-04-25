@@ -1,16 +1,17 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.Role;
-import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -20,6 +21,8 @@ public class MainController  {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    FormRepository formRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -67,5 +70,36 @@ public class MainController  {
     @ResponseBody
     public String getPatientByName(@PathVariable String name) {
         return "hello";
+    }
+
+    @RequestMapping(value = "/rest/patient/form", method = RequestMethod.GET)
+    @ResponseBody
+    public String addForm() {
+        Patient patient = new Patient("username", "email", "pass");
+        Form form = formRepository.findOne(3l);
+        List<Form> forms = new ArrayList<>();
+        forms.add(form);
+        patient.setForms(forms);
+        userRepository.save(patient);
+        return "Form added";
+    }
+    @RequestMapping(value = "/rest/forms", method = RequestMethod.POST)
+    @ResponseBody
+    public String addForms() {
+        List<Form> list = new ArrayList<>();
+        for (int i = 0; i<3; i++) {
+            list.add(new Form("one", "two", "tree", "for"));
+        }
+        formRepository.save(list);
+        return "Form added";
+    }
+
+    @RequestMapping(value = "/rest/disc", method = RequestMethod.GET)
+    @ResponseBody
+    public String testDisc() {
+        String disc;
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(email);
+        return disc = user.getDiscriminatorValue();
     }
 }

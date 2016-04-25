@@ -8,6 +8,7 @@ import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.RegisterDto;
 import com.terrasystems.emedics.model.dto.UserDto;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,33 +49,53 @@ public class RegistrationServiceIpl implements RegistrationService {
     }
 
     public String registerPatient(UserDto user) {
-        Patient registerUser = new Patient(user.getUsername(), user.getPassword(), user.getEmail());
-        Set<Role> roles = new HashSet<>();
-        Role role = new Role(ROLE_PATIENT);
-        role.setUser(registerUser);
-        roles.add(role);
-        registerUser.setRoles(roles);
-        userRepository.save(registerUser);
+        if (userRepository.existsByEmail(user.getEmail())){
+            return "User with this email is already exist";
+        } else {
+            Patient registerUser = new Patient(user.getUsername(), user.getPassword(), user.getEmail());
+            Set<Role> roles = new HashSet<>();
+            Role role = new Role(ROLE_PATIENT);
+            role.setUser(registerUser);
+            roles.add(role);
+            registerUser.setRoles(roles);
+            userRepository.save(registerUser);
 
-        return "Registered";
+            return "Registered";
+        }
     }
 
 
     public String registerDoctor(UserDto user) {
-        Doctor registerUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
-        Set<Role> roles = new HashSet<>();
-        Role role = new Role(ROLE_DOCTOR);
-        role.setUser(registerUser);
-        roles.add(role);
-        registerUser.setRoles(roles);
-        userRepository.save(registerUser);
+        if (userRepository.existsByEmail(user.getEmail())){
+            return "User with this email is already exist";
+        }
+        else {
 
-        return "Registered";
+
+            Doctor registerUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
+            Set<Role> roles = new HashSet<>();
+            Role role = new Role(ROLE_DOCTOR);
+            role.setUser(registerUser);
+            roles.add(role);
+            registerUser.setRoles(roles);
+            userRepository.save(registerUser);
+
+            return "Registered";
+        }
     }
 
     @Override
     public String registerOrganisation(String mock) {
         return mock;
+    }
+
+    @Override
+    public String resetPassword(String email) {
+        User loadedUser = userRepository.findByEmail(email);
+        String newpass = RandomStringUtils.randomAscii(7);
+        loadedUser.resetPassword(newpass);
+        userRepository.save(loadedUser);
+        return newpass;
     }
 
     public UserDto getUserDto(RegisterDto registerDto) {

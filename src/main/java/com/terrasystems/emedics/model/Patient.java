@@ -1,13 +1,63 @@
 package com.terrasystems.emedics.model;
 
+
+
 import com.sun.istack.internal.NotNull;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "patients")
 @DiscriminatorValue("patient")
 public class Patient extends User {
+
+    @Column(name = "allowed_forms_count")
+    private int allowedFormsCount;
+
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_forms",
+            joinColumns = @JoinColumn(name = "pat_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "form_id", referencedColumnName = "id")
+    )
+
+    private List<Form> forms;
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public Patient() {}
+
+    public Patient(String username, String email, String password){
+        super(username, email, password);
+    }
+
+    public int getAllowedFormsCount() {
+        return allowedFormsCount;
+    }
+
+    public void setAllowedFormsCount(int allowedFormsCount) {
+        this.allowedFormsCount = allowedFormsCount;
+    }
+    @PrePersist
+    public void preInsert() {
+        allowedFormsCount = 5;
+    }
+
+    /*public Patient(String username, String email, String password){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }*/
     /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -21,17 +71,6 @@ public class Patient extends User {
     @NotNull
     private String password;
 */
-    public Patient() {}
-
-    public Patient(String username, String email, String password){
-        super(username, email, password);
-    }
-
-    /*public Patient(String username, String email, String password){
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }*/
 
 
 }

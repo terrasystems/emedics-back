@@ -56,6 +56,8 @@ final class TokenUtil {
         sb.append(user.getEmail());
         sb.append(SEPARATOR);
         sb.append(user.getPassword());
+        sb.append(SEPARATOR);
+        sb.append(user.getDiscriminatorValue());
         return sb.toString();
     }
 
