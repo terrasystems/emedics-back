@@ -7,16 +7,32 @@ import java.util.List;
 public class ListDashboardFormsResponse extends AbstractResponse {
     private static final long serialVersionUID = 1161368771589456067L;
     private List<Form> list;
+    private StateDto state;
 
-    public ListDashboardFormsResponse(List<Form> list) {
+    public ListDashboardFormsResponse() {}
+
+    public ListDashboardFormsResponse(List<Form> list, StateDto state) {
         this.list = list;
+        this.state = state;
     }
 
-    public List<Form> getForms() {
+    public List<Form> getList() {
         return list;
     }
 
-    public void setForms(List<Form> forms) {
-        this.list = forms;
+    public void setList(List<Form> list) {
+        this.list = list;
     }
+
+    @Override
+    public StateDto getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(StateDto state) {
+        this.state = state;
+    }
+
+
 }

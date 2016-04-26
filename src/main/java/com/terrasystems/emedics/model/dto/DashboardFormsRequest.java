@@ -8,19 +8,28 @@ import java.util.Set;
 public class DashboardFormsRequest implements Serializable {
     private static final long serialVersionUID = 7948074866237898872L;
 
-    private Set<Long> forms;
+    private FormDashboardCriteriaDto criteria;
+
+    private PageDto page;
 
     public DashboardFormsRequest(){}
 
-    public DashboardFormsRequest(Set<Long> forms) {
-        this.forms = forms;
+
+    public FormDashboardCriteriaDto getCriteria() {
+        return criteria;
     }
 
-    public Set<Long> getForms() {
-        return forms;
+    public void setCriteria(FormDashboardCriteriaDto criteria) {
+        this.criteria = criteria;
     }
 
-    public void setForms(Set<Long> forms) {
-        this.forms = forms;
+    public PageDto getPage() {
+        return page;
     }
+
+    public void setPage(PageDto page) {
+        this.page = page;
+    }
+
+
 }
