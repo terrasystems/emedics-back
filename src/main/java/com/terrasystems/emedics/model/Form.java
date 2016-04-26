@@ -1,9 +1,6 @@
 package com.terrasystems.emedics.model;
 
 
-
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 

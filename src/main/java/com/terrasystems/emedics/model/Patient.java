@@ -2,10 +2,6 @@ package com.terrasystems.emedics.model;
 
 
 
-import com.sun.istack.internal.NotNull;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;

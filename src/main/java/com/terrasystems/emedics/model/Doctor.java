@@ -1,9 +1,9 @@
 package com.terrasystems.emedics.model;
 
 
-import com.sun.istack.internal.NotNull;
-
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 
 @Entity
