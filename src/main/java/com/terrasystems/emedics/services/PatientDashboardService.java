@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.NEVER)
@@ -27,11 +30,14 @@ public class PatientDashboardService implements DashboardService {
     }
 
     @Override
-    public List<Form> changeActiveForms(List<Integer> newActiveForms) {
-        Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
+    public List<Form> changeActiveForms(Set<Long> newActiveForms) {
 
-
-        return null;
+        //TODO change it with query
+        List<Form> list = (List<Form>) formRepository.findAll();
+        List<Form> newList = list.stream()
+                .filter(item -> newActiveForms.contains(item.getId()))
+                .collect(Collectors.toList());
+        return newList;
     }
 
     @Override

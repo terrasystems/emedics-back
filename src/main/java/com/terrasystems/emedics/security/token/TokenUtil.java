@@ -40,7 +40,7 @@ final class TokenUtil {
 
     public String parseUserFromToken(String token) {
         final String[] parts = token.split(SEPARATOR_SPLITTER);
-        if (parts.length == 2 && parts[0].length() > 0 && parts[1].length() > 0) {
+        if (parts.length == 3 && parts[0].length() > 0 && parts[1].length() > 0) {
             final String email = parts[0];
             return email;
 

@@ -1,7 +1,7 @@
 package com.terrasystems.emedics.security.filters;
 
 
-import com.terrasystems.emedics.security.token.TokenAuthService;
+import com.terrasystems.emedics.security.token.TokenAuthServiceImp;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -14,15 +14,17 @@ import java.io.IOException;
 
 public class AuthenticationFilter extends GenericFilterBean {
 
-    private final TokenAuthService tokenAuthService;
+    private final TokenAuthServiceImp tokenAuthService;
 
-    public AuthenticationFilter(TokenAuthService tokenAuthService) {
+    public AuthenticationFilter(TokenAuthServiceImp tokenAuthService) {
         this.tokenAuthService = tokenAuthService;
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
             ServletException {
+        //TODO NPE
+       // Authentication auth = tokenAuthService.getAuthentication(req)
         SecurityContextHolder.getContext().setAuthentication(
                 tokenAuthService.getAuthentication((HttpServletRequest) req));
         chain.doFilter(req, res);

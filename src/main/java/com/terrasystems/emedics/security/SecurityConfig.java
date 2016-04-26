@@ -2,7 +2,7 @@ package com.terrasystems.emedics.security;
 
 import com.terrasystems.emedics.security.filters.AuthenticationFilter;
 import com.terrasystems.emedics.security.filters.LoginFilter;
-import com.terrasystems.emedics.security.token.TokenAuthService;
+import com.terrasystems.emedics.security.token.TokenAuthServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /* @Autowired
      private AuthenticationManager authenticationManager;*/
     @Autowired
-    private TokenAuthService tokenAuthService;
+    private TokenAuthServiceImp tokenAuthService;
 
     public SecurityConfig() {
         super(true);

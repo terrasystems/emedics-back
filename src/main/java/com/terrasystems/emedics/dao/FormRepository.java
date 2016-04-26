@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface FormRepository extends CrudRepository<Form, Long> {
-    List<Form> findByPatientsId(String id);
+    Iterable<Form> findById(Iterable<Integer> ids);
 }

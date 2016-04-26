@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.security.MyUserDetailsService;
 import com.terrasystems.emedics.security.UserAuthentication;
-import com.terrasystems.emedics.security.token.TokenAuthService;
+import com.terrasystems.emedics.security.token.TokenAuthServiceImp;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -23,10 +22,10 @@ import java.io.IOException;
 
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final TokenAuthService tokenAuthService;
+    private final TokenAuthServiceImp tokenAuthService;
     private final MyUserDetailsService userDetailsService;
 
-    public LoginFilter(String urlMapping, TokenAuthService tokenAuthService,
+    public LoginFilter(String urlMapping, TokenAuthServiceImp tokenAuthService,
                        MyUserDetailsService userDetailsService, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(urlMapping));
         this.userDetailsService = userDetailsService;

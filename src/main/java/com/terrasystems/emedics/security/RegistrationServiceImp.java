@@ -7,50 +7,62 @@ import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.RegisterDto;
+import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.UserDto;
+import com.terrasystems.emedics.security.token.TokenAuthService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class RegistrationServiceIpl implements RegistrationService {
+public class RegistrationServiceImp implements RegistrationService {
     private static final String TYPE_DOCTOR = "doc";
     private static final String TYPE_PATIENT = "pat";
     private static final String TYPE_ORGANISATION = "org";
     private static final String ROLE_PATIENT = "ROLE_PATIENT";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
+    private static final String USER_EXIST = "User with such password is already exist";
+    public static final String REGISTERED = "Registered";
     @Autowired
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    TokenAuthService tokenService;
 
     @Override
-    public String registerUser(UserDto user, String type) {
-        String msg;
+    public StateDto registerUser(UserDto user, String type) {
+        StateDto stateDto = null;
+
+
         switch (type) {
             case TYPE_DOCTOR:
-                msg = registerDoctor(user);
+                stateDto = registerDoctor(user);
                 break;
             case TYPE_PATIENT:
-                msg = registerPatient(user);
+                stateDto = registerPatient(user);
                 break;
             case TYPE_ORGANISATION:
-                msg = registerOrganisation("mock");
+                stateDto = registerOrganisation("mock");
                 break;
             default:
-                msg = "Bad type";
-
+                stateDto.setMessage("Registration failed");
+                stateDto.setValue(false);
         }
-        return msg;
+
+        return stateDto;
     }
 
-    public String registerPatient(UserDto user) {
+    public StateDto registerPatient(UserDto user) {
+        StateDto stateDto = new StateDto();
         if (userRepository.existsByEmail(user.getEmail())){
-            return "User with this email is already exist";
+            stateDto.setMessage(USER_EXIST);
+            stateDto.setValue(false);
         } else {
             Patient registerUser = new Patient(user.getUsername(), user.getPassword(), user.getEmail());
             Set<Role> roles = new HashSet<>();
@@ -60,14 +72,18 @@ public class RegistrationServiceIpl implements RegistrationService {
             registerUser.setRoles(roles);
             userRepository.save(registerUser);
 
-            return "Registered";
+            stateDto.setMessage(REGISTERED);
+            stateDto.setValue(true);
         }
+        return stateDto;
     }
 
 
-    public String registerDoctor(UserDto user) {
+    public StateDto registerDoctor(UserDto user) {
+        StateDto stateDto = new StateDto();
         if (userRepository.existsByEmail(user.getEmail())){
-            return "User with this email is already exist";
+            stateDto.setMessage(USER_EXIST);
+            stateDto.setValue(false);
         }
         else {
 
@@ -80,13 +96,18 @@ public class RegistrationServiceIpl implements RegistrationService {
             registerUser.setRoles(roles);
             userRepository.save(registerUser);
 
-            return "Registered";
+            stateDto.setMessage(REGISTERED);
+            stateDto.setValue(true);
         }
+        return stateDto;
     }
 
     @Override
-    public String registerOrganisation(String mock) {
-        return mock;
+    public StateDto registerOrganisation(String mock) {
+        StateDto status = new StateDto();
+        status.setMessage("not supported yet");
+        status.setValue(false);
+        return status;
     }
 
     @Override

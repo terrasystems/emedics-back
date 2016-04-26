@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "forms")
 public class Form {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
 
     @Column(name = "type")

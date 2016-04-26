@@ -3,13 +3,14 @@ package com.terrasystems.emedics.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.sun.istack.internal.NotNull;
+
+
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlElement;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -28,21 +29,22 @@ public  class User implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @JsonIgnore
+    @Column(name = "id", unique = true)
     private String id;
 
 
-    @NotNull
+    @Column(nullable = false)
     protected String username;
 
-    @NotNull
+    @Column(nullable = false)
     protected String password;
 
-    @NotNull
+    @Column(nullable = false)
     protected String email;
 
-    @Transient
+    @Column(nullable = true)
     protected Long expires;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)

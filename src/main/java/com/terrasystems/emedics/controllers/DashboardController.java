@@ -3,15 +3,11 @@ package com.terrasystems.emedics.controllers;
 import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Form;
-import com.terrasystems.emedics.model.Patient;
+import com.terrasystems.emedics.model.dto.DashboardFormsRequest;
+import com.terrasystems.emedics.model.dto.ListDashboardFormsResponse;
 import com.terrasystems.emedics.services.DashboardService;
-import com.terrasystems.emedics.services.PatientDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,7 +30,8 @@ public class DashboardController {
 
     @RequestMapping(value = "/forms/active/modify", method = RequestMethod.POST)
     @ResponseBody
-    public String modifyActiveForms(List<Integer> forms) {
-        return null;
+    public ListDashboardFormsResponse modifyActiveForms(@RequestBody DashboardFormsRequest req) {
+        List<Form> list = patientDashboardService.changeActiveForms(req.getForms());
+        return  new ListDashboardFormsResponse(list);
     }
 }

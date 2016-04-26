@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -9,6 +10,7 @@ public class UserDto implements Serializable {
     private static final long serialVersionUID = 1509556509931292216L;
     private String type;
     private String email;
+
     private String password;
     private String username;
 

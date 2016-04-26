@@ -39,9 +39,5 @@ public class Doctor extends User {
         super(username, password, email);
     }
 
-    /*public Doctor(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }*/
+
 }

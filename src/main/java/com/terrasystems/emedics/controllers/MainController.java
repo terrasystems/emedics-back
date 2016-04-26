@@ -66,7 +66,7 @@ public class MainController  {
         return "succesfully created! (name = " + loadedUser.getRoles() + ")";
     }
 
-    @RequestMapping(value = "/rest/test}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/test", method = RequestMethod.GET)
     @ResponseBody
     public String getPatientByName(@PathVariable String name) {
         return "hello";
@@ -86,10 +86,11 @@ public class MainController  {
     @RequestMapping(value = "/rest/forms", method = RequestMethod.POST)
     @ResponseBody
     public String addForms() {
-        List<Form> list = new ArrayList<>();
-        for (int i = 0; i<3; i++) {
+        /*List<Form> list = new ArrayList<>();
+        for (int i = 0; i<1; i++) {
             list.add(new Form("one", "two", "tree", "for"));
-        }
+        }*/
+        Form list = new Form("1","2","3","4");
         formRepository.save(list);
         return "Form added";
     }
