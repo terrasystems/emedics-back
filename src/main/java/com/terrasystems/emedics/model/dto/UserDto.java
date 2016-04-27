@@ -15,10 +15,10 @@ public class UserDto implements Serializable {
     private String username;
 
     public UserDto() {}
-    public UserDto(String type, String email, String password, String username) {
-        this.type = type;
+    public UserDto(String email, String username) {
+        //this.type = type;
         this.email = email;
-        this.password = password;
+        //this.password = password;
         this.username = username;
     }
 

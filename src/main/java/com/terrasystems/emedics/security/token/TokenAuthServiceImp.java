@@ -34,12 +34,25 @@ public class TokenAuthServiceImp implements TokenAuthService {
     @Override
     public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
         final User user = authentication.getDetails();
+        //TODO do smth with expire, check for user creation date, change username not be email (!!carefull)
         user.setExpires(System.currentTimeMillis() + TEN_DAYS);
         String token = tokenUtil.createTokenForUser(user);
         response.addHeader(AUTH_HEADER_NAME, token);
         response.setContentType(RESPONSE_JSON_CONTENT_TYPE);
         try {
-            response.getWriter().write(String.format("{\"email\":\"%s\",\"token\":\"%s\"}", user.getEmail(), token));
+            response.getWriter().write(String.format("{\n" +
+                    "  \"state\": {\n" +
+                    "    \"value\": %b,\n" +
+                    "    \"message\": \"Login OK\"\n" +
+                    "  },\n" +
+                    "  \"user\": {\n" +
+                    "    \"type\": null,\n" +
+                    "    \"email\": \"%s\",\n" +
+                    "    \"password\": null,\n" +
+                    "    \"username\": \"%s\"\n" +
+                    "  },\n" +
+                    "  \"token\": \"%s\"\n" +
+                    "}", true, user.getEmail(), user.getUsername(), token));
             //response.getWriter().write();
             response.getWriter().flush();
             response.getWriter().close();
@@ -47,17 +60,21 @@ public class TokenAuthServiceImp implements TokenAuthService {
             e.printStackTrace();
         }
     }
+    //user.isEnabled())
     @Override
     public Authentication getAuthentication(HttpServletRequest request) {
         final String token = request.getHeader(AUTH_HEADER_NAME);
         if (token != null) {
             final String email = tokenUtil.parseUserFromToken(token);
+
             User user = userRepository.findByEmail(email);
-            if (user != null || (new Date().getTime() < user.getExpires())) {
+            if (user != null && (new Date().getTime() < user.getExpires())) {
                 return new UserAuthentication(user);
             }
         }
         //TODO deadl with NullPointerException
+        /*Authentication auth = new UserAuthentication(new User());
+        auth.setAuthenticated(false);*/
         return null;
     }
 }

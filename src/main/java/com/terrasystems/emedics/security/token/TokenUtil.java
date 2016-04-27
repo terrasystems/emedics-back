@@ -1,8 +1,6 @@
 package com.terrasystems.emedics.security.token;
 
-/**
- * Created by tester on 20.04.16.
- */
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
 
-final class TokenUtil {
+public final class TokenUtil {
 
 
     private static final String HMAC_ALGO = "HmacSHA256";

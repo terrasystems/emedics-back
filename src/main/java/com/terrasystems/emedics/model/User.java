@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -33,17 +34,23 @@ public  class User implements UserDetails {
     @Column(nullable = false)
     protected String username;
 
+
+    @Column
+    protected Date registrationDate;
+
     @Column(nullable = false)
     protected String password;
 
     @Column(nullable = false)
     protected String email;
 
-    @Column(nullable = true)
+    @Column
     protected Long expires;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
+
+
 
     public String getId() {
         return id;
@@ -53,7 +60,13 @@ public  class User implements UserDetails {
         this.id = id;
     }
 
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
 
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
 
     public Long getExpires() {
         return expires;

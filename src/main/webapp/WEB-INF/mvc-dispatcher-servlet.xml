@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.terrasystems.emedics"/>
-    <context:property-placeholder location="classpath*:application.properties"/>
+    <context:property-placeholder location="classpath*:application.properties, classpath*:email.properties"/>
     <mvc:annotation-driven />
 
     <jpa:repositories base-package="com.terrasystems.emedics.dao"/>
@@ -21,11 +21,28 @@
             </props>
         </property>
     </bean>
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
+    <!--<bean id ="mailProperties" class="java.util.Properties">
+        <property name=""
+    </bean>-->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${email.host}"/>
+        <property name="password" value="${email.pass}"/>
+        <property name="username" value="${email.login}"/>
+        <property name="port" value="${email.port}"/>
+        <property name="protocol" value="smtp"/>
+        <property name="javaMailProperties">
+            <props>
+               <!-- <prop key="mail.smtps.auth">true</prop>-->
 
+
+            </props>
+        </property>
+  </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
