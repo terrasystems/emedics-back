@@ -9,6 +9,8 @@ import com.terrasystems.emedics.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+
 @RestController
 @RequestMapping(value = "/rest/public")
 public class PublicController {
@@ -23,6 +25,8 @@ public class PublicController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ResponseBody
     public RegisterResponseDto registerUser(@RequestBody RegisterDto registerDto) {
+
+        System.out.println("Begin registration method");
         StateDto status = null;
         String type = registerDto.getType();
         UserDto user = getUserDto(registerDto);
@@ -30,7 +34,7 @@ public class PublicController {
 
         switch (type) {
             case "org":
-                status = registrationService.registerOrganisation("mock");
+               status = registrationService.registerOrganisation("mock");
                 break;
             default:
                status =   registrationService.registerUser(user, type);
@@ -42,7 +46,7 @@ public class PublicController {
         response.setState(status);
         user.setPassword(null);
         response.setUser(user);
-
+        System.out.println("Sending responce" );
         return response;
     }
 

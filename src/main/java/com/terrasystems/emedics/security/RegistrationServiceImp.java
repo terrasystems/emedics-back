@@ -19,7 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -53,6 +56,8 @@ public class RegistrationServiceImp implements RegistrationService {
 
     @Override
     public StateDto registerUser(UserDto user, String type) {
+
+        System.out.println("enter registerUser method");
         StateDto stateDto = new StateDto();
         StateDto mailState;
 
@@ -82,11 +87,13 @@ public class RegistrationServiceImp implements RegistrationService {
         }
 
         }
-
+        System.out.println("returning from registrationUser method");
         return stateDto;
     }
 
     public StateDto registerPatient(UserDto user) {
+
+        System.out.println("Entering registerPatient method");
         StateDto stateDto = new StateDto();
 
         Patient registerUser = new Patient(user.getUsername(), user.getPassword(), user.getEmail());
@@ -98,12 +105,14 @@ public class RegistrationServiceImp implements RegistrationService {
         userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
-
+        System.out.println("returning from registerPatient method");
         return stateDto;
     }
 
 
     public StateDto registerDoctor(UserDto user) {
+
+        System.out.println("entering registerDoctor method");
         StateDto stateDto = new StateDto();
         Doctor registerUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
         Set<Role> roles = new HashSet<>();
@@ -114,7 +123,7 @@ public class RegistrationServiceImp implements RegistrationService {
         userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
-
+        System.out.println("returning from registerDoctor method");
         return stateDto;
     }
 
