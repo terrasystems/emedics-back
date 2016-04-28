@@ -43,6 +43,7 @@ public class MailServiceImp implements MailService {
             System.out.println("Email Exception - "+ ex.getMessage());
             return new StateDto(false, "Error while send message");
         }
+        System.out.println("After catch");
         return new StateDto(true,"Mail Send");
     }
 
