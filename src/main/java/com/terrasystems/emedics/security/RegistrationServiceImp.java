@@ -90,7 +90,7 @@ public class RegistrationServiceImp implements RegistrationService {
                     stateDto.setValue(false);
             }
         }
-
+            else return mailState;
         }
         System.out.println("returning from registrationUser method");
         return stateDto;

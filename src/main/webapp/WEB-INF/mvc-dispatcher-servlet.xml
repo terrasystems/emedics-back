@@ -34,10 +34,10 @@
         <property name="password" value="${email.pass}"/>
         <property name="username" value="${email.login}"/>
         <property name="port" value="${email.port}"/>
-        <property name="protocol" value="smtp"/>
+        <property name="protocol" value="smtps"/>
         <property name="javaMailProperties">
             <props>
-               <!-- <prop key="mail.smtps.auth">true</prop>-->
+                <prop key="mail.smtps.auth">true</prop>
 
 
             </props>

@@ -58,9 +58,11 @@ public class PublicController {
 
     @RequestMapping(value = "reset_pass", method = RequestMethod.POST)
     @ResponseBody
-    public StateDto resetPass(@RequestBody String email) {
-
-        return registrationService.resetPassword(email);
+    public RegisterResponseDto resetPass(@RequestBody String email) {
+        RegisterResponseDto response = new RegisterResponseDto();
+        StateDto state = registrationService.resetPassword(email);
+        response.setState(state);
+        return response;
     }
 
     @RequestMapping(value = "/activate/{token}", method = RequestMethod.GET)
