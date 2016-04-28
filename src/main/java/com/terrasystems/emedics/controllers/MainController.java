@@ -5,6 +5,7 @@ import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,8 @@ public class MainController  {
     RoleRepository roleRepository;
     @Autowired
     FormRepository formRepository;
+    @Autowired
+    UserFormsDashboardService userFormsDashboardService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -85,13 +88,8 @@ public class MainController  {
     }
     @RequestMapping(value = "/rest/forms", method = RequestMethod.POST)
     @ResponseBody
-    public String addForms() {
-        /*List<Form> list = new ArrayList<>();
-        for (int i = 0; i<1; i++) {
-            list.add(new Form("one", "two", "tree", "for"));
-        }*/
-        Form list = new Form("1","2","3","4");
-        formRepository.save(list);
+    public String addForms(@RequestBody String email) {
+        userFormsDashboardService.generateFormsForUser(email);
         return "Form added";
     }
 

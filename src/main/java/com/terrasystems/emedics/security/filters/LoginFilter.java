@@ -46,11 +46,10 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authentication) throws IOException, ServletException {
-
-
         final User authenticatedUser = userDetailsService.loadUserByUsername(authentication.getName());
         final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
         tokenAuthService.addAuthentication(response, userAuthentication);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
-    }
+
+        }
 }

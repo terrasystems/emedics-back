@@ -12,6 +12,7 @@ import com.terrasystems.emedics.model.dto.UserDto;
 import com.terrasystems.emedics.security.token.TokenAuthService;
 import com.terrasystems.emedics.security.token.TokenUtil;
 import com.terrasystems.emedics.services.MailService;
+import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,8 @@ public class RegistrationServiceImp implements RegistrationService {
     TokenAuthService tokenService;
     @Autowired
     MailService mailService;
+    @Autowired
+    UserFormsDashboardService userFormsDashboardService;
 
     @Autowired
     public RegistrationServiceImp(@Value("${token.secret}") String secret) {
@@ -144,8 +147,10 @@ public class RegistrationServiceImp implements RegistrationService {
         User user = userRepository.findByEmail(emailsStore.get(link));
         String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
+        user.setEnabled(true);
         //user.setEnabled(true);
         userRepository.save(user);
+        userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto(true, " 3AE6iS ПAЦы");
         UserDto userDto = new UserDto(user.getEmail(), user.getUsername());

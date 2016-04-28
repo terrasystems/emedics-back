@@ -1,10 +1,10 @@
-INSERT INTO forms (id,body, category, descr, type) VALUES
-  (1,'One', 'asd', 'asds', 'asds'),
-  (2,'HG120', 'The Dinner Game', 'sad', 'Comedy'),
-  (3,'One', 'asd', 'asds', 'asds'),
-  (4,'One', 'asd', 'asds', 'asds'),
-  (5,'One', 'asd', 'asds', 'asds'),
-  (6,'One', 'asd', 'asds', 'asds'),
-  (7,'One', 'asd', 'asds', 'asds'),
-  (8,'One', 'asd', 'asds', 'asds'),
-  (9,'One', 'asd', 'asds', 'asds');
+INSERT INTO blanks (id,body, category, descr, type) VALUES
+  ('adasf','One', 'asd', 'asds', 'asds'),
+  ('dasdsd','HG120', 'The Dinner Game', 'sad', 'Comedy'),
+  ('adzxcx','One', 'asd', 'asds', 'asds'),
+  ('1zxd-6ssa','One', 'asd', 'asds', 'asds'),
+  ('zz-23sd','One', 'asd', 'asds', 'asds'),
+  ('zczx-123-as','One', 'asd', 'asds', 'asds'),
+  ('asdd-133zz','One', 'asd', 'asds', 'asds'),
+  ('lkj2-zzn','One', 'asd', 'asds', 'asds'),
+  ('sdds-33ss','One', 'asd', 'asds', 'asds');

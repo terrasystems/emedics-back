@@ -2,20 +2,22 @@ package com.terrasystems.emedics.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "forms")
-public class Form {
+@Table(name = "blanks")
+public class Blank {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @JsonIgnore
     @Column(name = "id", unique = true)
     private String id;
+
 
     @Column(name = "type")
     private String type;
@@ -29,27 +31,16 @@ public class Form {
     @Column(name = "descr")
     private String descr;
 
-    @ManyToMany(mappedBy = "forms")
-    private List<User> users;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "blank")
+    @Column(name = "forms")
+    private List<Form> forms;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "blank_id")
-    private Blank blank;
-
-    public Form(){}
-    public Form(String type, String category, String body, String descr) {
-        this.type = type;
-        this.category = category;
-        this.body = body;
-        this.descr = descr;
+    public List<Form> getForms() {
+        return forms;
     }
 
-    public Blank getBlank() {
-        return blank;
-    }
-
-    public void setBlank(Blank blank) {
-        this.blank = blank;
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
     }
 
     public String getId() {
@@ -59,15 +50,6 @@ public class Form {
     public void setId(String id) {
         this.id = id;
     }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
 
     public String getType() {
         return type;

@@ -14,7 +14,7 @@ public class Patient extends User {
     @Column(name = "allowed_forms_count")
     private int allowedFormsCount;
 
-    @ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
+    /*@ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_forms",
             joinColumns = @JoinColumn(name = "pat_id", referencedColumnName = "id"),
@@ -29,7 +29,7 @@ public class Patient extends User {
 
     public void setForms(List<Form> forms) {
         this.forms = forms;
-    }
+    }*/
 
     public Patient() {}
 

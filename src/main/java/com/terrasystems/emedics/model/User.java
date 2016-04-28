@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -47,10 +48,32 @@ public  class User implements UserDetails {
     @Column
     protected Long expires;
 
+    @Column
+    protected boolean enabled = false;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE} , fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_forms",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "form_id", referencedColumnName = "id")
+    )
+    private List<Form> forms;
 
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
 
     public String getId() {
         return id;
@@ -129,7 +152,7 @@ public  class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     @Transient
@@ -145,4 +168,5 @@ public  class User implements UserDetails {
         setPassword(newPass);
         return newPass;
     }
+
 }
