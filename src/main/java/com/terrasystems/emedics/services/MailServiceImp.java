@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.model.dto.StateDto;
+import org.apache.log4j.ConsoleAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,9 +35,12 @@ public class MailServiceImp implements MailService {
         message.setSubject("test");
         message.setText(ACTIVATE_URL+activateToken);
         message.setFrom("minilis@minilis.org");
+        System.out.println("message "+ message.toString());
         try {
+            System.out.println("try to send mail");
             mailSender.send(message);
         } catch (MailException ex) {
+            System.out.println("Email Exception - "+ ex.getMessage());
             return new StateDto(false, "Error while send message");
         }
         return new StateDto(true,"Mail Send");
