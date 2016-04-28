@@ -67,7 +67,10 @@ public class RegistrationServiceImp implements RegistrationService {
             return stateDto;
         } else {
             String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c');
+            System.out.println(user.getEmail());
+            System.out.println(activateToken);
             emailsStore.put(activateToken, user.getEmail());
+
             mailState = mailService.sendRegistrationMail(user.getEmail(), activateToken);
         if (mailState.isValue()) {
             switch (type) {
