@@ -1,11 +1,13 @@
 package com.terrasystems.emedics.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.terrasystems.emedics.model.Form;
 
 import java.util.List;
 
 public class ListDashboardFormsResponse extends AbstractResponse {
     private static final long serialVersionUID = 1161368771589456067L;
+
     private List<Form> list;
     private StateDto state;
 

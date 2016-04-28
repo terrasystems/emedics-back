@@ -92,6 +92,7 @@ public class RegistrationServiceImp implements RegistrationService {
         }
             //else return mailState;
         }
+        if (stateDto.isValue()) {userFormsDashboardService.generateFormsForUser(user.getEmail()); return stateDto;}
 
         return stateDto;
     }

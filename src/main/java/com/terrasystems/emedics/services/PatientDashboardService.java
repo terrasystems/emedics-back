@@ -5,6 +5,7 @@ import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Form;
 import com.terrasystems.emedics.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,9 @@ public class PatientDashboardService implements DashboardService {
     @Override
     @Transactional
     public List<Form> getAllForms() {
-        List<Form> forms = (List<Form>) formRepository.findAll();
+        Patient currentUser = (Patient) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        List<Form> forms = currentUser.getForms();
         return forms;
     }
 

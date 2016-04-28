@@ -1,7 +1,9 @@
 package com.terrasystems.emedics.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,6 +32,7 @@ public class Form {
     private String descr;
 
     @ManyToMany(mappedBy = "forms")
+    @JsonBackReference
     private List<User> users;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -43,7 +46,7 @@ public class Form {
         this.body = body;
         this.descr = descr;
     }
-
+    @JsonIgnore
     public Blank getBlank() {
         return blank;
     }
