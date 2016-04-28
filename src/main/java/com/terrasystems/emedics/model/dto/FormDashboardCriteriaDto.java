@@ -1,8 +1,6 @@
 package com.terrasystems.emedics.model.dto;
 
 
-import com.terrasystems.emedics.model.Form;
-
 import java.io.Serializable;
 import java.util.Set;
 

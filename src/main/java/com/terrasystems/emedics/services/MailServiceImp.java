@@ -3,16 +3,10 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.model.dto.StateDto;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.ResourceBundle;
 
 @Service
 public class MailServiceImp implements MailService {

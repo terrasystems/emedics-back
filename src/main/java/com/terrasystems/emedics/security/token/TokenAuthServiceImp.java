@@ -1,13 +1,11 @@
 package com.terrasystems.emedics.security.token;
 
 
-
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.security.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
-import java.util.Date;
 
 @Service
 public class TokenAuthServiceImp implements TokenAuthService {

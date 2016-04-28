@@ -1,12 +1,9 @@
 package com.terrasystems.emedics.security.token;
 
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,8 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Date;
 
 public final class TokenUtil {
 

@@ -1,6 +1,5 @@
 package com.terrasystems.emedics.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 

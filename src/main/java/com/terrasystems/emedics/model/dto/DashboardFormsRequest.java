@@ -1,8 +1,6 @@
 package com.terrasystems.emedics.model.dto;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
 
 public class DashboardFormsRequest implements Serializable {

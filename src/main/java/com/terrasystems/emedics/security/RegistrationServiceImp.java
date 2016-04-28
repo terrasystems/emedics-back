@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class RegistrationServiceImp implements RegistrationService {
@@ -31,7 +32,7 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
     private static final String USER_EXIST = "User with such password is already exist";
     public static final String REGISTERED = "Registered";
-    private static Map<String,String> emailsStore= new HashMap<>();
+    private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
     private final TokenUtil tokenUtil;
     @Autowired
     UserRepository userRepository;
@@ -152,7 +153,7 @@ public class RegistrationServiceImp implements RegistrationService {
         userRepository.save(user);
         userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
-        StateDto state = new StateDto(true, " 3AE6iS ПAЦы");
+        StateDto state = new StateDto(true, "User Activated");
         UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
         response.setState(state);
         response.setToken(token);

@@ -6,7 +6,6 @@ import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Blank;
 import com.terrasystems.emedics.model.Form;
 import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.dto.ListDashboardFormsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
