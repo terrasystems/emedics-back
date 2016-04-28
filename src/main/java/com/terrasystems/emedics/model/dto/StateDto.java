@@ -11,6 +11,7 @@ public class StateDto implements Serializable {
     public StateDto(boolean value, String message) {
         this.value = value;
         this.message = message;
+        System.out.println("StateDto.msg = " + this.message);
     }
     public StateDto() {}
 
