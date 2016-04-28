@@ -72,7 +72,7 @@ public class RegistrationServiceImp implements RegistrationService {
             emailsStore.put(activateToken, user.getEmail());
 
             mailState = mailService.sendRegistrationMail(user.getEmail(), activateToken);
-            System.out.println(mailState.isValue());
+            System.out.println("mailState.msg = "+ mailState.getMessage());
         if (mailState.isValue()) {
             System.out.println(type);
             switch (type) {
