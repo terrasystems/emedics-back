@@ -65,7 +65,7 @@ public class TokenAuthServiceImp implements TokenAuthService {
             final String email = tokenUtil.parseUserFromToken(token);
 
             User user = userRepository.findByEmail(email);
-            if ((user != null) && (user.getRegistrationDate() != null)) {
+            if (user != null)  {
                 return new UserAuthentication(user);
             }
         }

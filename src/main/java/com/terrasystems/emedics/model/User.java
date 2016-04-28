@@ -49,7 +49,7 @@ public  class User implements UserDetails {
     protected Long expires;
 
     @Column
-    protected boolean enabled = false;
+    protected boolean enabled = true;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;

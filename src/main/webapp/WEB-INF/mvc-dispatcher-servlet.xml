@@ -37,7 +37,7 @@
         <property name="protocol" value="smtp"/>
         <property name="javaMailProperties">
             <props>
-                <prop key="mail.smtps.auth">true</prop>
+                <prop key="mail.smtp.auth">true</prop>
             </props>
         </property>
   </bean>
