@@ -1,9 +1,7 @@
 package com.terrasystems.emedics.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,7 +13,6 @@ public class Form {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @JsonIgnore
     @Column(name = "id", unique = true)
     private String id;
 
@@ -26,13 +23,16 @@ public class Form {
     private String category;
 
     @Column(name = "body")
+    @Lob
     private String body;
 
     @Column(name = "descr")
     private String descr;
 
+    @Column(name = "active")
+    private boolean active = false;
+
     @ManyToMany(mappedBy = "forms")
-    @JsonBackReference
     private List<User> users;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -46,6 +46,15 @@ public class Form {
         this.body = body;
         this.descr = descr;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @JsonIgnore
     public Blank getBlank() {
         return blank;
@@ -62,7 +71,7 @@ public class Form {
     public void setId(String id) {
         this.id = id;
     }
-
+    @JsonIgnore
     public List<User> getUsers() {
         return users;
     }

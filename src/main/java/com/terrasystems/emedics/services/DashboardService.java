@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface DashboardService {
     List<Form> getAllForms();
-    List<Form> changeActiveForms(Set<Long> newActiveForms);
+    List<Form> changeActiveForms(Set<String> newActiveForms);
     List<Form> getActiveForms();
     default String getPrincipals() {
         return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

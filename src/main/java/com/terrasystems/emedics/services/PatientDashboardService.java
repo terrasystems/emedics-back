@@ -32,12 +32,21 @@ public class PatientDashboardService implements DashboardService {
     }
 
     @Override
-    public List<Form> changeActiveForms(Set<Long> newActiveForms) {
+    public List<Form> changeActiveForms(Set<String> newActiveForms) {
+        Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
 
         //TODO change it with query
-        List<Form> list = (List<Form>) formRepository.findAll();
+        List<Form> list = patient.getForms();
         List<Form> newList = list.stream()
-                .filter(item -> newActiveForms.contains(item.getId()))
+                .map((item) -> {
+                    if (newActiveForms.contains(item.getId())){
+                        item.setActive(true);
+                    } else {
+                        item.setActive(false);
+                    }
+                    return item;
+                })
+                .filter(item -> item.isActive())
                 .collect(Collectors.toList());
         return newList;
     }
@@ -46,6 +55,9 @@ public class PatientDashboardService implements DashboardService {
     @Transactional
     public List<Form> getActiveForms() {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
-        return patient.getForms();
+        List<Form> forms = patient.getForms().stream()
+                .filter(item -> item.isActive())
+                .collect(Collectors.toList());
+        return forms;
     }
 }

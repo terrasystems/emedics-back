@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/rest/private/dashboard/patient")
@@ -22,19 +23,22 @@ public class DashboardController {
     @Autowired
     DashboardService patientDashboardService;
 
-    @RequestMapping(value = "/forms/active", method = RequestMethod.GET)
+    @RequestMapping(value = "/forms/active", method = RequestMethod.POST)
     @ResponseBody
-    public List<Form> activeForms() {
-
-        return patientDashboardService.getActiveForms();
+    public ListDashboardFormsResponse getActiveForms(@RequestBody DashboardFormsRequest request) {
+        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
+        response.setList(patientDashboardService.getActiveForms());
+        response.setState(new StateDto(true, "Active forms"));
+        return response;
     }
 
     @RequestMapping(value = "/forms/active/modify", method = RequestMethod.POST)
     @ResponseBody
     public ListDashboardFormsResponse modifyActiveForms(@RequestBody DashboardFormsRequest req) {
-       /* List<Form> list = patientDashboardService.changeActiveForms(req.getForms());
-        return  new ListDashboardFormsResponse(list, new StateDto());*/
-        return null;
+        List<Form> list = patientDashboardService.changeActiveForms(req.getCriteria().getForms());
+
+        return  new ListDashboardFormsResponse(list, new StateDto(true, "new Active Forms"));
+
     }
     @RequestMapping(value = "/forms", method = RequestMethod.POST)
     @ResponseBody

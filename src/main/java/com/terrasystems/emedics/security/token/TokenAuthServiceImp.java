@@ -36,6 +36,7 @@ public class TokenAuthServiceImp implements TokenAuthService {
         String token = tokenUtil.createTokenForUser(user);
         response.addHeader(AUTH_HEADER_NAME, token);
         response.setContentType(RESPONSE_JSON_CONTENT_TYPE);
+        String type = user.getDiscriminatorValue();
         try {
             response.getWriter().write(String.format("{\n" +
                     "  \"state\": {\n" +
@@ -43,13 +44,13 @@ public class TokenAuthServiceImp implements TokenAuthService {
                     "    \"message\": \"Login OK\"\n" +
                     "  },\n" +
                     "  \"user\": {\n" +
-                    "    \"type\": null,\n" +
+                    "    \"type\": \"%s\",\n" +
                     "    \"email\": \"%s\",\n" +
                     "    \"password\": null,\n" +
                     "    \"username\": \"%s\"\n" +
                     "  },\n" +
                     "  \"token\": \"%s\"\n" +
-                    "}", true, user.getEmail(), user.getUsername(), token));
+                    "}", true, type, user.getEmail(), user.getUsername(), token));
             //response.getWriter().write();
             response.getWriter().flush();
             response.getWriter().close();
