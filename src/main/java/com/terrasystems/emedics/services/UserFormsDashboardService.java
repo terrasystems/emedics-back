@@ -40,7 +40,31 @@ public class UserFormsDashboardService {
     public void init() {
         List<Blank> blanks = new ArrayList<>();
         for (int i = 0; i<7; i++) {
-            blanks.add(new Blank("one","two","three","fore"));
+            blanks.add(new Blank("sdds-33ss","{\"body\":[\n" +
+                    "{\n" +"key: ''number'',\n" +"type: ''input'',\n" +"templateOptions: {\n" +"type: ''text'',\n" +"label: ''number'',\n" +"placeholder: ''№''\n" +
+                    "                       }\n" +
+                    "                       },\n" +
+                    "                    {\n" +
+                    "                            key: ''FullName'',\n" +
+                    "                    type: ''input'',\n" +
+                    "                    templateOptions: {\n" +
+                    "                type: ''text'',\n" +
+                    "                        label: ''Full name'',\n" +
+                    "                        placeholder: ''Enter Full name''\n" +
+                    "            }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "                key: ''date1'',\n" +
+                    "                    type: ''datepicker'',\n" +
+                    "                    templateOptions: {\n" +
+                    "                label: ''Date 1'',\n" +
+                    "                        type: ''text'',\n" +
+                    "                        datepickerPopup: ''dd-MMMM-yyyy''\n" +
+                    "            }\n" +
+                    "            }\n" +
+                    "            ]\n" +
+                    "\n" +
+                    "        }", "asd", "asds", "asds", "number"));
         }
         blankRepository.save(blanks);
         System.out.println("added blanks");

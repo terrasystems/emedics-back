@@ -3,6 +3,7 @@ package com.terrasystems.emedics.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,11 +13,13 @@ import java.util.List;
 @Table(name = "blanks")
 public class Blank {
 
-    public Blank(String type, String category, String body, String descr) {
+    public Blank(String type, String category, String body, String descr, String number, String name) {
+        this.number = number;
         this.type = type;
         this.category = category;
         this.body = body;
         this.descr = descr;
+        this.name = name;
     }
 
     public Blank() {
@@ -30,25 +33,48 @@ public class Blank {
     @Column(name = "id", unique = true)
     private String id;
 
-
+    @Column(name = "name")
+    private String name;
     @Column(name = "type")
     private String type;
 
     @Column(name = "category")
     private String category;
 
-    @Column(name = "body")
+    @Column(name = "body", length = 3000)
     private String body;
 
     @Column(name = "descr")
     private String descr;
 
+    @Column(name = "number")
+    private String number;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "blank")
     @Column(name = "forms")
     private List<Form> forms;
 
+
+    @JsonIgnore
     public List<Form> getForms() {
         return forms;
+    }
+
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setForms(List<Form> forms) {
