@@ -28,6 +28,7 @@ public class PatientDashboardService implements DashboardService {
         Patient currentUser = (Patient) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         List<Form> forms = currentUser.getForms();
+        System.out.println(currentUser.getEmail());
         return forms;
     }
 
@@ -41,6 +42,7 @@ public class PatientDashboardService implements DashboardService {
                 .map((item) -> {
                     if (newActiveForms.contains(item.getId())){
                         item.setActive(true);
+                        formRepository.save(item);
                     } else {
                         item.setActive(false);
                     }

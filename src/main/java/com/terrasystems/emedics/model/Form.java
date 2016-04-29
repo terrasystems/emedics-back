@@ -23,7 +23,6 @@ public class Form {
     private String category;
 
     @Column(name = "body")
-    @Lob
     private String body;
 
     @Column(name = "descr")

@@ -9,6 +9,7 @@ import com.terrasystems.emedics.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,5 +36,13 @@ public class UserFormsDashboardService {
         userRepository.save(loadedUser);
 
     }
-
+    @PostConstruct
+    public void init() {
+        List<Blank> blanks = new ArrayList<>();
+        for (int i = 0; i<7; i++) {
+            blanks.add(new Blank("one","two","three","fore"));
+        }
+        blankRepository.save(blanks);
+        System.out.println("added blanks");
+    }
 }

@@ -11,6 +11,18 @@ import java.util.List;
 @Entity
 @Table(name = "blanks")
 public class Blank {
+
+    public Blank(String type, String category, String body, String descr) {
+        this.type = type;
+        this.category = category;
+        this.body = body;
+        this.descr = descr;
+    }
+
+    public Blank() {
+
+    }
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -26,7 +38,6 @@ public class Blank {
     private String category;
 
     @Column(name = "body")
-    @Lob
     private String body;
 
     @Column(name = "descr")
