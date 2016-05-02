@@ -23,7 +23,7 @@ public class Patient extends User {
 
     private List<Form> forms;
 
-    public List<Form> getForms() {
+    public List<Form> getList() {
         return forms;
     }
 
