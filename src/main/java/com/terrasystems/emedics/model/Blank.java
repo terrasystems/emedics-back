@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Table(name = "blanks")
 public class Blank {
 
-    public Blank(String type, String category, String body, String descr, String number, String name) {
+    public Blank(String type, String category, String body, String descr, String name, String number) {
         this.number = number;
         this.type = type;
         this.category = category;
@@ -41,7 +42,8 @@ public class Blank {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "body", length = 3000)
+    @Column(name = "body")
+    @Type(type = "text")
     private String body;
 
     @Column(name = "descr")

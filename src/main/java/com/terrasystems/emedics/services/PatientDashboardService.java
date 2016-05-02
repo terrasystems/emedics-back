@@ -65,7 +65,10 @@ public class PatientDashboardService implements DashboardService {
                             formRepository.save(item);
                             item.setBlank(null);
                         } else {
-                            item.setActive(false);
+                            if (item.isActive()) {
+                                item.setActive(false);
+                                formRepository.save(item);
+                            }
                         }
                         return item;
                     })
@@ -78,7 +81,7 @@ public class PatientDashboardService implements DashboardService {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public ListDashboardFormsResponse getActiveForms() {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
         List<Form> forms = patient.getForms().stream()
@@ -86,7 +89,7 @@ public class PatientDashboardService implements DashboardService {
                 .collect(Collectors.toList())
                 .stream()
                 .map((item) -> {
-                    item.setBody(null);
+                    item.setBody("strange behavior");
                     item.setDescr(item.getBlank().getDescr());
                     item.setName(item.getBlank().getName());
                     item.setNumber(item.getBlank().getNumber());

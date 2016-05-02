@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserFormsDashboardService {
@@ -40,31 +41,8 @@ public class UserFormsDashboardService {
     public void init() {
         List<Blank> blanks = new ArrayList<>();
         for (int i = 0; i<7; i++) {
-            blanks.add(new Blank("sdds-33ss","{\"body\":[\n" +
-                    "{\n" +"key: ''number'',\n" +"type: ''input'',\n" +"templateOptions: {\n" +"type: ''text'',\n" +"label: ''number'',\n" +"placeholder: ''№''\n" +
-                    "                       }\n" +
-                    "                       },\n" +
-                    "                    {\n" +
-                    "                            key: ''FullName'',\n" +
-                    "                    type: ''input'',\n" +
-                    "                    templateOptions: {\n" +
-                    "                type: ''text'',\n" +
-                    "                        label: ''Full name'',\n" +
-                    "                        placeholder: ''Enter Full name''\n" +
-                    "            }\n" +
-                    "            },\n" +
-                    "            {\n" +
-                    "                key: ''date1'',\n" +
-                    "                    type: ''datepicker'',\n" +
-                    "                    templateOptions: {\n" +
-                    "                label: ''Date 1'',\n" +
-                    "                        type: ''text'',\n" +
-                    "                        datepickerPopup: ''dd-MMMM-yyyy''\n" +
-                    "            }\n" +
-                    "            }\n" +
-                    "            ]\n" +
-                    "\n" +
-                    "        }", "asd", "asds", "asds", "number"));
+
+            blanks.add(new Blank("type","asd","{\"data\":[{\"key\":\"number\",\"type\":\"input\",\"templateOptions\":{\"type\":\"text\",\"label\":\"number\",\"placeholder\":\"\"}},{\"key\":\"FullName\",\"type\":\"input\",\"templateOptions\":{\"type\":\"text\",\"label\":\"Full name\",\"placeholder\":\"Enter Full name\"}},{\"key\":\"date1\",\"type\":\"datepicker\",\"templateOptions\":{\"label\":\"Date 1\",\"type\":\"text\",\"datepickerPopup\":\"dd-MMMM-yyyy\"}}]}", "asds", "asds", Integer.toString(i)));
         }
         blankRepository.save(blanks);
         System.out.println("added blanks");
