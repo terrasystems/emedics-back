@@ -9,6 +9,7 @@ import com.terrasystems.emedics.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class UserFormsDashboardService {
         List<Blank> blankList = (List<Blank>) blankRepository.findAll();
          blankList.stream().forEach((item) -> {
              Form form = new Form();
+             form.setBody(item.getBody());
              form.setBlank(item);
              userForms.add(form);
          });
@@ -34,5 +36,37 @@ public class UserFormsDashboardService {
         userRepository.save(loadedUser);
 
     }
-
+    @PostConstruct
+    public void init() {
+        List<Blank> blanks = new ArrayList<>();
+        for (int i = 0; i<7; i++) {
+            blanks.add(new Blank("sdds-33ss","{\"body\":[\n" +
+                    "{\n" +"key: ''number'',\n" +"type: ''input'',\n" +"templateOptions: {\n" +"type: ''text'',\n" +"label: ''number'',\n" +"placeholder: ''№''\n" +
+                    "                       }\n" +
+                    "                       },\n" +
+                    "                    {\n" +
+                    "                            key: ''FullName'',\n" +
+                    "                    type: ''input'',\n" +
+                    "                    templateOptions: {\n" +
+                    "                type: ''text'',\n" +
+                    "                        label: ''Full name'',\n" +
+                    "                        placeholder: ''Enter Full name''\n" +
+                    "            }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "                key: ''date1'',\n" +
+                    "                    type: ''datepicker'',\n" +
+                    "                    templateOptions: {\n" +
+                    "                label: ''Date 1'',\n" +
+                    "                        type: ''text'',\n" +
+                    "                        datepickerPopup: ''dd-MMMM-yyyy''\n" +
+                    "            }\n" +
+                    "            }\n" +
+                    "            ]\n" +
+                    "\n" +
+                    "        }", "asd", "asds", "asds", "number"));
+        }
+        blankRepository.save(blanks);
+        System.out.println("added blanks");
+    }
 }

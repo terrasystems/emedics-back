@@ -62,7 +62,6 @@ public  class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "form_id", referencedColumnName = "id")
     )
-    @JsonManagedReference
     private List<Form> forms;
 
 

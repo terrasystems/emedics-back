@@ -2,6 +2,7 @@ package com.terrasystems.emedics.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -16,10 +17,11 @@ public class Role implements GrantedAuthority {
     }
 
     @Id
-    @Column(name = "role_id")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "role_id", unique = true)
     @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     //private String authoruty;
 

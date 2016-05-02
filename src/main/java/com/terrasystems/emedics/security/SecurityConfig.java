@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/rest/public/**").permitAll()
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
-                .antMatchers( "/rest/private**").authenticated()
+                .antMatchers(HttpMethod.POST,"/rest/private/**").authenticated()
                 //.antMatchers(HttpMethod.POST, "/rest/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/admin/**").hasRole("PATIENT").and()
                 //{"username":"<name>","password":"<password>"}
