@@ -59,21 +59,21 @@ public class RegistrationServiceImp implements RegistrationService {
 
         System.out.println("enter registerUser method");
         StateDto stateDto = new StateDto();
-        //StateDto mailState;
+        StateDto mailState;
 
         if (userRepository.existsByEmail(user.getEmail())){
             stateDto.setMessage(USER_EXIST);
             stateDto.setValue(false);
             return stateDto;
         } else {
-            /*String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c');
+            String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c');
             System.out.println(user.getEmail());
             System.out.println(activateToken);
             emailsStore.put(activateToken, user.getEmail());
 
             mailState = mailService.sendRegistrationMail(user.getEmail(), activateToken);
-            System.out.println("mailState.msg = "+ mailState.getMessage());*/
-        /*if (mailState.isValue())*/
+            System.out.println("mailState.msg = "+ mailState.getMessage());
+        if (mailState.isValue()) {
             System.out.println(type);
             switch (type) {
                 case TYPE_DOCTOR:
@@ -89,8 +89,8 @@ public class RegistrationServiceImp implements RegistrationService {
                     stateDto.setMessage("Registration failed");
                     stateDto.setValue(false);
 
-        }
-            //else return mailState;
+            }
+        } else return mailState;
         }
         if (stateDto.isValue()) {userFormsDashboardService.generateFormsForUser(user.getEmail()); return stateDto;}
 
@@ -164,7 +164,7 @@ public class RegistrationServiceImp implements RegistrationService {
         String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
         user.setEnabled(true);
-        //user.setEnabled(true);
+        user.setEnabled(true);
         userRepository.save(user);
         userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
