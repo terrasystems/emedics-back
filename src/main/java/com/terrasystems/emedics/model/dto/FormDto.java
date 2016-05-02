@@ -14,16 +14,44 @@ public class FormDto implements Serializable {
     private String category;
     private String body;
     private String descr;
+    private String name;
+    private String number;
+    private boolean active;
 
     public FormDto() {
     }
 
-    public FormDto(String id, String type, String category, String body, String descr) {
+    public FormDto(String id, String type, String category, String body, String descr, boolean active) {
         this.id = id;
         this.type = type;
         this.category = category;
         this.body = body;
         this.descr = descr;
+        this.active = active;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {

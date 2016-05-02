@@ -27,24 +27,12 @@ public class PatientDashboardService implements DashboardService {
 
     @Override
     @Transactional
-    public ListDashboardFormsResponse getAllForms() {
+    public List<Form> getAllForms() {
         Patient currentUser = (Patient) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         List<Form> forms = currentUser.getForms();
-        forms.stream().map((item) -> {
-            item.setBody(null);
-            item.setDescr(item.getBlank().getDescr());
-            item.setName(item.getBlank().getName());
-            item.setNumber(item.getBlank().getNumber());
-            item.setBlank(null);
-            return item;
-        })
-                .collect(Collectors.toList());
-        System.out.println(currentUser.getEmail());
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
-        response.setState(new StateDto(true, "All forms"));
-        response.setList(forms);
-        return response;
+
+        return forms;
     }
 
     @Override
@@ -56,7 +44,7 @@ public class PatientDashboardService implements DashboardService {
             return response;
         }
         else {
-            //TODO change it with query
+
             List<Form> list = patient.getForms();
             List<Form> newList = list.stream()
                     .map((item) -> {
@@ -82,24 +70,12 @@ public class PatientDashboardService implements DashboardService {
 
     @Override
     //@Transactional
-    public ListDashboardFormsResponse getActiveForms() {
+    public List<Form> getActiveForms() {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
-        List<Form> forms = patient.getForms().stream()
+        /*List<Form> forms = patient.getForms().stream()
                 .filter(item -> item.isActive())
-                .collect(Collectors.toList())
-                .stream()
-                .map((item) -> {
-                    item.setBody("strange behavior");
-                    item.setDescr(item.getBlank().getDescr());
-                    item.setName(item.getBlank().getName());
-                    item.setNumber(item.getBlank().getNumber());
-                    item.setBlank(null);
-                    return item;
-                })
-                .collect(Collectors.toList());
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
-        response.setState(new StateDto(true, "Active forms"));
-        response.setList(forms);
-        return response;
+                .collect(Collectors.toList());*/
+
+        return (List<Form>) formRepository.findByUserAndActive(patient.getId());
     }
 }

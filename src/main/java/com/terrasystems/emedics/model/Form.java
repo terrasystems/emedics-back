@@ -43,8 +43,8 @@ public class Form {
     @Column(name = "active")
     private boolean active = false;
 
-    @ManyToMany(mappedBy = "forms")
-    private List<User> users;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
     //TODO DTO
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "blank_id")
@@ -112,13 +112,13 @@ public class Form {
     public void setId(String id) {
         this.id = id;
     }
-    @JsonIgnore
-    public List<User> getUsers() {
-        return users;
+
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getType() {

@@ -51,17 +51,13 @@ public  class User implements UserDetails {
     protected Long expires;
 
     @Column
-    protected boolean enabled = true;
+    protected boolean enabled = false;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE} , fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_forms",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "form_id", referencedColumnName = "id")
-    )
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Form> forms;
 
 

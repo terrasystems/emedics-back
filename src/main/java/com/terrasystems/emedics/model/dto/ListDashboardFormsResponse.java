@@ -1,28 +1,25 @@
 package com.terrasystems.emedics.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.terrasystems.emedics.model.Form;
-
 import java.util.List;
 
 public class ListDashboardFormsResponse extends AbstractResponse {
     private static final long serialVersionUID = 1161368771589456067L;
 
-    private List<Form> list;
+    private List<FormDto> list;
     private StateDto state;
 
     public ListDashboardFormsResponse() {}
 
-    public ListDashboardFormsResponse(List<Form> list, StateDto state) {
+    public ListDashboardFormsResponse(List<FormDto> list, StateDto state) {
         this.list = list;
         this.state = state;
     }
 
-    public List<Form> getList() {
+    public List<FormDto> getList() {
         return list;
     }
 
-    public void setList(List<Form> list) {
+    public void setList(List<FormDto> list) {
         this.list = list;
     }
 

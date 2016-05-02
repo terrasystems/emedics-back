@@ -31,6 +31,7 @@ public class UserFormsDashboardService {
              Form form = new Form();
              form.setBody(item.getBody());
              form.setBlank(item);
+             form.setUser(loadedUser);
              userForms.add(form);
          });
         loadedUser.setForms(userForms);
