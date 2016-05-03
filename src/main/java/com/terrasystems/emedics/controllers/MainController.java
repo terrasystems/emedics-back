@@ -79,9 +79,9 @@ public class MainController  {
     @ResponseBody
     public String addForm() {
         Patient patient = new Patient("username", "email", "pass");
-        Form form = formRepository.findOne(3l);
+        //Form form = formRepository.findOne(3l);
         List<Form> forms = new ArrayList<>();
-        forms.add(form);
+        //forms.add(form);
         patient.setForms(forms);
         userRepository.save(patient);
         return "Form added";

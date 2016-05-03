@@ -4,6 +4,7 @@ import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Form;
 import com.terrasystems.emedics.model.Patient;
+import com.terrasystems.emedics.model.dto.FormDto;
 import com.terrasystems.emedics.model.dto.ListDashboardFormsResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +36,26 @@ public class PatientDashboardService implements DashboardService {
 
         return forms;
     }
+
+    @Override
+    @Transactional
+    public List<Form> getFormById(String id) {
+
+        List<Form> forms = new ArrayList<>();
+        forms.add(formRepository.findOne(id));
+
+        return forms;
+    }
+
+    /*@Override
+    @Transactional
+    public Form editForm(FormDto formDto) {
+        Form form = formRepository.findOne(formDto.getId());
+        form.setData(formDto.getData);
+        formRepository.save(form);
+    }
+    */
+
 
     @Override
     public ListDashboardFormsResponse changeActiveForms(Set<String> newActiveForms) {

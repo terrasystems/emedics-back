@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequestMapping(value = "/rest/private/dashboard/patient")
 public class DashboardController {
@@ -71,5 +73,34 @@ public class DashboardController {
         response.setState(new StateDto(true,"All Forms"));
         response.setList(forms);
         return  response;
+    }
+
+    @RequestMapping(value = "forms/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ListDashboardFormsResponse formsGetById(@PathVariable String id) {
+        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
+        List<FormDto> forms =  patientDashboardService.getFormById(id).stream()
+                .map(item -> {
+                    FormDto form = new FormDto();
+                    form.setDescr(item.getBlank().getDescr());
+                    form.setActive(item.isActive());
+                    form.setId(item.getId());
+                    form.setName(item.getBlank().getName());
+                    form.setNumber(item.getBlank().getNumber());
+                    return form;
+                }).collect(Collectors.toList());
+        response.setState(new StateDto(true,"Form by id"));
+        response.setList(forms);
+        return response;
+    }
+
+    @RequestMapping(value = "/forms/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public ListDashboardFormsResponse formsEdit(@RequestBody DashboardFormsRequest request) {
+        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
+
+
+        response.setState(new StateDto(true, "Forms edit"));
+        return response;
     }
 }
