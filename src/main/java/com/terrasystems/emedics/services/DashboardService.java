@@ -14,8 +14,8 @@ public interface DashboardService {
     List<Form> getAllForms();
     ListDashboardFormsResponse changeActiveForms(Set<String> newActiveForms);
     List<Form> getActiveForms();
-    List<Form> getFormById(String id);
-    //Form editForm(FormDto formDto);
+    Form getFormById(String id);
+    Form editForm(FormDto formDto);
     default String getPrincipals() {
         return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

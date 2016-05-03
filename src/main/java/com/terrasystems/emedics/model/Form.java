@@ -22,23 +22,9 @@ public class Form {
     @Column(name = "data")
     private String data;
 
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "category")
-    private String category;
-
     @Column(name = "body", length = 3000)
     private String body;
 
-    @Column(name = "descr")
-    private String descr;
-
-    @Column(name = "number")
-    private String number;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "active")
     private boolean active = false;
@@ -51,31 +37,12 @@ public class Form {
     private Blank blank;
 
     public Form(){}
-    public Form(String type, String category, String body, String descr, String data, String name, String number) {
+    public Form(String data, String body) {
         this.data = data;
-        this.type = type;
-        this.category = category;
         this.body = body;
-        this.descr = descr;
-        this.name = name;
-        this.number = number;
+
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
 
     public Form(String data) {
         this.data = data;
@@ -121,36 +88,12 @@ public class Form {
         this.user = user;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public String getDescr() {
-        return descr;
-    }
-
-    public void setDescr(String descr) {
-        this.descr = descr;
     }
 
 }

@@ -16,9 +16,15 @@ public class FormDto implements Serializable {
     private String descr;
     private String name;
     private String number;
+    private String data;
     private boolean active;
 
     public FormDto() {
+    }
+
+    public FormDto(String id, String data) {
+        this.id = id;
+        this.data = data;
     }
 
     public FormDto(String id, String type, String category, String body, String descr, boolean active) {
@@ -28,6 +34,14 @@ public class FormDto implements Serializable {
         this.body = body;
         this.descr = descr;
         this.active = active;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getNumber() {

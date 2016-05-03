@@ -4,6 +4,7 @@ package com.terrasystems.emedics.model.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.sun.istack.internal.Nullable;
 import com.terrasystems.emedics.model.Form;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class BlankDto implements Serializable{
     private String id;
     private String type;
     private String category;
+
     private String body;
     private String descr;
     private List<Form> forms;

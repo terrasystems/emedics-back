@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public class MailServiceImp implements MailService {
     private  @Value("${activate.url}") String HOST ;
-    private  String ACTIVATE_URL = HOST + "rest/public/activate/";
+    //private  String ACTIVATE_URL = HOST + "rest/public/activate/";
 
     @Autowired
     JavaMailSender mailSender;

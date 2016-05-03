@@ -39,22 +39,21 @@ public class PatientDashboardService implements DashboardService {
 
     @Override
     @Transactional
-    public List<Form> getFormById(String id) {
+    public Form getFormById(String id) {
 
-        List<Form> forms = new ArrayList<>();
-        forms.add(formRepository.findOne(id));
+        Form form = formRepository.findOne(id);
 
-        return forms;
+        return form;
     }
 
-    /*@Override
+    @Override
     @Transactional
     public Form editForm(FormDto formDto) {
         Form form = formRepository.findOne(formDto.getId());
-        form.setData(formDto.getData);
-        formRepository.save(form);
+        form.setData(formDto.getData());
+        form = formRepository.save(form);
+        return form;
     }
-    */
 
 
     @Override
