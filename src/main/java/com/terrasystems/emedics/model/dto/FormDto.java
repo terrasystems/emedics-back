@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.model.dto;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 
 import java.io.Serializable;
@@ -10,13 +11,13 @@ public class FormDto implements Serializable {
     private static final long serialVersionUID = -4734233423443392661L;
     private String id;
     private BlankDto blank;
-    private String data;
+    private JsonNode data;
     private boolean active;
 
     public FormDto() {
     }
 
-    public FormDto(String id, String data, BlankDto blank) {
+    public FormDto(String id, JsonNode data, BlankDto blank) {
         this.id = id;
         this.data = data;
         this.blank = blank;
@@ -24,15 +25,15 @@ public class FormDto implements Serializable {
 
     public FormDto(String id, BlankDto blank, String data, boolean active) {
         this.id = id;
-
+        this.blank = blank;
         this.active = active;
     }
 
-    public String getData() {
+    public JsonNode getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(JsonNode data) {
         this.data = data;
     }
 

@@ -8,7 +8,7 @@ public final class  BlankMapper {
 
     public static BlankDto toDto(Blank entity) {
         BlankDto dto = new BlankDto();
-        dto.setBody(entity.getBody());
+        //dto.setBody(entity.getBody());
         dto.setCategory(entity.getCategory());
         dto.setDescr(entity.getDescr());
         dto.setId(entity.getId());
@@ -19,7 +19,7 @@ public final class  BlankMapper {
 
     public static Blank toEntity(BlankDto dto) {
         Blank entity = new Blank();
-        entity.setBody(dto.getBody());
+        //entity.setBody(dto.getBody());
         entity.setCategory(dto.getCategory());
         entity.setDescr(dto.getDescr());
         entity.setId(dto.getId());

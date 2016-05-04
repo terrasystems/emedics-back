@@ -50,7 +50,7 @@ public class PatientDashboardService implements DashboardService {
     @Transactional
     public Form editForm(FormDto formDto) {
         Form form = formRepository.findOne(formDto.getId());
-        form.setData(formDto.getData());
+        form.setData(formDto.getData().toString());
         form = formRepository.save(form);
         return form;
     }

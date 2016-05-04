@@ -2,6 +2,8 @@ package com.terrasystems.emedics.model.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.sun.istack.internal.Nullable;
@@ -16,7 +18,7 @@ public class BlankDto implements Serializable{
     private String type;
     private String category;
     private String name;
-    private String body;
+    private JsonNode body;
     private String descr;
     private String number;
 
@@ -24,7 +26,7 @@ public class BlankDto implements Serializable{
     public BlankDto() {
     }
 
-    public BlankDto(String id, String type, String category, String body, String descr, String name, String number) {
+    public BlankDto(String id, String type, String category, JsonNode body, String descr, String name, String number) {
         this.id = id;
         this.type = type;
         this.category = category;
@@ -76,11 +78,11 @@ public class BlankDto implements Serializable{
         this.category = category;
     }
 
-    public String getBody() {
+    public JsonNode getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(JsonNode body) {
         this.body = body;
     }
 
