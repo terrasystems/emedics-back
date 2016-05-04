@@ -27,11 +27,23 @@ public class ReferenceServiceImpl implements ReferenceService {
     @Override
     @Transactional
     public Reference editReference(ReferenceDto referenceDto) {
-        Reference reference = referenceRepository.findOne(referenceDto.getId());
-        reference.setName(referenceDto.getName());
-        reference.setPhone(referenceDto.getPhone());
-        reference = referenceRepository.save(reference);
-        return reference;
+        if (referenceDto.getId()==null) {
+            Reference reference = new Reference();
+            reference.setType(referenceDto.getType());
+            reference.setName(referenceDto.getName());
+            reference.setPhone(referenceDto.getPhone());
+            referenceRepository.save(reference);
+            return reference;
+        } else {
+
+
+            Reference reference = referenceRepository.findOne(referenceDto.getId());
+            reference.setName(referenceDto.getName());
+            reference.setPhone(referenceDto.getPhone());
+            reference = referenceRepository.save(reference);
+            return reference;
+        }
+
     }
 
 }
