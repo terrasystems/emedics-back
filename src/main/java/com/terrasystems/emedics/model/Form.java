@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.sym.Name;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,10 +21,9 @@ public class Form {
     private String id;
 
     @Column(name = "data")
+    @Type(type = "text")
     private String data;
 
-    @Column(name = "body", length = 3000)
-    private String body;
 
 
     @Column(name = "active")
@@ -37,11 +37,7 @@ public class Form {
     private Blank blank;
 
     public Form(){}
-    public Form(String data, String body) {
-        this.data = data;
-        this.body = body;
 
-    }
 
 
     public Form(String data) {
@@ -88,12 +84,5 @@ public class Form {
         this.user = user;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 
 }

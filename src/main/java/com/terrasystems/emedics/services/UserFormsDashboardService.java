@@ -29,9 +29,14 @@ public class UserFormsDashboardService {
         List<Blank> blankList = (List<Blank>) blankRepository.findAll();
          blankList.stream().forEach((item) -> {
              Form form = new Form();
-             form.setBody(item.getBody());
              form.setBlank(item);
              form.setUser(loadedUser);
+             form.setData("blank.setDescr(item.getBlank().getDescr());\n" +
+                     "                    blank.setName(item.getBlank().getName());\n" +
+                     "                    blank.setBody(null);\n" +
+                     "                    blank.setCategory(item.getBlank().getCategory());\n" +
+                     "                    blank.setNumber(item.getBlank().getNumber());\n" +
+                     "                    form.setBlank(blank);");
              userForms.add(form);
          });
         loadedUser.setForms(userForms);

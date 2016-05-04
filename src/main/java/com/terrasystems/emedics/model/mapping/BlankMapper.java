@@ -13,7 +13,7 @@ public final class  BlankMapper {
         dto.setDescr(entity.getDescr());
         dto.setId(entity.getId());
         dto.setType(entity.getType());
-        dto.setForms(entity.getForms());
+        //dto.setForms(entity.getForms());
         return dto;
     }
 
@@ -24,7 +24,7 @@ public final class  BlankMapper {
         entity.setDescr(dto.getDescr());
         entity.setId(dto.getId());
         entity.setType(dto.getType());
-        entity.setForms(dto.getForms());
+        //entity.setForms(dto.getForms());
         return entity;
     }
 }

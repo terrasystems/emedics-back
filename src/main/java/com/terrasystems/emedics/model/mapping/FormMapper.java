@@ -8,7 +8,7 @@ public final class FormMapper {
 
     static public FormDto toDto(Form entity) {
         FormDto dto = new FormDto();
-        dto.setBody(entity.getBody());
+        //dto.setBody(entity.getBody());
 
         dto.setId(entity.getId());
 
@@ -17,7 +17,7 @@ public final class FormMapper {
 
     static public Form toEntity(FormDto dto) {
         Form entity = new Form();
-        entity.setBody(dto.getBody());
+        //entity.setBody(dto.getBody());
         entity.setId(dto.getId());
         return entity;
     }

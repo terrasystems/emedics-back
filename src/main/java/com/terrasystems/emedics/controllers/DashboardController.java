@@ -2,11 +2,9 @@ package com.terrasystems.emedics.controllers;
 
 import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.model.Blank;
 import com.terrasystems.emedics.model.Form;
-import com.terrasystems.emedics.model.dto.DashboardFormsRequest;
-import com.terrasystems.emedics.model.dto.FormDto;
-import com.terrasystems.emedics.model.dto.ListDashboardFormsResponse;
-import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +34,21 @@ public class DashboardController {
         List<FormDto> list = patientDashboardService.getActiveForms().stream()
                 .map(item -> {
                     FormDto form = new FormDto();
-                    form.setDescr(item.getBlank().getDescr());
+                    BlankDto blank = new BlankDto();
+                    blank.setDescr(item.getBlank().getDescr());
+                    blank.setName(item.getBlank().getName());
+                    blank.setBody(null);
+                    blank.setCategory(item.getBlank().getCategory());
+                    blank.setNumber(item.getBlank().getNumber());
+                    blank.setType(item.getBlank().getType());
+                    form.setBlank(blank);
                     form.setActive(item.isActive());
                     form.setId(item.getId());
-                    form.setName(item.getBlank().getName());
-                    form.setNumber(item.getBlank().getNumber());
-
+                    form.setData(item.getData());
                     return form;
                 })
                 .collect(Collectors.toList());
-        response.setList(list);
+        response.setResult(list);
 
         return response ;
     }
@@ -65,15 +68,20 @@ public class DashboardController {
         List<FormDto> forms = patientDashboardService.getAllForms().stream()
                 .map(item -> {
                     FormDto form = new FormDto();
-                    form.setDescr(item.getBlank().getDescr());
+                    BlankDto blank = new BlankDto();
+                    blank.setDescr(item.getBlank().getDescr());
+                    blank.setName(item.getBlank().getName());
+                    blank.setBody(null);
+                    blank.setCategory(item.getBlank().getCategory());
+                    blank.setNumber(item.getBlank().getNumber());
+                    form.setBlank(blank);
                     form.setActive(item.isActive());
                     form.setId(item.getId());
-                    form.setName(item.getBlank().getName());
-                    form.setNumber(item.getBlank().getNumber());
+                    form.setData(item.getData());
                     return form;
                 }).collect(Collectors.toList());
         response.setState(new StateDto(true,"All Forms"));
-        response.setList(forms);
+        response.setResult(forms);
         return  response;
     }
 
@@ -82,15 +90,22 @@ public class DashboardController {
     public ListDashboardFormsResponse formsGetById(@PathVariable String id) {
         ListDashboardFormsResponse response = new ListDashboardFormsResponse();
         Form form = patientDashboardService.getFormById(id);
-        List<FormDto> list = new ArrayList<>();
+        BlankDto blank = new BlankDto();
+        blank.setBody(form.getBlank().getBody());
+        blank.setName(form.getBlank().getName());
+        blank.setDescr(form.getBlank().getDescr());
+        blank.setNumber(form.getBlank().getNumber());
+        blank.setType(form.getBlank().getType());
+        blank.setCategory(form.getBlank().getCategory());
+
 
         if (form != null) {
-            list.add(new FormDto(form.getId(),form.getData()));
+
             response.setState(new StateDto(true, "Form by id"));
-            response.setList(list);
+            response.setResult(new FormDto(form.getId(),form.getData(),blank));
         } else {
             response.setState(new StateDto(false, "Form with such id doesnt exist"));
-            response.setList(null);
+            response.setResult(null);
         }
 
         return response;
@@ -109,12 +124,12 @@ public class DashboardController {
         } else {
             state.setMessage("Edited");
             state.setValue(true);
-            forms.add(new FormDto(form.getId(),form.getData()));
+            forms.add(new FormDto(form.getId(),form.getData(), null));
         }
 
 
         response.setState(state);
-        response.setList(forms);
+        response.setResult(forms);
         return response;
     }
 }

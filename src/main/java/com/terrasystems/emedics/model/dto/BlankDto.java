@@ -15,21 +15,41 @@ public class BlankDto implements Serializable{
     private String id;
     private String type;
     private String category;
-
+    private String name;
     private String body;
     private String descr;
-    private List<Form> forms;
+    private String number;
+
 
     public BlankDto() {
     }
 
-    public BlankDto(String id, String type, String category, String body, String descr, List<Form> forms) {
+    public BlankDto(String id, String type, String category, String body, String descr, String name, String number) {
         this.id = id;
         this.type = type;
         this.category = category;
         this.body = body;
         this.descr = descr;
-        this.forms = forms;
+        this.name = name;
+        this.number = number;
+
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getId() {
@@ -72,14 +92,6 @@ public class BlankDto implements Serializable{
         this.descr = descr;
     }
 
-    @JsonIgnore
-    public List<Form> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
-    }
 
     @Override
     public String toString() {
@@ -89,27 +101,23 @@ public class BlankDto implements Serializable{
                 .add("category", category)
                 .add("body", body)
                 .add("descr", descr)
-                .add("forms", forms)
                 .toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BlankDto)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         BlankDto blankDto = (BlankDto) o;
-
-        return Objects.equal(id, blankDto.id)&&
-                Objects.equal(type, blankDto.type)&&
-                Objects.equal(category, blankDto.category)&&
-                Objects.equal(body, blankDto.body)&&
-                Objects.equal(descr, blankDto.descr)&&
-                Objects.equal(forms, blankDto.forms);
+        return Objects.equal(id, blankDto.id) &&
+                Objects.equal(type, blankDto.type) &&
+                Objects.equal(category, blankDto.category) &&
+                Objects.equal(body, blankDto.body) &&
+                Objects.equal(descr, blankDto.descr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, type, category, body, descr, forms);
+        return Objects.hashCode(id, type, category, body, descr);
     }
 }
