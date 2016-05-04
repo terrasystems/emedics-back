@@ -56,6 +56,9 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    protected Set<Reference> reference;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Form> forms;
@@ -71,6 +74,14 @@ public  class User implements UserDetails {
 
     public void setForms(List<Form> forms) {
         this.forms = forms;
+    }
+
+    public Set<Reference> getReference() {
+        return reference;
+    }
+
+    public void setReference(Set<Reference> reference) {
+        this.reference = reference;
     }
 
     public String getId() {

@@ -28,10 +28,10 @@ public class FormMapperTest {
         Form form = formMapper.toEntity(formDto);
 
         Assert.assertEquals(form.getId(), "test_id" );
-        Assert.assertEquals(form.getType(), "test_type");
-        Assert.assertEquals(form.getCategory(), "test_category");
+        //Assert.assertEquals(form.getType(), "test_type");
+        //Assert.assertEquals(form.getCategory(), "test_category");
         Assert.assertEquals(form.getBody(), "test_body");
-        Assert.assertEquals(form.getDescr(), "test_descr");
+        //Assert.assertEquals(form.getDescr(), "test_descr");
     }
 
     @Test
@@ -40,16 +40,16 @@ public class FormMapperTest {
         FormMapper formMapper = new FormMapper();
         Form form = new Form();
         form.setId("test_id");
-        form.setType("test_type");
-        form.setCategory("test_category");
+        //form.setType("test_type");
+        //form.setCategory("test_category");
         form.setBody("test_body");
-        form.setDescr("test_descr");
+        //form.setDescr("test_descr");
         FormDto formDto = formMapper.toDto(form);
 
         Assert.assertEquals(formDto.getId(), "test_id" );
-        Assert.assertEquals(formDto.getType(), "test_type");
-        Assert.assertEquals(formDto.getCategory(), "test_category");
+        //Assert.assertEquals(formDto.getType(), "test_type");
+        //Assert.assertEquals(formDto.getCategory(), "test_category");
         Assert.assertEquals(formDto.getBody(), "test_body");
-        Assert.assertEquals(formDto.getDescr(), "test_descr");
+        //Assert.assertEquals(formDto.getDescr(), "test_descr");
     }
 }
