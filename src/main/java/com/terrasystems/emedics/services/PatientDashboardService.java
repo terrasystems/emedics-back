@@ -31,18 +31,14 @@ public class PatientDashboardService implements DashboardService {
     @Transactional
     public List<Form> getAllForms() {
         Patient currentUser = (Patient) SecurityContextHolder.getContext().getAuthentication().getDetails();
-
         List<Form> forms = currentUser.getForms();
-
         return forms;
     }
 
     @Override
     @Transactional
     public Form getFormById(String id) {
-
         Form form = formRepository.findOne(id);
-
         return form;
     }
 
@@ -93,10 +89,6 @@ public class PatientDashboardService implements DashboardService {
     //@Transactional
     public List<Form> getActiveForms() {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
-        /*List<Form> forms = patient.getForms().stream()
-                .filter(item -> item.isActive())
-                .collect(Collectors.toList());*/
-
         return (List<Form>) formRepository.findByUserAndActive(patient.getId());
     }
 }

@@ -26,9 +26,6 @@ public class ReferenceController {
     public DashboardReferenceResponse responsesEdit(@RequestBody ReferenceDto request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         Reference reference = referenceService.editReference(request);
-        /*if(reference.getId() == null) {
-            referenceService.s
-        }*/
         List<ReferenceDto> references = new ArrayList<>();
         StateDto state = new StateDto();
         if(reference == null) {
@@ -57,9 +54,6 @@ public class ReferenceController {
                     reference.setType(item.getType());
                     return reference;
                 }).collect(Collectors.toList());
-
-
-                ;
         response.setObject(references);
         response.setState(new StateDto(true, "All responces"));
         return response;
