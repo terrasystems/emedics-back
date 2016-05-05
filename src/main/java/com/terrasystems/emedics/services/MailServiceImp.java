@@ -27,9 +27,9 @@ public class MailServiceImp implements MailService {
     public StateDto sendRegistrationMail(String address, String activateToken) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
-        message.setSubject("test");
+        message.setSubject("Welcome to eMedics");
         message.setText(HOST+activateToken);
-        message.setFrom("minilis@minilis.org");
+        message.setFrom("admin@emedics.org");
         System.out.println("message "+ message.toString());
         try {
             System.out.println("try to send mail");

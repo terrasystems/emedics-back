@@ -169,6 +169,7 @@ public class RegistrationServiceImp implements RegistrationService {
         response.setState(state);
         response.setToken(token);
         response.setUser(userDto);
+        //TODO delete link after activation
         return response;
     }
 
