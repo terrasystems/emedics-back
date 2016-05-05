@@ -46,4 +46,17 @@ public class ReferenceServiceImpl implements ReferenceService {
 
     }
 
+    @Override
+    @Transactional
+    public Reference getReferenceById(String id) {
+        Reference reference = referenceRepository.findOne(id);
+        return reference;
+    }
+
+    @Override
+    @Transactional
+    public void removeReference(String id) {
+        referenceRepository.delete(id);
+    }
+
 }

@@ -3,12 +3,14 @@ package com.terrasystems.emedics.controllers;
 
 import com.terrasystems.emedics.model.Reference;
 import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
+import com.terrasystems.emedics.model.dto.DashboardReferencesRequest;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.services.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class ReferenceController {
 
     @RequestMapping(value = "/references", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardReferenceResponse responcesGetAll() {
+    public DashboardReferenceResponse responsesGetAll(@RequestBody DashboardReferencesRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         List<ReferenceDto> references = referenceService.getAllReferences().stream()
                 .map(item -> {
@@ -56,6 +58,21 @@ public class ReferenceController {
                 }).collect(Collectors.toList());
         response.setObject(references);
         response.setState(new StateDto(true, "All responces"));
+        return response;
+    }
+
+    @RequestMapping(value = "/references/remove/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public DashboardReferenceResponse responsesRemove(@PathVariable String id) throws IOException {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        if(referenceService.getReferenceById(id) == null ) {
+            response.setState(new StateDto(false, "Reference doesn't exist"));
+        } else {
+            referenceService.removeReference(id);
+            response.setState(new StateDto(true, "Reference remove"));
+        }
+
+
         return response;
     }
 }
