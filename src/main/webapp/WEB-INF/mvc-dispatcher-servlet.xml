@@ -8,12 +8,27 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.terrasystems.emedics"/>
-    <context:property-placeholder location="classpath*:application.properties, classpath*:email.properties"/>
+    <context:property-placeholder location="classpath*:application.properties, classpath*:email.properties,classpath*:db.properties"/>
     <mvc:annotation-driven />
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 
-    <jpa:repositories base-package="com.terrasystems.emedics.dao"/>
+    <jpa:repositories base-package="com.terrasystems.emedics.dao" transaction-manager-ref="transactionManagerCommon" entity-manager-factory-ref="entityManagerFactoryCommon"/>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <!-- COMMON SESSION FACTORY AND DATASOURCES -->
+
+    <bean id="dataSourceCommon"
+          class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName"
+                  value="${db.driver}"/>
+        <property name="url"
+                  value="${db.url}"/>
+        <property name="username"
+                  value="${db.username}"/>
+        <property name="password"
+                  value="${db.password}"/>
+    </bean>
+
+    <bean id="entityManagerFactoryCommon" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="defaultPersistenceUnit"/>
         <property name="jpaProperties">
             <props>
@@ -21,14 +36,32 @@
             </props>
         </property>
     </bean>
-    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    <bean id="entityManagerFactoryTemplate" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="templatePersistenceUnit"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+            </props>
+        </property>
     </bean>
-    <!--<bean id ="mailProperties" class="java.util.Properties">
-        <property name=""
-    </bean>-->
+
+
+    <bean id="transactionManagerCommon" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryCommon"/>
+    </bean>
+
+    <bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryTemplate"/>
+    </bean>
+
+    <!--Liqubase update-->
+    <bean id="liquibaseCommon"
+          class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSourceCommon"/>
+        <property name="changeLog"
+                  value="classpath:liquibase/changelog-master.xml"/>
+    </bean>
+
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${email.host}"/>
         <property name="password" value="${email.pass}"/>
@@ -42,7 +75,8 @@
             </props>
         </property>
   </bean>
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven transaction-manager="transactionManagerCommon"/>
+    <tx:annotation-driven transaction-manager="transactionManagerTemplate"/>
 
 
 

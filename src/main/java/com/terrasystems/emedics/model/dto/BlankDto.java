@@ -1,16 +1,11 @@
 package com.terrasystems.emedics.model.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.sun.istack.internal.Nullable;
-import com.terrasystems.emedics.model.Form;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class BlankDto implements Serializable{
     private static final long serialVersionUID = -8721461755556495891L;

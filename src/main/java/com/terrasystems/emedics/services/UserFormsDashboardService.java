@@ -38,7 +38,7 @@ public class UserFormsDashboardService {
         userRepository.save(loadedUser);
 
     }
-    @PostConstruct
+    /*@PostConstruct
     public void init() {
         List<Blank> blanks = new ArrayList<>();
         for (int i = 0; i<7; i++) {
@@ -87,5 +87,5 @@ public class UserFormsDashboardService {
         }
         blankRepository.save(blanks);
         System.out.println("added blanks");
-    }
+    }*/
 }
