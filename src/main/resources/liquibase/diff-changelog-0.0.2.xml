@@ -5,7 +5,28 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="tester (generated)" id="1462457097398-1">
-        <dropTable tableName="notifications"/>
+
+    <changeSet author="tester (generated)" id="1462460920867-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="notifications">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="readtype" type="VARCHAR(255)"/>
+            <column name="text" type="TEXT"/>
+            <column name="timestamp" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="from_user_id" type="VARCHAR(255)"/>
+            <column name="to_user_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462460920867-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="notifications_pkey" tableName="notifications"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462460920867-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="notifications" constraintName="fk9u6rfqx9lueovqy0a5mcccsfg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462460920867-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="notifications" constraintName="fkpalb3w8yony75cf2odwxks4ns" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
 </databaseChangeLog>

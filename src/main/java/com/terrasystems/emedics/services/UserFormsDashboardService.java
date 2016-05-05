@@ -31,7 +31,7 @@ public class UserFormsDashboardService {
              Form form = new Form();
              form.setBlank(item);
              form.setUser(loadedUser);
-             //form.setData("{\"FullName\": \"\", \"number\": \"\", \"date1\": null, \"sex\": \"-1\"}");
+             form.setData("{}");
              userForms.add(form);
          });
         loadedUser.setForms(userForms);

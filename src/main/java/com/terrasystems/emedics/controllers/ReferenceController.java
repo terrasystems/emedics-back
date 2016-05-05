@@ -40,7 +40,7 @@ public class ReferenceController {
         }
 
         response.setState(state);
-        response.setObject(references);
+        response.setResult(references.get(0));
         return response;
     }
 
@@ -54,14 +54,15 @@ public class ReferenceController {
                     reference.setName(item.getName());
                     reference.setPhone(item.getPhone());
                     reference.setType(item.getType());
+                    reference.setId(item.getId());
                     return reference;
                 }).collect(Collectors.toList());
-        response.setObject(references);
+        response.setResult(references);
         response.setState(new StateDto(true, "All responces"));
         return response;
     }
 
-    @RequestMapping(value = "/references/remove/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/references/remove/{id}", method = RequestMethod.GET)
     @ResponseBody
     public DashboardReferenceResponse referenceRemove(@PathVariable String id) throws IOException {
         DashboardReferenceResponse response = new DashboardReferenceResponse();

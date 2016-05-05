@@ -15,11 +15,11 @@ public class DashboardReferenceResponse extends AbstractResponse{
         this.state = state;
     }
 
-    public Object getObject() {
+    public Object getResult() {
         return result;
     }
 
-    public void setObject(Object result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 

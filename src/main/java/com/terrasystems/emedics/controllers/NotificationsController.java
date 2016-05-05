@@ -61,7 +61,7 @@ public class NotificationsController {
         return response;
     }
 
-    @RequestMapping(value = "/notifications/remove/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/notifications/remove/{id}", method = RequestMethod.GET)
     @ResponseBody
     public DashboardNotificationResponse notificationsRemove(@PathVariable String id) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
