@@ -1,25 +1,25 @@
 package com.terrasystems.emedics.model.dto;
 
 
-public class DashboardReferenceResponse extends AbstractResponse{
-    private static final long serialVersionUID = -4875782160740599882L;
+public class DashboardNotificationResponse extends AbstractResponse{
+    private static final long serialVersionUID = 6860534434142859685L;
 
     private Object result;
     private StateDto state;
 
-    public DashboardReferenceResponse() {
+    public DashboardNotificationResponse() {
     }
 
-    public DashboardReferenceResponse(Object result, StateDto state) {
+    public DashboardNotificationResponse(Object result, StateDto state) {
         this.result = result;
         this.state = state;
     }
 
-    public Object getObject() {
+    public Object getResult() {
         return result;
     }
 
-    public void setObject(Object result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 
@@ -33,5 +33,3 @@ public class DashboardReferenceResponse extends AbstractResponse{
         this.state = state;
     }
 }
-
-

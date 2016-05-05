@@ -59,7 +59,6 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Reference> reference;
 
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Form> forms;
 

@@ -3,16 +3,16 @@ package com.terrasystems.emedics.model.dto;
 
 import java.io.Serializable;
 
-public class DashboardReferencesRequest implements Serializable{
+public class DashboardReferenceRequest implements Serializable{
     private static final long serialVersionUID = -8893658493797291657L;
 
     private ReferenceDashboardCriteriaDto criteria;
     private PageDto pageDto;
 
-    public DashboardReferencesRequest() {
+    public DashboardReferenceRequest() {
     }
 
-    public DashboardReferencesRequest(ReferenceDashboardCriteriaDto criteria, PageDto pageDto) {
+    public DashboardReferenceRequest(ReferenceDashboardCriteriaDto criteria, PageDto pageDto) {
         this.criteria = criteria;
         this.pageDto = pageDto;
     }

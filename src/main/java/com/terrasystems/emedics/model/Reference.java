@@ -24,6 +24,7 @@ public class Reference {
     private String phone;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Reference() {

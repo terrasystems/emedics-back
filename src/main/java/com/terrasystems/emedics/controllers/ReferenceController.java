@@ -3,7 +3,7 @@ package com.terrasystems.emedics.controllers;
 
 import com.terrasystems.emedics.model.Reference;
 import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
-import com.terrasystems.emedics.model.dto.DashboardReferencesRequest;
+import com.terrasystems.emedics.model.dto.DashboardReferenceRequest;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.services.ReferenceService;
@@ -25,7 +25,7 @@ public class ReferenceController {
 
     @RequestMapping(value = "/references/edit", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardReferenceResponse responsesEdit(@RequestBody ReferenceDto request) {
+    public DashboardReferenceResponse referenceEdit(@RequestBody ReferenceDto request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         Reference reference = referenceService.editReference(request);
         List<ReferenceDto> references = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ReferenceController {
 
     @RequestMapping(value = "/references", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardReferenceResponse responsesGetAll(@RequestBody DashboardReferencesRequest request) {
+    public DashboardReferenceResponse referencesGetAll(@RequestBody DashboardReferenceRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         List<ReferenceDto> references = referenceService.getAllReferences().stream()
                 .map(item -> {
@@ -63,7 +63,7 @@ public class ReferenceController {
 
     @RequestMapping(value = "/references/remove/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public DashboardReferenceResponse responsesRemove(@PathVariable String id) throws IOException {
+    public DashboardReferenceResponse referenceRemove(@PathVariable String id) throws IOException {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         if(referenceService.getReferenceById(id) == null ) {
             response.setState(new StateDto(false, "Reference doesn't exist"));
