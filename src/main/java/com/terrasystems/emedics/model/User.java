@@ -20,8 +20,8 @@ import java.util.Set;
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
 public  class User implements UserDetails {
     public User(){}
-    public User(String username, String password, String email){
-        this.username = username;
+    public User(String name, String password, String email){
+        this.name = name;
         this.password = password;
         this.email = email;
     }
@@ -35,8 +35,10 @@ public  class User implements UserDetails {
 
 
     @Column(nullable = false)
-    protected String username;
+    protected String name;
 
+    @Column
+    protected String phone;
 
     @Column
     protected Date registrationDate;
@@ -62,6 +64,53 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Form> forms;
 
+    @ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_users",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
+    )
+    private List<User> users;
+
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY,
+            mappedBy = "users"
+
+    )
+    private List<User> userRef;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public List<User> getUserRef() {
+        return userRef;
+    }
+
+    public void setUserRef(List<User> userRef) {
+        this.userRef = userRef;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

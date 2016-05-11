@@ -7,10 +7,6 @@ import java.util.List;
 
 
 public interface ReferenceService {
-    List<Reference> getAllReferences();
-    Reference editReference(ReferenceDto referenceDto);
-    void removeReference(String id);
-    Reference getReferenceById(String id);
-
+    List<ReferenceDto> findAllReferencesByCriteria(String searchCriteria);
 
 }

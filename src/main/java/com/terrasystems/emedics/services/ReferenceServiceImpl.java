@@ -15,23 +15,21 @@ import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.NEVER)
-public class ReferenceServiceImpl implements ReferenceService, CurrentUserService{
+public class ReferenceServiceImpl implements CurrentUserService{
 
     @Autowired
     ReferenceRepository referenceRepository;
     @Autowired
     UserRepository userRepository;
 
-    @Override
-    @Transactional
+
     public List<Reference> getAllReferences() {
         User user = userRepository.findByEmail(getPrincipals());
         List<Reference> references = referenceRepository.findByUserOrderByPhoneAsc(user);
         return references;
     }
 
-    @Override
-    @Transactional
+
     public Reference editReference(ReferenceDto referenceDto) {
         User user = userRepository.findByEmail(getPrincipals());
         if (referenceDto.getId()==null) {
@@ -55,15 +53,13 @@ public class ReferenceServiceImpl implements ReferenceService, CurrentUserServic
 
     }
 
-    @Override
-    @Transactional
+
     public Reference getReferenceById(String id) {
         Reference reference = referenceRepository.findOne(id);
         return reference;
     }
 
-    @Override
-    @Transactional
+
     public void removeReference(String id) {
         referenceRepository.delete(id);
     }

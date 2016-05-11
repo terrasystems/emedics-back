@@ -6,6 +6,7 @@ import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +30,7 @@ public class MainController  {
     UserFormsDashboardService userFormsDashboardService;
     @Autowired
     DoctorRepository doctorRepository;
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -104,13 +106,15 @@ public class MainController  {
         User user = userRepository.findByEmail(email);
         return disc = user.getDiscriminatorValue();
     }
-    @RequestMapping(value = "/rest/doctors/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Doctor> getDoctors(@PathVariable String name) {
-        List<Doctor> doctors = (List<Doctor>) doctorRepository.findByUsernameContainingOrTypeContaining(name,name);
+    public void getDoctors(@PathVariable String search) {
+        /*List<User> doctors;
+        doctors =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(name,name,name);
         doctors.stream()
-                .forEach(doctor -> System.out.println(doctor.getUsername()));
-        return doctors;
+                .forEach(doctor -> System.out.println(doctor.getUsername()));*/
+        List<Doctor> refs =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search);
+        refs.forEach(ref -> System.out.println(ref.getName()));
     }
 
     @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)

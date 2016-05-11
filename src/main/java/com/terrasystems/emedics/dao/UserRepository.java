@@ -7,8 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface UserRepository extends CrudRepository<User, String> {
-    User findByUsername(String name);
+    User findByName(String name);
     User findByEmail(String email);
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM User c WHERE c.email = :email")
     boolean existsByEmail(@Param("email") String email);
+    //Iterable<User> findByNameContainingOrTypeContainingOrEmailContaining(String name, String type, String email);
 }
