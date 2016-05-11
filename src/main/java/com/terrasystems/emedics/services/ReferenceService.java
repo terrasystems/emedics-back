@@ -6,10 +6,11 @@ import com.terrasystems.emedics.model.dto.ReferenceDto;
 import java.util.List;
 
 
-public interface ReferenceService extends CurrentUserService {
+public interface ReferenceService {
     List<Reference> getAllReferences();
     Reference editReference(ReferenceDto referenceDto);
     void removeReference(String id);
     Reference getReferenceById(String id);
+
 
 }

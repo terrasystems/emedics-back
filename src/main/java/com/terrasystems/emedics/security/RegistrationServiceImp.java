@@ -166,6 +166,7 @@ public class RegistrationServiceImp implements RegistrationService {
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto(true, "User Activated");
         UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
+        userDto.setType("patient");
         response.setState(state);
         response.setToken(token);
         response.setUser(userDto);

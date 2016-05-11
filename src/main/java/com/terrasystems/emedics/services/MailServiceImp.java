@@ -11,6 +11,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
@@ -25,9 +26,11 @@ public class MailServiceImp implements MailService {
 
     @Override
     public StateDto sendRegistrationMail(String address, String activateToken) {
+        //MimeMessage message = mailSender.createMimeMessage();
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
         message.setSubject("Welcome to eMedics");
+
         message.setText(HOST+activateToken);
         message.setFrom("admin@emedics.org");
         System.out.println("message "+ message.toString());

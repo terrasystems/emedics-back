@@ -27,6 +27,11 @@ public class Reference {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "doctor_id" )
+    private Doctor doctor;
+
+
     public Reference() {
     }
 
@@ -42,6 +47,14 @@ public class Reference {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public String getName() {

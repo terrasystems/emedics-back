@@ -4,12 +4,11 @@
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-    <!--<include file="src/main/resources/liquibase/diff-changelog.xml"/>-->
 
-    <changeSet author="tester (generated)" id="1462455807563-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createSequence sequenceName="hibernate_sequence"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="blanks">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -22,7 +21,7 @@
             <column name="type" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="doctors">
             <column name="clinic" type="VARCHAR(255)"/>
             <column name="id" type="VARCHAR(255)">
@@ -30,7 +29,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="forms">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -41,17 +40,21 @@
             <column name="user_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="notifications">
-            <column name="id" type="BIGINT">
+            <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="count" type="VARCHAR(255)"/>
-            <column name="petya" type="VARCHAR(255)"/>
-            <column name="pidaras" type="VARCHAR(255)"/>
+            <column name="readtype" type="VARCHAR(255)"/>
+            <column name="text" type="TEXT"/>
+            <column name="timestamp" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="from_user_id" type="VARCHAR(255)"/>
+            <column name="to_user_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="patients">
             <column name="allowed_forms_count" type="INT"/>
             <column name="id" type="VARCHAR(255)">
@@ -59,7 +62,18 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="refer">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462531392229-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="roles">
             <column name="role_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -68,7 +82,7 @@
             <column name="user_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-9" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="users">
             <column name="disc" type="VARCHAR(15)">
                 <constraints nullable="false"/>
@@ -90,40 +104,52 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-9" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-10" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="blanks_pkey" tableName="blanks"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-10" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-11" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="doctors_pkey" tableName="doctors"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-11" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-12" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="forms_pkey" tableName="forms"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-12" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-13" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="notifications_pkey" tableName="notifications"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-13" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-14" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="patients_pkey" tableName="patients"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-14" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-15" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="refer_pkey" tableName="refer"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462531392229-16" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="role_id" constraintName="roles_pkey" tableName="roles"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-15" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-17" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addPrimaryKey columnNames="id" constraintName="users_pkey" tableName="users"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-16" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-18" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="forms" constraintName="fk6tl07xujgym0eo8bggson7q2x" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-17" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-19" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="roles" constraintName="fk97mxvrajhkq19dmvboprimeg1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-18" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-20" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="notifications" constraintName="fk9u6rfqx9lueovqy0a5mcccsfg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462531392229-21" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="doctors" constraintName="fkgisys6qm9qflq8w4npdhxafne" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-19" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-22" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="blank_id" baseTableName="forms" constraintName="fkhb9g640q94c48m56sll7ym2de" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="blanks"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1462455807563-20" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="tester (generated)" id="1462531392229-23" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="patients" constraintName="fkn8xphvlp05nd3ydg0p1rbdaom" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462531392229-24" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="notifications" constraintName="fkpalb3w8yony75cf2odwxks4ns" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1462531392229-25" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="refer" constraintName="fkppsj7nepod18f7dgnp8mpux2v" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
 </databaseChangeLog>

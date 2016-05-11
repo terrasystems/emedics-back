@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.NEVER)
-public class ReferenceServiceImpl implements ReferenceService {
+public class ReferenceServiceImpl implements ReferenceService, CurrentUserService{
 
     @Autowired
     ReferenceRepository referenceRepository;
@@ -26,7 +26,7 @@ public class ReferenceServiceImpl implements ReferenceService {
     @Transactional
     public List<Reference> getAllReferences() {
         User user = userRepository.findByEmail(getPrincipals());
-        List<Reference> references = referenceRepository.findByUser(user);
+        List<Reference> references = referenceRepository.findByUserOrderByPhoneAsc(user);
         return references;
     }
 
@@ -48,6 +48,7 @@ public class ReferenceServiceImpl implements ReferenceService {
             Reference reference = referenceRepository.findOne(referenceDto.getId());
             reference.setName(referenceDto.getName());
             reference.setPhone(referenceDto.getPhone());
+            reference.setType(referenceDto.getType());
             reference = referenceRepository.save(reference);
             return reference;
         }

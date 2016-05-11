@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/public/**").permitAll()
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
                 .antMatchers("/rest/private/**").hasRole("PATIENT")
-                //.antMatchers(HttpMethod.POST, "/rest/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/rest/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/admin/**").hasRole("PATIENT").and()
                 //{"username":"<name>","password":"<password>"}
                 .addFilterBefore(new LoginFilter("/rest/public/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)

@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.UserRepository;
@@ -26,6 +27,8 @@ public class MainController  {
     FormRepository formRepository;
     @Autowired
     UserFormsDashboardService userFormsDashboardService;
+    @Autowired
+    DoctorRepository doctorRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -86,11 +89,11 @@ public class MainController  {
         userRepository.save(patient);
         return "Form added";
     }
-    @RequestMapping(value = "/rest/forms", method = RequestMethod.POST)
+    @RequestMapping(value = "/rest/forms", method = RequestMethod.GET)
     @ResponseBody
-    public String addForms(@RequestBody String email) {
-        userFormsDashboardService.generateFormsForUser(email);
-        return "Form added";
+    public String addForms() {
+        userFormsDashboardService.init();
+        return "Blanks added";
     }
 
     @RequestMapping(value = "/rest/disc", method = RequestMethod.GET)
@@ -100,5 +103,28 @@ public class MainController  {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(email);
         return disc = user.getDiscriminatorValue();
+    }
+    @RequestMapping(value = "/rest/doctors/{name}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Doctor> getDoctors(@PathVariable String name) {
+        List<Doctor> doctors = (List<Doctor>) doctorRepository.findByUsernameContainingOrTypeContaining(name,name);
+        doctors.stream()
+                .forEach(doctor -> System.out.println(doctor.getUsername()));
+        return doctors;
+    }
+
+    @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
+    @ResponseBody
+    public String createDoctor() {
+        List<Doctor> doctors = new ArrayList<>();
+        doctors.add(new Doctor("Jimmy Hendrix", "1234", "jimm@hend.com"));
+        doctors.add(new Doctor("Brian Molko", "1234", "brian@molko.com"));
+        doctors.add(new Doctor("Alan Mask", "1234", "Alan@Mask"));
+        doctors.get(0).setType("terapeut");
+        doctors.get(1).setType("oncologist");
+        doctors.get(2).setType("surgeon");
+        userRepository.save(doctors);
+
+        return "Doctors Created";
     }
 }

@@ -4,6 +4,7 @@ package com.terrasystems.emedics.model;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -13,6 +14,9 @@ public class Patient extends User {
 
     @Column(name = "allowed_forms_count")
     private int allowedFormsCount;
+
+    @ManyToMany(mappedBy = "patients")
+    private List<Doctor> doctors;
 
     /*@ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
     @JoinTable(
@@ -37,6 +41,14 @@ public class Patient extends User {
         super(username, email, password);
     }
 
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public void setDoctors(List<Doctor> doctors) {
+        this.doctors = doctors;
+    }
+
     public int getAllowedFormsCount() {
         return allowedFormsCount;
     }
@@ -44,29 +56,12 @@ public class Patient extends User {
     public void setAllowedFormsCount(int allowedFormsCount) {
         this.allowedFormsCount = allowedFormsCount;
     }
+
     @PrePersist
     public void preInsert() {
         allowedFormsCount = 5;
     }
 
-    /*public Patient(String username, String email, String password){
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }*/
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "email")
-    @NotNull
-    private String email;
-
-    @Column(name = "password")
-    @NotNull
-    private String password;
-*/
 
 
 }
