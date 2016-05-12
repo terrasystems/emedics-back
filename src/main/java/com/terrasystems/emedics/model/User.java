@@ -4,6 +4,7 @@ package com.terrasystems.emedics.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.common.base.Objects;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,10 +59,10 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     protected Set<Reference> reference;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Form> forms;
 
     @ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
@@ -214,7 +215,7 @@ public  class User implements UserDetails {
 
     @Transient
     public String getDiscriminatorValue(){
-        DiscriminatorValue val = this.getClass().getAnnotation( DiscriminatorValue.class );
+        DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
 
         return val == null ? null : val.value();
     }
@@ -226,4 +227,28 @@ public  class User implements UserDetails {
         return newPass;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return enabled == user.enabled &&
+                Objects.equal(id, user.id) &&
+                Objects.equal(name, user.name) &&
+                Objects.equal(phone, user.phone) &&
+                Objects.equal(registrationDate, user.registrationDate) &&
+                Objects.equal(password, user.password) &&
+                Objects.equal(email, user.email) &&
+                Objects.equal(expires, user.expires) &&
+                Objects.equal(roles, user.roles) &&
+                Objects.equal(reference, user.reference) &&
+                Objects.equal(forms, user.forms) &&
+                Objects.equal(users, user.users) &&
+                Objects.equal(userRef, user.userRef);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, phone, registrationDate, password, email, expires, enabled, roles, reference, forms, users, userRef);
+    }
 }

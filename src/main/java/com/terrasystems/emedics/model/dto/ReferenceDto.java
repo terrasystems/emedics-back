@@ -13,15 +13,25 @@ public class ReferenceDto implements Serializable {
     private String name;
     private String type;
     private String phone;
+    private String email;
 
     public ReferenceDto() {
     }
 
-    public ReferenceDto(String id, String name, String type, String phone) {
+    public ReferenceDto(String id, String name, String type, String phone, String email) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.phone = phone;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getId() {

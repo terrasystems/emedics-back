@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface DoctorRepository extends CrudRepository<Doctor,String> {
     List<Doctor> findByNameContainingOrTypeContainingOrEmailContaining(String name, String type, String email);
+
 }

@@ -1,0 +1,44 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet author="tester (generated)" id="1463060573872-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="organizations">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="descr" type="VARCHAR(255)"/>
+            <column name="fullname" type="VARCHAR(255)"/>
+            <column name="link" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1463060573872-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="stuff">
+            <column name="admin" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1463060573872-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="organizations_pkey" tableName="organizations"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1463060573872-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="stuff_pkey" tableName="stuff"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1463060573872-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="stuff" constraintName="fk3xl5fyohik0p4c7egh09t2sq4" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="organizations"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1463060573872-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="stuff" constraintName="fkc92m1kuc86fk8xo969puh86i8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+</databaseChangeLog>

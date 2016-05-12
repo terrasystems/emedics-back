@@ -1,10 +1,7 @@
 package com.terrasystems.emedics.controllers;
 
 
-import com.terrasystems.emedics.dao.DoctorRepository;
-import com.terrasystems.emedics.dao.FormRepository;
-import com.terrasystems.emedics.dao.RoleRepository;
-import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
@@ -30,6 +27,10 @@ public class MainController  {
     UserFormsDashboardService userFormsDashboardService;
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    StuffRepository stuffRepository;
+    @Autowired
+    OrganizationRepository organizationRepository;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -130,5 +131,23 @@ public class MainController  {
         userRepository.save(doctors);
 
         return "Doctors Created";
+    }
+    @RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
+    @ResponseBody
+    public String createStuff() {
+        List<Stuff> stuff = new ArrayList<>();
+        stuff.add(new Stuff("Jenifer Lopez", "1234", "babki@gmail.com"));
+        stuff.add(new Stuff("Nadegda Babkina", "1234", "babki@gmail.com"));
+        stuff.add(new Stuff("Selin Page", "1234", "babki@gmail.com"));
+        Organization org = organizationRepository.findOne("test-id");
+        org.setStuff(stuff);
+        stuff.get(0).setOrganization(org);
+        stuff.get(1).setOrganization(org);
+        stuff.get(2).setOrganization(org);
+        organizationRepository.save(org);
+        stuffRepository.save(stuff);
+
+
+        return "Stuff Created";
     }
 }

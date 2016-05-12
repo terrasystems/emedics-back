@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.sym.Name;
+import com.google.common.base.Objects;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -84,5 +85,20 @@ public class Form {
         this.user = user;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Form form = (Form) o;
+        return active == form.active &&
+                Objects.equal(id, form.id) &&
+                Objects.equal(data, form.data) &&
+                Objects.equal(user, form.user) &&
+                Objects.equal(blank, form.blank);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, data, active, user, blank);
+    }
 }
