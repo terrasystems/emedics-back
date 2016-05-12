@@ -1,5 +1,7 @@
 package com.terrasystems.emedics.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class Stuff extends User {
     public Stuff(String username, String password, String email) {
         super(username, password, email);
     }
-
+    @JsonIgnore
     public Organization getOrganization() {
         return organization;
     }

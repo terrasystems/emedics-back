@@ -150,4 +150,12 @@ public class MainController  {
 
         return "Stuff Created";
     }
+    @RequestMapping(value = "/rest/stuff/admin/{search}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Stuff> getAdmins(@PathVariable String search) {
+
+
+
+        return (List<Stuff>) stuffRepository.findByNameContainingOrEmailContainingAndAdminIsTrue(search,search);
+    }
 }
