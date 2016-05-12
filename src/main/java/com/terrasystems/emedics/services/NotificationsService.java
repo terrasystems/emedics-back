@@ -7,12 +7,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
-public interface NotificationsService extends CurrentUserService {
+public interface NotificationsService  {
     List<Notifications> getAllNotifications();
-    Notifications editNotifications(NotificationsDto notificationsDto);
+/*    Notifications editNotifications(NotificationsDto notificationsDto);
     void removeNotifications(String id);
-    Notifications getNotificationsById(String id);
-    default String getPrincipals() {
-        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
+    Notifications getNotificationsById(String id);*/
+    void addNotifications(Notifications notifications);
+
 }

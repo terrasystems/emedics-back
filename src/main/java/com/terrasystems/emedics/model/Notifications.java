@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -38,6 +39,10 @@ public class Notifications {
     @Column(name = "text")
     @Type(type = "text")
     private String text;
+
+/*    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "base_form_id")
+    private BaseForm baseForm;*/
 
     public Notifications() {
     }
@@ -115,4 +120,12 @@ public class Notifications {
     public void setText(String text) {
         this.text = text;
     }
+
+/*    public BaseForm getBaseForm() {
+        return baseForm;
+    }
+
+    public void setBaseForm(BaseForm baseForm) {
+        this.baseForm = baseForm;
+    }*/
 }

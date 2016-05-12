@@ -1,19 +1,18 @@
 package com.terrasystems.emedics.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.core.sym.Name;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "forms")
-public class Form {
+/*@DiscriminatorValue("form")*/
+public class Form extends BaseForm {
+
+/*
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -25,6 +24,7 @@ public class Form {
     private String data;
 
 
+*/
 
     @Column(name = "active")
     private boolean active = false;
@@ -36,12 +36,14 @@ public class Form {
     @JoinColumn(name = "blank_id")
     private Blank blank;
 
-    public Form(){}
 
+    public Form() {super();}
 
-
-    public Form(String data) {
-        this.data = data;
+    public Form(String data, boolean active, User user, Blank blank) {
+        super(data);
+        this.active = active;
+        this.user = user;
+        this.blank = blank;
     }
 
     public boolean isActive() {
@@ -52,12 +54,12 @@ public class Form {
         this.active = active;
     }
 
-    public String getData() {
-        return data;
+    public User getUser() {
+        return user;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Blank getBlank() {
@@ -67,22 +69,4 @@ public class Form {
     public void setBlank(Blank blank) {
         this.blank = blank;
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-
 }
