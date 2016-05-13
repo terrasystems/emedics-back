@@ -3,6 +3,7 @@ package com.terrasystems.emedics.model.mapping;
 
 import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Reference;
+import com.terrasystems.emedics.model.Stuff;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 
@@ -27,7 +28,21 @@ public class ReferenceConverter {
         return references;
     }
 
-    public List<ReferenceDto> convertFromStuff(){return null;}
+    public List<ReferenceDto> convertFromStuff(List<Stuff> stuffList){
+        List<ReferenceDto> references = stuffList.stream()
+                .map(stuff -> {
+                    ReferenceDto ref = new ReferenceDto();
+                    ref.setId(stuff.getId());
+                    ref.setName(stuff.getOrganization().getName());
+                    ref.setEmail(stuff.getEmail());
+                    ref.setPhone(stuff.getPhone());
+                    ref.setType(stuff.getOrganization().getType());
+                    return ref;
+                })
+                .collect(Collectors.toList());
+
+        return references;
+    }
 
     public List<ReferenceDto> convertFromUsers(List<User> users) {
         List<ReferenceDto> references = users.stream()
