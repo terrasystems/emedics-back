@@ -31,8 +31,11 @@ public class PatientReferencesController {
     }
     @RequestMapping(value = "/references/add", method = RequestMethod.POST)
     @ResponseBody
-    public StateDto addReferences(@RequestBody DashboardReferenceRequest request) {
-        return referenceService.addReferences(request.getCriteria().getList());
+    public DashboardReferenceResponse addReferences(@RequestBody DashboardReferenceRequest request) {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        StateDto state = referenceService.addReferences(request.getCriteria().getList());
+        response.setState(state);
+        return response;
     }
     @RequestMapping(value = "/references", method = RequestMethod.GET)
     @ResponseBody
@@ -53,7 +56,8 @@ public class PatientReferencesController {
     }
     @RequestMapping(value = "/references/remove", method = RequestMethod.POST)
     @ResponseBody
-    public StateDto removeReferences(@RequestBody DashboardReferenceRequest request) {
+    public DashboardReferenceResponse removeReferences(@RequestBody DashboardReferenceRequest request) {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto state = new StateDto();
         try {
             referenceService.removeReferences(request.getCriteria().getList());
@@ -64,7 +68,8 @@ public class PatientReferencesController {
             state.setMessage("Cant  remove references");
             state.setValue(false);
         }
-        return state;
+        response.setState(state);
+        return response;
     }
 
 

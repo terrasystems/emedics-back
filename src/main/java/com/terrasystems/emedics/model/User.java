@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,7 +73,7 @@ public  class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
     )
-    private List<User> users;
+    private Set<User> users;
 
     @ManyToMany(
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -79,7 +81,7 @@ public  class User implements UserDetails {
             mappedBy = "users"
 
     )
-    private List<User> userRef;
+    private Set<User> userRef;
 
     public String getPhone() {
         return phone;
@@ -89,19 +91,19 @@ public  class User implements UserDetails {
         this.phone = phone;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
-    public List<User> getUserRef() {
+    public Set<User> getUserRef() {
         return userRef;
     }
 
-    public void setUserRef(List<User> userRef) {
+    public void setUserRef(Set<User> userRef) {
         this.userRef = userRef;
     }
 
@@ -230,25 +232,38 @@ public  class User implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
         if (o == null || getClass() != o.getClass()) return false;
+
         User user = (User) o;
-        return enabled == user.enabled &&
-                Objects.equal(id, user.id) &&
-                Objects.equal(name, user.name) &&
-                Objects.equal(phone, user.phone) &&
-                Objects.equal(registrationDate, user.registrationDate) &&
-                Objects.equal(password, user.password) &&
-                Objects.equal(email, user.email) &&
-                Objects.equal(expires, user.expires) &&
-                Objects.equal(roles, user.roles) &&
-                Objects.equal(reference, user.reference) &&
-                Objects.equal(forms, user.forms) &&
-                Objects.equal(users, user.users) &&
-                Objects.equal(userRef, user.userRef);
+
+        return new EqualsBuilder()
+                .append(enabled, user.enabled)
+                .append(id, user.id)
+                .append(name, user.name)
+                .append(phone, user.phone)
+                .append(registrationDate, user.registrationDate)
+                .append(password, user.password)
+                .append(email, user.email)
+                .append(expires, user.expires)
+                .append(roles, user.roles)
+                .append(reference, user.reference)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, phone, registrationDate, password, email, expires, enabled, roles, reference, forms, users, userRef);
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(phone)
+                .append(registrationDate)
+                .append(password)
+                .append(email)
+                .append(expires)
+                .append(enabled)
+                .append(roles)
+                .append(reference)
+                .toHashCode();
     }
 }

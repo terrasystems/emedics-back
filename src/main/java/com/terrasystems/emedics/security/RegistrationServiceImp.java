@@ -1,14 +1,11 @@
 package com.terrasystems.emedics.security;
 
+import com.terrasystems.emedics.dao.OrganizationRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
+import com.terrasystems.emedics.dao.StuffRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.Role;
-import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.dto.RegisterResponseDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.UserDto;
+import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.security.token.TokenAuthService;
 import com.terrasystems.emedics.security.token.TokenUtil;
 import com.terrasystems.emedics.services.MailService;
@@ -19,10 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -33,6 +27,7 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_PATIENT = "ROLE_PATIENT";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
+    private static final String ROLE_STUFF = "ROLE_STUFF_ADMIN";
     private static final String USER_EXIST = "User with such password is already exist";
     public static final String REGISTERED = "Registered";
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
@@ -47,6 +42,10 @@ public class RegistrationServiceImp implements RegistrationService {
     MailService mailService;
     @Autowired
     UserFormsDashboardService userFormsDashboardService;
+    @Autowired
+    OrganizationRepository organizationRepository;
+    @Autowired
+    StuffRepository stuffRepository;
 
     @Autowired
     public RegistrationServiceImp(@Value("${token.secret}") String secret) {
@@ -55,11 +54,16 @@ public class RegistrationServiceImp implements RegistrationService {
 
 
     @Override
-    public StateDto registerUser(UserDto user, String type) {
+    public StateDto registerUser(RegisterDto registerDto, String type) {
 
         System.out.println("enter registerUser method");
         StateDto stateDto = new StateDto();
         StateDto mailState;
+        UserDto user = getUserDto(registerDto);
+        OrganisationDto org = getOrgDto(registerDto);
+        if (user.getPassword() == null) {
+            user.setPassword(RandomStringUtils.random(10, 'a','b','c','A','B','C','1','2','3','4','5'));
+        }
 
         if (userRepository.existsByEmail(user.getEmail())){
             stateDto.setMessage(USER_EXIST);
@@ -71,7 +75,7 @@ public class RegistrationServiceImp implements RegistrationService {
             System.out.println(activateToken);
             emailsStore.put(activateToken, user.getEmail());
 
-            mailState = mailService.sendRegistrationMail(user.getEmail(), activateToken);
+            mailState = mailService.sendRegistrationMail(user.getEmail(), activateToken, user.getPassword());
             System.out.println("mailState.msg = "+ mailState.getMessage());
         if (mailState.isValue()) {
             System.out.println(type);
@@ -83,7 +87,7 @@ public class RegistrationServiceImp implements RegistrationService {
                     stateDto = registerPatient(user);
                     break;
                 case TYPE_ORGANISATION:
-                    stateDto = registerOrganisation("mock");
+                    stateDto = registerOrganisation(user,org);
                     break;
                 default:
                     stateDto.setMessage("Registration failed");
@@ -130,10 +134,31 @@ public class RegistrationServiceImp implements RegistrationService {
     }
 
     @Override
-    public StateDto registerOrganisation(String mock) {
+    public StateDto registerOrganisation(UserDto user, OrganisationDto org) {
         StateDto status = new StateDto();
-        status.setMessage("not supported yet");
-        status.setValue(false);
+        Stuff registeredUser = new Stuff(user.getUsername(), user.getPassword(), user.getEmail());
+        registeredUser.setAdmin(true);
+        Organization organization = new Organization();
+        organization.setName(org.getName());
+        organization.setAddress(org.getAddress());
+        organization.setFullName(org.getFullname());
+        organization.setWebsite(org.getWebsite());
+        organization.setType(org.getType());
+        organization.setDescr(org.getDescr());
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role(ROLE_STUFF);
+        role.setUser(registeredUser);
+        roles.add(role);
+
+        List<Stuff> stuffs = new ArrayList<>();
+        stuffs.add(registeredUser);
+        organization.setStuff(stuffs);
+        registeredUser.setOrganization(organization);
+        registeredUser.setRoles(roles);
+        organizationRepository.save(organization);
+
+        status.setMessage("User and Organization registered");
+        status.setValue(true);
         return status;
     }
 
@@ -172,6 +197,14 @@ public class RegistrationServiceImp implements RegistrationService {
         response.setUser(userDto);
         //TODO delete link after activation
         return response;
+    }
+
+    public UserDto getUserDto(RegisterDto registerDto) {
+        return registerDto.getUser();
+    }
+
+    public OrganisationDto getOrgDto(RegisterDto registerDto) {
+        return registerDto.getOrganisation();
     }
 
 }

@@ -20,24 +20,35 @@ public class Organization {
     @Column
     private String fullName;
     @Column
-    private String link;
+    private String website;
     @Column
     private String address;
     @Column
     private String descr;
+    @Column
+    String type;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "organization", fetch = FetchType.LAZY)
     private List<Stuff> stuff;
 
 
-    public Organization(String name, String fullName, String link, String address, String descr) {
+    public Organization(String name, String fullName, String website, String address, String descr, String type) {
         this.name = name;
         this.fullName = fullName;
-        this.link = link;
+        this.website = website;
         this.address = address;
         this.descr = descr;
+        this.type = type;
 
     }
     public Organization(){}
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getId() {
         return id;
@@ -63,12 +74,12 @@ public class Organization {
         this.fullName = fullName;
     }
 
-    public String getLink() {
-        return link;
+    public String getWebsite() {
+        return website;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getAddress() {

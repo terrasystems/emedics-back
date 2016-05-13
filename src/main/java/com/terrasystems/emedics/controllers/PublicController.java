@@ -1,9 +1,6 @@
 package com.terrasystems.emedics.controllers;
 
-import com.terrasystems.emedics.model.dto.RegisterDto;
-import com.terrasystems.emedics.model.dto.RegisterResponseDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.UserDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.security.RegistrationService;
 import com.terrasystems.emedics.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +24,10 @@ public class PublicController {
     public RegisterResponseDto registerUser(@RequestBody RegisterDto registerDto) {
 
         System.out.println("Begin registration method");
-        StateDto status = null;
+        StateDto status;
         String type = registerDto.getType();
-        UserDto user = getUserDto(registerDto);
-
-
-        switch (type) {
-            case "org":
-               status = registrationService.registerOrganisation("mock");
-                break;
-            default:
-               status =   registrationService.registerUser(user, type);
-        }
-
+        UserDto user = registerDto.getUser();
+        status = registrationService.registerUser(registerDto,type);
 
 
         RegisterResponseDto response = new RegisterResponseDto();
@@ -72,9 +60,7 @@ public class PublicController {
 
     }
 
-    public UserDto getUserDto(RegisterDto registerDto) {
-        return registerDto.getUser();
-    }
+
 
 
 }

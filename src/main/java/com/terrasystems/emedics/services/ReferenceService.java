@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface ReferenceService {
     List<ReferenceDto> findAllReferencesByCriteria(String searchCriteria);
-    StateDto addReferences(Iterable<String> references);
+    StateDto addReferences(Set<String> references);
     Iterable<ReferenceDto> getAllReferences();
     void removeReferences(Set<String> refs) throws Exception;
 

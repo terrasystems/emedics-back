@@ -25,13 +25,13 @@ public class MailServiceImp implements MailService {
     HttpServletRequest request;
 
     @Override
-    public StateDto sendRegistrationMail(String address, String activateToken) {
+    public StateDto sendRegistrationMail(String address, String activateToken, String password) {
         //MimeMessage message = mailSender.createMimeMessage();
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
         message.setSubject("Welcome to eMedics");
 
-        message.setText(HOST+activateToken);
+        message.setText(HOST+activateToken+"  "+"Your password is" + password );
         message.setFrom("admin@emedics.org");
         System.out.println("message "+ message.toString());
         try {
