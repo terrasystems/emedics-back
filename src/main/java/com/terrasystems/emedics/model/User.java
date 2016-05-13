@@ -1,9 +1,7 @@
 package com.terrasystems.emedics.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,19 +58,19 @@ public  class User implements UserDetails {
     protected Set<Reference> reference;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Form> forms;
+    private List<UserForm> userForms;
 
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public List<Form> getForms() {
-        return forms;
+    public List<UserForm> getUserForms() {
+        return userForms;
     }
 
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
+    public void setUserForms(List<UserForm> userForms) {
+        this.userForms = userForms;
     }
 
     public Set<Reference> getReference() {

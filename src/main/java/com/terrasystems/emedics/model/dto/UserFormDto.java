@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 
 import java.io.Serializable;
 
-public class FormDto implements Serializable {
+public class UserFormDto implements Serializable {
 
     private static final long serialVersionUID = -4734233423443392661L;
     private String id;
@@ -14,16 +14,16 @@ public class FormDto implements Serializable {
     private JsonNode data;
     private boolean active;
 
-    public FormDto() {
+    public UserFormDto() {
     }
 
-    public FormDto(String id, JsonNode data, BlankDto blank) {
+    public UserFormDto(String id, JsonNode data, BlankDto blank) {
         this.id = id;
         this.data = data;
         this.blank = blank;
     }
 
-    public FormDto(String id, BlankDto blank, String data, boolean active) {
+    public UserFormDto(String id, BlankDto blank, String data, boolean active) {
         this.id = id;
         this.blank = blank;
         this.active = active;

@@ -8,11 +8,9 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "forms")
-/*@DiscriminatorValue("form")*/
-public class Form extends BaseForm {
+@Table(name = "user_forms")
+public class UserForm /*extends BaseForm*/ {
 
-/*
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -24,7 +22,6 @@ public class Form extends BaseForm {
     private String data;
 
 
-*/
 
     @Column(name = "active")
     private boolean active = false;
@@ -37,10 +34,10 @@ public class Form extends BaseForm {
     private Blank blank;
 
 
-    public Form() {super();}
+    public UserForm() {}
 
-    public Form(String data, boolean active, User user, Blank blank) {
-        super(data);
+    public UserForm(String data, boolean active, User user, Blank blank) {
+        this.data = data;
         this.active = active;
         this.user = user;
         this.blank = blank;
@@ -68,5 +65,25 @@ public class Form extends BaseForm {
 
     public void setBlank(Blank blank) {
         this.blank = blank;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public String getData() {
+        return data;
+    }
+
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

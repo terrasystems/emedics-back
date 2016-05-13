@@ -2,9 +2,9 @@ package com.terrasystems.emedics.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terrasystems.emedics.dao.FormRepository;
+import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Form;
+import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/rest/private/dashboard/patient")
 public class DashboardController {
     @Autowired
-    FormRepository formRepository;
+    UserFormRepository userFormRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -27,13 +27,13 @@ public class DashboardController {
 
     @RequestMapping(value = "/forms/active", method = RequestMethod.POST)
     @ResponseBody
-    public ListDashboardFormsResponse formsGetActive(@RequestBody DashboardFormsRequest request) {
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
+    public ListDashboardUserFormsResponse userFormsGetActive(@RequestBody DashboardUserFormsRequest request) {
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         response.setState(new StateDto(true, "Active forms"));
         ObjectMapper mapper = new ObjectMapper();
-        List<FormDto> list = patientDashboardService.getActiveForms().stream()
+        List<UserFormDto> list = patientDashboardService.getActiveUserForms().stream()
                 .map(item -> {
-                    FormDto form = new FormDto();
+                    UserFormDto form = new UserFormDto();
                     BlankDto blank = new BlankDto();
                     blank.setDescr(item.getBlank().getDescr());
                     blank.setName(item.getBlank().getName());
@@ -59,70 +59,70 @@ public class DashboardController {
 
     @RequestMapping(value = "/forms/active/modify", method = RequestMethod.POST)
     @ResponseBody
-    public ListDashboardFormsResponse formsActiveModify(@RequestBody DashboardFormsRequest req) {
+    public ListDashboardUserFormsResponse userFormsActiveModify(@RequestBody DashboardUserFormsRequest req) {
 
 
-        return patientDashboardService.changeActiveForms(req.getCriteria().getList());
+        return patientDashboardService.changeActiveUserForms(req.getCriteria().getList());
 
     }
     @RequestMapping(value = "/forms", method = RequestMethod.POST)
     @ResponseBody
-    public ListDashboardFormsResponse formsGetAll(@RequestBody DashboardFormsRequest request) {
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
+    public ListDashboardUserFormsResponse userFormsGetAll(@RequestBody DashboardUserFormsRequest request) {
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         ObjectMapper mapper = new ObjectMapper();
-        List<FormDto> forms = patientDashboardService.getAllForms().stream()
+        List<UserFormDto> userForms = patientDashboardService.getAllUserForms().stream()
                 .map(item -> {
-                    FormDto form = new FormDto();
+                    UserFormDto userForm = new UserFormDto();
                     BlankDto blank = new BlankDto();
                     blank.setDescr(item.getBlank().getDescr());
                     blank.setName(item.getBlank().getName());
                     blank.setBody(null);
                     blank.setCategory(item.getBlank().getCategory());
                     blank.setNumber(item.getBlank().getNumber());
-                    form.setBlank(blank);
-                    form.setActive(item.isActive());
-                    form.setId(item.getId());
+                    userForm.setBlank(blank);
+                    userForm.setActive(item.isActive());
+                    userForm.setId(item.getId());
                     try {
-                        form.setData(mapper.readTree(item.getData()));
+                        userForm.setData(mapper.readTree(item.getData()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    return form;
+                    return userForm;
                 }).collect(Collectors.toList());
-        response.setState(new StateDto(true,"All Forms"));
-        response.setResult(forms);
+        response.setState(new StateDto(true,"All UserForms"));
+        response.setResult(userForms);
         return  response;
     }
 
     @RequestMapping(value = "forms/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ListDashboardFormsResponse formsGetById(@PathVariable String id) throws IOException {
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
-        Form form = patientDashboardService.getFormById(id);
+    public ListDashboardUserFormsResponse userFormsGetById(@PathVariable String id) throws IOException {
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
+        UserForm userForm = patientDashboardService.getUserFormById(id);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode body = null;
         try {
-            body = mapper.readTree(form.getBlank().getBody());
+            body = mapper.readTree(userForm.getBlank().getBody());
         } catch (IOException e) {
             e.printStackTrace();
         }
         BlankDto blank = new BlankDto();
         blank.setBody(body);
-        blank.setName(form.getBlank().getName());
-        blank.setDescr(form.getBlank().getDescr());
-        blank.setNumber(form.getBlank().getNumber());
-        blank.setType(form.getBlank().getType());
-        blank.setCategory(form.getBlank().getCategory());
+        blank.setName(userForm.getBlank().getName());
+        blank.setDescr(userForm.getBlank().getDescr());
+        blank.setNumber(userForm.getBlank().getNumber());
+        blank.setType(userForm.getBlank().getType());
+        blank.setCategory(userForm.getBlank().getCategory());
 
 
-        if (form != null) {
+        if (userForm != null) {
 
-            response.setState(new StateDto(true, "Form by id"));
-            FormDto formDto = new FormDto(form.getId(),mapper.readTree(form.getData()),blank);
-            formDto.setActive(form.isActive());
-            response.setResult(formDto);
+            response.setState(new StateDto(true, "UserForm by id"));
+            UserFormDto userFormDto = new UserFormDto(userForm.getId(),mapper.readTree(userForm.getData()),blank);
+            userFormDto.setActive(userForm.isActive());
+            response.setResult(userFormDto);
         } else {
-            response.setState(new StateDto(false, "Form with such id doesnt exist"));
+            response.setState(new StateDto(false, "UserForm with such id doesnt exist"));
             response.setResult(null);
         }
 
@@ -131,20 +131,20 @@ public class DashboardController {
 
     @RequestMapping(value = "/forms/edit", method = RequestMethod.POST)
     @ResponseBody
-    public ListDashboardFormsResponse formsEdit(@RequestBody FormDto request) {
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
-        Form form = patientDashboardService.editForm(request);
-        List<FormDto> forms = new ArrayList<>();
+    public ListDashboardUserFormsResponse UserFormsEdit(@RequestBody UserFormDto request) {
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
+        UserForm userForm = patientDashboardService.editUserForm(request);
+        List<UserFormDto> userForms = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         StateDto state = new StateDto();
-        if (form == null) {
+        if (userForm == null) {
             state.setMessage("error");
             state.setValue(false);
         } else {
             state.setMessage("Edited");
             state.setValue(true);
             try {
-                forms.add(new FormDto(form.getId(),mapper.readTree(form.getData()), null));
+                userForms.add(new UserFormDto(userForm.getId(),mapper.readTree(userForm.getData()), null));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -152,7 +152,7 @@ public class DashboardController {
 
 
         response.setState(state);
-        response.setResult(forms);
+        response.setResult(userForms);
         return response;
     }
 }

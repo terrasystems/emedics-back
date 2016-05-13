@@ -3,14 +3,14 @@ package com.terrasystems.emedics.model.dto;
 import java.io.Serializable;
 
 
-public class DashboardFormsRequest implements Serializable {
+public class DashboardUserFormsRequest implements Serializable {
     private static final long serialVersionUID = 7948074866237898872L;
 
     private FormDashboardCriteriaDto criteria;
 
     private PageDto page;
 
-    public DashboardFormsRequest(){}
+    public DashboardUserFormsRequest(){}
 
 
     public FormDashboardCriteriaDto getCriteria() {

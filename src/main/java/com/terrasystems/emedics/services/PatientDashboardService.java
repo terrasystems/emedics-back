@@ -1,20 +1,18 @@
 package com.terrasystems.emedics.services;
 
-import com.terrasystems.emedics.dao.FormRepository;
+import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Form;
+import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.dto.FormDto;
-import com.terrasystems.emedics.model.dto.ListDashboardFormsResponse;
+import com.terrasystems.emedics.model.dto.UserFormDto;
+import com.terrasystems.emedics.model.dto.ListDashboardUserFormsResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.SourceExtractor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,54 +23,54 @@ public class PatientDashboardService implements DashboardService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    FormRepository formRepository;
+    UserFormRepository userFormRepository;
 
     @Override
     @Transactional
-    public List<Form> getAllForms() {
+    public List<UserForm> getAllUserForms() {
         Patient currentUser = (Patient) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        List<Form> forms = currentUser.getForms();
-        return forms;
+        List<UserForm> userForms = currentUser.getUserForms();
+        return userForms;
     }
 
     @Override
     @Transactional
-    public Form getFormById(String id) {
-        Form form = formRepository.findOne(id);
-        return form;
+    public UserForm getUserFormById(String id) {
+        UserForm userForm = userFormRepository.findOne(id);
+        return userForm;
     }
 
     @Override
     @Transactional
-    public Form editForm(FormDto formDto) {
-        Form form = formRepository.findOne(formDto.getId());
-        form.setData(formDto.getData().toString());
-        form = formRepository.save(form);
-        return form;
+    public UserForm editUserForm(UserFormDto userFormDto) {
+        UserForm userForm = userFormRepository.findOne(userFormDto.getId());
+        userForm.setData(userFormDto.getData().toString());
+        userForm = userFormRepository.save(userForm);
+        return userForm;
     }
 
 
     @Override
-    public ListDashboardFormsResponse changeActiveForms(Set<String> newActiveForms) {
+    public ListDashboardUserFormsResponse changeActiveUserForms(Set<String> newActiveUserForms) {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
-        ListDashboardFormsResponse response = new ListDashboardFormsResponse();
-        if (newActiveForms.size() > patient.getAllowedFormsCount()){
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
+        if (newActiveUserForms.size() > patient.getAllowedFormsCount()){
             response.setState(new StateDto(false, "U can't change more forms then u permitted"));
             return response;
         }
         else {
 
-            List<Form> list = patient.getForms();
-            List<Form> newList = list.stream()
+            List<UserForm> list = patient.getUserForms();
+            List<UserForm> newList = list.stream()
                     .map((item) -> {
-                        if (newActiveForms.contains(item.getId())) {
+                        if (newActiveUserForms.contains(item.getId())) {
                             item.setActive(true);
-                            formRepository.save(item);
+                            userFormRepository.save(item);
                             item.setBlank(null);
                         } else {
                             if (item.isActive()) {
                                 item.setActive(false);
-                                formRepository.save(item);
+                                userFormRepository.save(item);
                             }
                         }
                         return item;
@@ -87,8 +85,8 @@ public class PatientDashboardService implements DashboardService {
 
     @Override
     //@Transactional
-    public List<Form> getActiveForms() {
+    public List<UserForm> getActiveUserForms() {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
-        return (List<Form>) formRepository.findByUserAndActive(patient.getId());
+        return (List<UserForm>) userFormRepository.findByUserAndActive(patient.getId());
     }
 }

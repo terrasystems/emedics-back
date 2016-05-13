@@ -33,8 +33,9 @@ public class NotificationServiceImpl implements NotificationsService, CurrentUse
     public void addNotifications(Notifications notifications) {
         this.repository.save(notifications);
     }
+/*
 
-/*    @Override
+    @Override
 
     public Notifications editNotifications(NotificationsDto notificationsDto) {
 
@@ -58,9 +59,9 @@ public class NotificationServiceImpl implements NotificationsService, CurrentUse
             repository.save(notifications);
             return notifications;
         }
-    }*/
+    }
 
-/*
+
     @Override
 
     public void removeNotifications(String id) {
@@ -73,7 +74,9 @@ public class NotificationServiceImpl implements NotificationsService, CurrentUse
         Notifications notifications = repository.findOne(id);
         return notifications;
     }
+
 */
+
 
 
 

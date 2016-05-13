@@ -1,8 +1,8 @@
 package com.terrasystems.emedics.controllers;
 
 
-import com.terrasystems.emedics.dao.FormRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
+import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
@@ -23,7 +23,7 @@ public class MainController  {
     @Autowired
     RoleRepository roleRepository;
     @Autowired
-    FormRepository formRepository;
+    UserFormRepository userFormRepository;
     @Autowired
     UserFormsDashboardService userFormsDashboardService;
 
@@ -77,20 +77,20 @@ public class MainController  {
 
     @RequestMapping(value = "/rest/patient/form", method = RequestMethod.GET)
     @ResponseBody
-    public String addForm() {
+    public String addUserForm() {
         Patient patient = new Patient("username", "email", "pass");
-        //Form form = formRepository.findOne(3l);
-        List<Form> forms = new ArrayList<>();
-        //forms.add(form);
-        patient.setForms(forms);
+        //UserForm form = formRepository.findOne(3l);
+        List<UserForm> userForms = new ArrayList<>();
+        //userForms.add(form);
+        patient.setUserForms(userForms);
         userRepository.save(patient);
-        return "Form added";
+        return "UserForm added";
     }
     @RequestMapping(value = "/rest/forms", method = RequestMethod.POST)
     @ResponseBody
-    public String addForms(@RequestBody String email) {
+    public String addUserForms(@RequestBody String email) {
         userFormsDashboardService.generateFormsForUser(email);
-        return "Form added";
+        return "UserForm added";
     }
 
     @RequestMapping(value = "/rest/disc", method = RequestMethod.GET)

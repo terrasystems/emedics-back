@@ -51,13 +51,13 @@ public class Blank {
     private String number;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "blank")
-    @Column(name = "forms")
-    private List<Form> forms;
+    @Column(name = "userForms")
+    private List<UserForm> userForms;
 
 
     @JsonIgnore
-    public List<Form> getForms() {
-        return forms;
+    public List<UserForm> getUserForms() {
+        return userForms;
     }
 
 
@@ -77,8 +77,8 @@ public class Blank {
         this.name = name;
     }
 
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
+    public void setUserForms(List<UserForm> userForms) {
+        this.userForms = userForms;
     }
 
     public String getId() {
