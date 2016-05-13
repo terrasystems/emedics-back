@@ -6,7 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @MappedSuperclass
-public abstract class BaseForm {
+public class BaseForm {
 
     @Id
     @GeneratedValue(generator = "system-uuid")

@@ -1,19 +1,9 @@
 package com.terrasystems.emedics.model;
 
-
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_forms")
-public class UserForm extends BaseForm {
-
-
-    @Column(name = "active")
-    private boolean active = false;
+public class SharedForm extends BaseForm {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -22,22 +12,17 @@ public class UserForm extends BaseForm {
     @JoinColumn(name = "blank_id")
     private Blank blank;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    public UserForm() {super();}
+    public SharedForm() {super();}
 
-    public UserForm(String data, boolean active, User user, Blank blank) {
+    public SharedForm(String data, User user, Blank blank, Patient patient) {
         super(data);
-        this.active = active;
         this.user = user;
         this.blank = blank;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+        this.patient = patient;
     }
 
     public User getUser() {
@@ -56,4 +41,11 @@ public class UserForm extends BaseForm {
         this.blank = blank;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }
