@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -38,6 +39,7 @@ public class Notifications {
     @Column(name = "text")
     @Type(type = "text")
     private String text;
+
 
     public Notifications() {
     }
@@ -115,4 +117,6 @@ public class Notifications {
     public void setText(String text) {
         this.text = text;
     }
+
+
 }

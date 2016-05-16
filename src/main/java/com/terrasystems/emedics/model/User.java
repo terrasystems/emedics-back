@@ -1,7 +1,6 @@
 package com.terrasystems.emedics.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.Objects;
@@ -64,8 +63,8 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     protected Set<Reference> reference;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Form> forms;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<UserForm> userForms;
 
 
     @ManyToMany(
@@ -120,12 +119,12 @@ public  class User implements UserDetails {
         this.enabled = enabled;
     }
 
-    public List<Form> getForms() {
-        return forms;
+    public List<UserForm> getUserForms() {
+        return userForms;
     }
 
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
+    public void setUserForms(List<UserForm> userForms) {
+        this.userForms = userForms;
     }
 
     public Set<Reference> getReference() {

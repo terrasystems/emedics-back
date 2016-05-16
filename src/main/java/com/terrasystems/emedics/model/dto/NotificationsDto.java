@@ -14,30 +14,24 @@ public class NotificationsDto implements Serializable{
     private String type;
     private String title;
     private String text;
-    private UserDto userDto;
+    private String fromId;
+    private String toId;
 
     public NotificationsDto() {
     }
 
-    public NotificationsDto(String id, String timestamp, String readtype, String type, String title, String text) {
-        this.id = id;
+    public NotificationsDto(String timestamp, String readtype, String type, String title, String text, String fromId, String toId) {
         this.timestamp = timestamp;
         this.readtype = readtype;
         this.type = type;
         this.title = title;
         this.text = text;
+        this.fromId = fromId;
+        this.toId = toId;
     }
 
     public String getId() {
         return id;
-    }
-
-    public UserDto getUserDto() {
-        return userDto;
-    }
-
-    public void setUserDto(UserDto userDto) {
-        this.userDto = userDto;
     }
 
     public void setId(String id) {
@@ -84,6 +78,22 @@ public class NotificationsDto implements Serializable{
         this.text = text;
     }
 
+    public String getFromId() {
+        return fromId;
+    }
+
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -93,7 +103,8 @@ public class NotificationsDto implements Serializable{
                 .add("type", type)
                 .add("title", title)
                 .add("text", text)
-                .add("userDto", userDto)
+                .add("toId", toId)
+                .add("fromId", fromId)
                 .toString();
     }
 
@@ -101,20 +112,19 @@ public class NotificationsDto implements Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof NotificationsDto)) return false;
-
-        NotificationsDto notificationsDto = (NotificationsDto) o;
-        return Objects.equal(id, notificationsDto.id)&&
-                Objects.equal(timestamp, notificationsDto.timestamp)&&
-                Objects.equal(readtype, notificationsDto.readtype)&&
-                Objects.equal(type, notificationsDto.type)&&
-                Objects.equal(title, notificationsDto.title)&&
-                Objects.equal(userDto, notificationsDto.userDto)&&
-                Objects.equal(text, notificationsDto.text);
-
+        NotificationsDto that = (NotificationsDto) o;
+        return Objects.equal(id, that.id) &&
+                Objects.equal(timestamp, that.timestamp) &&
+                Objects.equal(readtype, that.readtype) &&
+                Objects.equal(type, that.type) &&
+                Objects.equal(title, that.title) &&
+                Objects.equal(text, that.text) &&
+                Objects.equal(fromId, that.fromId) &&
+                Objects.equal(toId, that.toId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, timestamp, readtype, type, title, text, userDto);
+        return Objects.hashCode(id, timestamp, readtype, type, title, text, fromId, toId);
     }
 }

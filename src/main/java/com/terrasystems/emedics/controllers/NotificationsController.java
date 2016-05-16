@@ -20,6 +20,8 @@ public class NotificationsController {
     @Autowired
     NotificationsService notificationsService;
 
+/*
+
     @RequestMapping(value = "/notifications/edit", method = RequestMethod.POST)
     @ResponseBody
     public DashboardNotificationResponse notificationEdit(@RequestBody NotificationsDto request) {
@@ -41,6 +43,9 @@ public class NotificationsController {
         response.setResult(notificationsDto);
         return response;
     }
+*/
+
+
 
     @RequestMapping(value = "/notifications", method = RequestMethod.POST)
     @ResponseBody
@@ -49,6 +54,7 @@ public class NotificationsController {
         List<NotificationsDto> notifications = notificationsService.getAllNotifications().stream()
                 .map(item -> {
                     NotificationsDto notificationsDto = new NotificationsDto();
+                    notificationsDto.setId(item.getId());
                     notificationsDto.setTitle(item.getTitle());
                     notificationsDto.setType(item.getType());
                     notificationsDto.setTimestamp(item.getTimestamp());
@@ -59,6 +65,13 @@ public class NotificationsController {
         response.setResult(notifications);
         response.setState(new StateDto(true, "All notifications"));
         return response;
+    }
+/*
+
+@RequestMapping(value = "/notifications/add", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardNotificationResponse notificationsAdd(@RequestBody NotificationsDto request) {
+        DashboardNotificationResponse response = new DashboardNotificationResponse();
     }
 
     @RequestMapping(value = "/notifications/remove/{id}", method = RequestMethod.GET)
@@ -74,6 +87,10 @@ public class NotificationsController {
 
         return response;
     }
+*/
+
+/*
+
 
     @RequestMapping(value = "notifications/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -94,6 +111,9 @@ public class NotificationsController {
 
         return response;
     }
+
+
+*/
 
 
 }

@@ -25,13 +25,13 @@ public class Patient extends User {
             inverseJoinColumns = @JoinColumn(name = "form_id", referencedColumnName = "id")
     )
 
-    private List<Form> forms;
+    private List<UserForm> forms;
 
-    public List<Form> getList() {
+    public List<UserForm> getList() {
         return forms;
     }
 
-    public void setForms(List<Form> forms) {
+    public void setUserForms(List<UserForm> forms) {
         this.forms = forms;
     }*/
 

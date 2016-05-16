@@ -1,13 +1,13 @@
 package com.terrasystems.emedics.model.mapping;
 
 
-import com.terrasystems.emedics.model.Form;
-import com.terrasystems.emedics.model.dto.FormDto;
+import com.terrasystems.emedics.model.UserForm;
+import com.terrasystems.emedics.model.dto.UserFormDto;
 
 public final class FormMapper {
 
-    static public FormDto toDto(Form entity) {
-        FormDto dto = new FormDto();
+    static public UserFormDto toDto(UserForm entity) {
+        UserFormDto dto = new UserFormDto();
         //dto.setBody(entity.getBody());
 
         dto.setId(entity.getId());
@@ -15,8 +15,8 @@ public final class FormMapper {
         return dto;
     }
 
-    static public Form toEntity(FormDto dto) {
-        Form entity = new Form();
+    static public UserForm toEntity(UserFormDto dto) {
+        UserForm entity = new UserForm();
         //entity.setBody(dto.getBody());
         entity.setId(dto.getId());
         return entity;

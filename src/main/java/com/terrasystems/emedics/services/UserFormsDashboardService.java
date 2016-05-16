@@ -1,23 +1,21 @@
 package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.BlankRepository;
-import com.terrasystems.emedics.dao.FormRepository;
+import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Blank;
-import com.terrasystems.emedics.model.Form;
+import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserFormsDashboardService {
     @Autowired
-    FormRepository formRepository;
+    UserFormRepository userFormRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -25,16 +23,16 @@ public class UserFormsDashboardService {
 
     public void generateFormsForUser(String email) {
         User loadedUser = userRepository.findByEmail(email);
-        List<Form> userForms = new ArrayList<>();
+        List<UserForm> userUserForms = new ArrayList<>();
         List<Blank> blankList = (List<Blank>) blankRepository.findAll();
          blankList.stream().forEach((item) -> {
-             Form form = new Form();
-             form.setBlank(item);
-             form.setUser(loadedUser);
-             form.setData("{}");
-             userForms.add(form);
+             UserForm userForm = new UserForm();
+             userForm.setBlank(item);
+             userForm.setUser(loadedUser);
+             userForm.setData("{}");
+             userUserForms.add(userForm);
          });
-        loadedUser.setForms(userForms);
+        loadedUser.setUserForms(userUserForms);
         userRepository.save(loadedUser);
 
     }
