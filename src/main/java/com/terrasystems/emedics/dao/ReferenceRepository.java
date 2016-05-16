@@ -8,5 +8,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface ReferenceRepository extends CrudRepository<Reference, String>{
-    List<Reference> findByUser(User user);
+    List<Reference> findByUserOrderByPhoneAsc(User user);
 }

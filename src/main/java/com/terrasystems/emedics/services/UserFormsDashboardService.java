@@ -36,12 +36,12 @@ public class UserFormsDashboardService {
         userRepository.save(loadedUser);
 
     }
-    /*@PostConstruct
+
     public void init() {
         List<Blank> blanks = new ArrayList<>();
-        for (int i = 0; i<7; i++) {
+        for (int i = 0; i<3; i++) {
 
-            blanks.add(new Blank("type","asd","[\n" +
+            blanks.add(new Blank("type1","category","[\n" +
                     "{\n" +
                     "\"key\": \"number\",\n" +
                     "\"type\": \"input\",\n" +
@@ -81,9 +81,54 @@ public class UserFormsDashboardService {
                     "       ]\n" +
                     "       }\n" +
                     "}\n" +
-                    "]", "asds", "asds", Integer.toString(i)));
+                    "]", "desc", "name", Integer.toString(i)));
+            blanks.add(new Blank("type2","category","[\n" +
+                    "   {\n" +
+                    "      \"key\": \"number\",\n" +
+                    "      \"type\": \"input\",\n" +
+                    "      \"templateOptions\": {\n" +
+                    "         \"type\": \"text\",\n" +
+                    "         \"label\": \"Number\",\n" +
+                    "         \"placeholder\": \"№\"\n" +
+                    "      }\n" +
+                    "   },\n" +
+                    "   {\n" +
+                    "      \"key\": \"name\",\n" +
+                    "      \"type\": \"input\",\n" +
+                    "      \"templateOptions\": {\n" +
+                    "         \"type\": \"text\",\n" +
+                    "         \"label\": \"Name\",\n" +
+                    "         \"placeholder\": \"Enter name\"\n" +
+                    "      }\n" +
+                    "   },\n" +
+                    "   {\n" +
+                    "      \"key\": \"second_name\",\n" +
+                    "      \"type\": \"input\",\n" +
+                    "      \"templateOptions\": {\n" +
+                    "         \"type\": \"text\",\n" +
+                    "         \"label\": \"Second name\",\n" +
+                    "         \"placeholder\": \"Enter second name\"\n" +
+                    "      }\n" +
+                    "   },\n" +
+                    "   {\n" +
+                    "      \"key\": \"allergies\",\n" +
+                    "      \"type\": \"textarea\",\n" +
+                    "      \"templateOptions\": {\n" +
+                    "         \"label\": \"Allergies to medicines\",\n" +
+                    "         \"placeholder\": \"Allergies to medicines\",\n" +
+                    "         \"description\": \"\"\n" +
+                    "      }\n" +
+                    "   },\n" +
+                    "   {\n" +
+                    "      \"key\": \"hiv_positive\",\n" +
+                    "      \"type\": \"checkbox\",\n" +
+                    "      \"templateOptions\": {\n" +
+                    "         \"label\": \"HIV positive\"\n" +
+                    "      }\n" +
+                    "   }\n" +
+                    "]", "desc", "name", Integer.toString(i)));
         }
         blankRepository.save(blanks);
         System.out.println("added blanks");
-    }*/
+    }
 }

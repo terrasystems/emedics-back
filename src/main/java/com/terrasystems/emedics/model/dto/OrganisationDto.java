@@ -12,6 +12,9 @@ public class OrganisationDto implements Serializable {
     private String fullname;
     private String website;
     private String address;
+    private String type;
+    private String password;
+    private String descr;
 
     public OrganisationDto(){}
 
@@ -20,6 +23,30 @@ public class OrganisationDto implements Serializable {
         this.fullname = fullname;
         this.website = website;
         this.address = address;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 
     public String getName() {

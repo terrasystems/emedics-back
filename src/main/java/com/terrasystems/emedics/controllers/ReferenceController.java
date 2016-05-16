@@ -1,3 +1,4 @@
+/*
 package com.terrasystems.emedics.controllers;
 
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/rest/private/dashboard")
+@RequestMapping(value = "/rest/private/dashboard/patient")
 public class ReferenceController {
 
     @Autowired
@@ -77,3 +78,4 @@ public class ReferenceController {
         return response;
     }
 }
+*/

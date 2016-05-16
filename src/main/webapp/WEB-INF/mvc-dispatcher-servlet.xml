@@ -28,6 +28,13 @@
                   value="${db.password}"/>
     </bean>
 
+    <bean id="liquibaseCommon"
+          class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSourceCommon"/>
+        <property name="changeLog"
+                  value="classpath:liquibase/changelog-master.xml"/>
+    </bean>
+
     <bean id="entityManagerFactoryCommon" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="defaultPersistenceUnit"/>
         <property name="jpaProperties">
@@ -55,12 +62,7 @@
     </bean>
 
     <!--Liqubase update-->
-    <bean id="liquibaseCommon"
-          class="liquibase.integration.spring.SpringLiquibase">
-        <property name="dataSource" ref="dataSourceCommon"/>
-        <property name="changeLog"
-                  value="classpath:liquibase/changelog-master.xml"/>
-    </bean>
+
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${email.host}"/>

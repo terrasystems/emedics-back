@@ -2,6 +2,10 @@ package com.terrasystems.emedics.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +22,8 @@ import java.util.Set;
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
 public  class User implements UserDetails {
     public User(){}
-    public User(String username, String password, String email){
-        this.username = username;
+    public User(String name, String password, String email){
+        this.name = name;
         this.password = password;
         this.email = email;
     }
@@ -33,8 +37,10 @@ public  class User implements UserDetails {
 
 
     @Column(nullable = false)
-    protected String username;
+    protected String name;
 
+    @Column
+    protected String phone;
 
     @Column
     protected Date registrationDate;
@@ -54,12 +60,59 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     protected Set<Reference> reference;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<UserForm> userForms;
 
+    @ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_users",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
+    )
+    private Set<User> users;
+
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY,
+            mappedBy = "users"
+
+    )
+    private Set<User> userRef;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Set<User> getUserRef() {
+        return userRef;
+    }
+
+    public void setUserRef(Set<User> userRef) {
+        this.userRef = userRef;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -163,7 +216,7 @@ public  class User implements UserDetails {
 
     @Transient
     public String getDiscriminatorValue(){
-        DiscriminatorValue val = this.getClass().getAnnotation( DiscriminatorValue.class );
+        DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
 
         return val == null ? null : val.value();
     }
@@ -175,4 +228,41 @@ public  class User implements UserDetails {
         return newPass;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return new EqualsBuilder()
+                .append(enabled, user.enabled)
+                .append(id, user.id)
+                .append(name, user.name)
+                .append(phone, user.phone)
+                .append(registrationDate, user.registrationDate)
+                .append(password, user.password)
+                .append(email, user.email)
+                .append(expires, user.expires)
+                .append(roles, user.roles)
+                .append(reference, user.reference)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(phone)
+                .append(registrationDate)
+                .append(password)
+                .append(email)
+                .append(expires)
+                .append(enabled)
+                .append(roles)
+                .append(reference)
+                .toHashCode();
+    }
 }

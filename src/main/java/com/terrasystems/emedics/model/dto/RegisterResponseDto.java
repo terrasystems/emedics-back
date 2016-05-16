@@ -6,6 +6,7 @@ public class RegisterResponseDto extends AbstractResponse {
     private StateDto state;
     private UserDto user;
     private String token;
+    private OrganisationDto organisation;
 
     public RegisterResponseDto(UserDto user, String token, StateDto state) {
         this.state = state;
@@ -22,6 +23,14 @@ public class RegisterResponseDto extends AbstractResponse {
     @Override
     public void setState(StateDto state) {
         this.state = state;
+    }
+
+    public OrganisationDto getOrganisation() {
+        return organisation;
+    }
+
+    public void setOrganisation(OrganisationDto organisation) {
+        this.organisation = organisation;
     }
 
     public String getToken() {
