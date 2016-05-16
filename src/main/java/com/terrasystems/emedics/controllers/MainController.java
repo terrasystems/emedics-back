@@ -139,7 +139,7 @@ public class MainController  {
         stuff.add(new Stuff("Jenifer Lopez", "1234", "babki@gmail.com"));
         stuff.add(new Stuff("Nadegda Babkina", "1234", "babki@gmail.com"));
         stuff.add(new Stuff("Selin Page", "1234", "babki@gmail.com"));
-        Organization org = organizationRepository.findOne("e8e6ab40-752f-4ba1-a1f6-a151dd3bfa9b");
+        Organization org = organizationRepository.findOne("88f7144a-2976-41e5-a157-e0ccf9845468");
         org.setStuff(stuff);
         stuff.get(0).setOrganization(org);
         stuff.get(1).setOrganization(org);
@@ -156,6 +156,6 @@ public class MainController  {
 
 
 
-        return stuffRepository.findByNameContainingOrEmailContainingAndAdminIsTrue(search,search);
+        return stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search);
     }
 }

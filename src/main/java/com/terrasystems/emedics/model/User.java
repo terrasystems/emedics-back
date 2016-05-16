@@ -67,19 +67,20 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Form> forms;
 
-    @ManyToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.LAZY)
+
+    @ManyToMany(
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.LAZY,
+            mappedBy = "userRef"
+
+    )
+    private Set<User> users;
+
+    @ManyToMany(cascade = {CascadeType.ALL} , fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_users",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
-    )
-    private Set<User> users;
-
-    @ManyToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.LAZY,
-            mappedBy = "users"
-
     )
     private Set<User> userRef;
 

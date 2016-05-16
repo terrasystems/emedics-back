@@ -72,5 +72,14 @@ public class PatientReferencesController {
         return response;
     }
 
+    @RequestMapping(value = "/references/create", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardReferenceResponse createReference(@RequestBody String email) {
+        StateDto state = referenceService.createReference(email);
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        response.setState(state);
+        return response;
+    }
+
 
 }
