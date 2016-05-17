@@ -5,28 +5,30 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "notifications")
-public class Notifications {
+public class Notification {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "id", unique = true)
     private String id;
 
-    @Column(name = "timestamp")
-    private String timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date")
+    private Date date;
 
     @Column(name = "readtype")
-    private String readtype;
+    private Boolean readtype;
 
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id")
     private User fromUser;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id")
     private User toUser;
 
@@ -40,18 +42,38 @@ public class Notifications {
     @Type(type = "text")
     private String text;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_form_id")
+    private UserForm userForm;
 
-    public Notifications() {
+
+    public Notification() {
     }
 
-    public Notifications(String timestamp, String readtype, User fromUser, User toUser, String type, String title, String text) {
-        this.timestamp = timestamp;
+    public Notification(Date date, boolean readtype, User fromUser, User toUser, String type, String title, String text) {
+        this.date = date;
         this.readtype = readtype;
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.type = type;
         this.title = title;
         this.text = text;
+    }
+
+    public UserForm getUserForm() {
+        return userForm;
+    }
+
+    public void setUserForm(UserForm userForm) {
+        this.userForm = userForm;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getId() {
@@ -62,19 +84,11 @@ public class Notifications {
         this.id = id;
     }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getReadtype() {
+    public Boolean getReadtype() {
         return readtype;
     }
 
-    public void setReadtype(String readtype) {
+    public void setReadtype(boolean readtype) {
         this.readtype = readtype;
     }
 

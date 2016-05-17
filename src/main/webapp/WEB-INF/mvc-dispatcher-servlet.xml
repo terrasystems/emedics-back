@@ -26,6 +26,7 @@
                   value="${db.username}"/>
         <property name="password"
                   value="${db.password}"/>
+
     </bean>
 
     <bean id="liquibaseCommon"
@@ -43,6 +44,16 @@
             </props>
         </property>
     </bean>
+
+
+
+    <bean id="transactionManagerCommon" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryCommon"/>
+    </bean>
+
+    <!--<bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryTemplate"/>
+    </bean>
     <bean id="entityManagerFactoryTemplate" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="templatePersistenceUnit"/>
         <property name="jpaProperties">
@@ -50,16 +61,7 @@
                 <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
             </props>
         </property>
-    </bean>
-
-
-    <bean id="transactionManagerCommon" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactoryCommon"/>
-    </bean>
-
-    <bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactoryTemplate"/>
-    </bean>
+    </bean>-->
 
     <!--Liqubase update-->
 
@@ -78,7 +80,7 @@
         </property>
   </bean>
     <tx:annotation-driven transaction-manager="transactionManagerCommon"/>
-    <tx:annotation-driven transaction-manager="transactionManagerTemplate"/>
+    <!--<tx:annotation-driven transaction-manager="transactionManagerTemplate"/>-->
 
 
 

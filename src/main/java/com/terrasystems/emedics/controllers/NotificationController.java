@@ -1,24 +1,21 @@
 package com.terrasystems.emedics.controllers;
 
-import com.terrasystems.emedics.model.Notifications;
 import com.terrasystems.emedics.model.dto.DashboardNotificationResponse;
 import com.terrasystems.emedics.model.dto.DashboardNotificationsRequest;
-import com.terrasystems.emedics.model.dto.NotificationsDto;
+import com.terrasystems.emedics.model.dto.NotificationDto;
 import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.services.NotificationsService;
+import com.terrasystems.emedics.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/rest/private/dashboard")
-public class NotificationsController {
+public class NotificationController {
 
     @Autowired
-    NotificationsService notificationsService;
+    NotificationService notificationsService;
 
 /*
 
@@ -26,7 +23,7 @@ public class NotificationsController {
     @ResponseBody
     public DashboardNotificationResponse notificationEdit(@RequestBody NotificationsDto request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        Notifications notifications = notificationsService.editNotifications(request);
+        Notification notifications = notificationsService.editNotifications(request);
         List<NotificationsDto> notificationsDto = new ArrayList<>();
         StateDto state = new StateDto();
         if(notifications == null) {
@@ -51,19 +48,15 @@ public class NotificationsController {
     @ResponseBody
     public DashboardNotificationResponse notificationsGetAll(@RequestBody DashboardNotificationsRequest request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        List<NotificationsDto> notifications = notificationsService.getAllNotifications().stream()
-                .map(item -> {
-                    NotificationsDto notificationsDto = new NotificationsDto();
-                    notificationsDto.setId(item.getId());
-                    notificationsDto.setTitle(item.getTitle());
-                    notificationsDto.setType(item.getType());
-                    notificationsDto.setTimestamp(item.getTimestamp());
-                    notificationsDto.setReadtype(item.getReadtype());
-                    notificationsDto.setText(item.getText());
-                    return notificationsDto;
-                }).collect(Collectors.toList());
+        StateDto state = new StateDto(true,"Your notifications");
+        List<NotificationDto> notifications = notificationsService.getReceived();
+        if (notifications == null) {
+            state.setValue(false);
+            state.setMessage("Can't get notifications");
+        }
+
         response.setResult(notifications);
-        response.setState(new StateDto(true, "All notifications"));
+        response.setState(state);
         return response;
     }
 /*
@@ -79,10 +72,10 @@ public class NotificationsController {
     public DashboardNotificationResponse notificationsRemove(@PathVariable String id) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
         if(notificationsService.getNotificationsById(id) == null) {
-            response.setState(new StateDto(false, "Notifications doesn't exist"));
+            response.setState(new StateDto(false, "Notification doesn't exist"));
         } else {
             notificationsService.removeNotifications(id);
-            response.setState(new StateDto(true, "Notifications remove"));
+            response.setState(new StateDto(true, "Notification remove"));
         }
 
         return response;
@@ -96,15 +89,15 @@ public class NotificationsController {
     @ResponseBody
     public DashboardNotificationResponse notificationsGetById(@PathVariable String id) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        Notifications notifications = notificationsService.getNotificationsById(id);
+        Notification notifications = notificationsService.getNotificationsById(id);
 
         if(notifications != null) {
             NotificationsDto  notificationsDto = new NotificationsDto(notifications.getId(), notifications.getTimestamp(), notifications.getReadtype(),
                     notifications.getType(), notifications.getTitle(), notifications.getText());
-            response.setState(new StateDto(true, "Notifications by id"));
+            response.setState(new StateDto(true, "Notification by id"));
             response.setResult(notificationsDto);
         } else {
-            response.setState(new StateDto(false, "Notifications with such id doesn't exist"));
+            response.setState(new StateDto(false, "Notification with such id doesn't exist"));
             response.setResult(null);
         }
 

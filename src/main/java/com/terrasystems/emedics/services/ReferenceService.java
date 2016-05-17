@@ -1,6 +1,5 @@
 package com.terrasystems.emedics.services;
 
-import com.terrasystems.emedics.model.Reference;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 

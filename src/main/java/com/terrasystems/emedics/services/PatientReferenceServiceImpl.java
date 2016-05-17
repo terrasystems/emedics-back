@@ -51,9 +51,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         return result;
     }
 
+
     @Override
     public StateDto addReferences(Set<String> references) {
-        Patient current = (Patient) userRepository.findByEmail(getPrincipals());
+        User current =  userRepository.findByEmail(getPrincipals());
         Set<User> refs = (Set<User>) userRepository.findAll(references);
         Set<User> currentRefs = current.getUserRef();
         currentRefs.addAll(refs);
@@ -65,7 +66,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     @Override
     public Iterable<ReferenceDto> getAllReferences() {
         ReferenceConverter converter = new ReferenceConverter();
-        Patient current = (Patient) userRepository.findByEmail(getPrincipals());
+        User current = (Patient) userRepository.findByEmail(getPrincipals());
         Set<User> userRefs = current.getUserRef();
         List<String> doctors = userRefs.stream()
                 .map(user -> {
@@ -78,7 +79,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     public StateDto removeReferences(Set<String> refs) throws Exception{
-        Patient current = (Patient) userRepository.findByEmail(getPrincipals());
+        User current = (Patient) userRepository.findByEmail(getPrincipals());
         StateDto state = new StateDto();
         Set<User> removed =  current.getUserRef().stream()
                 .filter(user -> !refs.contains(user.getId()))

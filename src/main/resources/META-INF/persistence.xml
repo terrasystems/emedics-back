@@ -10,9 +10,11 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL92Dialect"/>
             <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/emedics"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.username" value="postgres"/>
-            <property name="hibernate.connection.password" value="postgres"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.connection.username" value="minilisweb"/>
+            <property name="hibernate.connection.password" value="X2y6L8g5"/>
+            <!--<property name="hibernate.connection.username" value="postgres"/>
+            <property name="hibernate.connection.password" value="postgres"/>-->
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
             <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
