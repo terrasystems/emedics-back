@@ -8,6 +8,7 @@ import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
