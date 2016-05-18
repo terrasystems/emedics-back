@@ -49,7 +49,7 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(Date date, boolean readtype, User fromUser, User toUser, String type, String title, String text) {
+    public Notification(Date date, Boolean readtype, User fromUser, User toUser, String type, String title, String text) {
         this.date = date;
         this.readtype = readtype;
         this.fromUser = fromUser;
@@ -58,6 +58,8 @@ public class Notification {
         this.title = title;
         this.text = text;
     }
+
+
 
     public UserForm getUserForm() {
         return userForm;
@@ -87,7 +89,7 @@ public class Notification {
         return readtype;
     }
 
-    public void setReadtype(boolean readtype) {
+    public void setReadtype(Boolean readtype) {
         this.readtype = readtype;
     }
 

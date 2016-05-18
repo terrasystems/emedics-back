@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         NotificationMapper mapper = new NotificationMapper();
         User current = userRepository.findByEmail(getPrincipals());
         List<NotificationDto> dtos = mapper
-                .fromNotifications(notificationRepository.findByToUser_Id(current.getId()));
+                .fromNotifications(notificationRepository.findByToUser_IdAndReadtypeNull(current.getId()));
         return dtos;
     }
 
@@ -43,7 +43,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         NotificationMapper mapper = new NotificationMapper();
         User current = userRepository.findByEmail(getPrincipals());
         List<NotificationDto> dtos = mapper
-                .fromNotifications(notificationRepository.findByToUser_Id(current.getId()));
+                .fromNotifications(notificationRepository.findByFromUser_Id(current.getId()));
         return dtos;
     }
 
@@ -75,6 +75,20 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         StateDto state = new StateDto();
         User current = userRepository.findByEmail(getPrincipals());
         Notification notification = notificationRepository.findOne(id);
+
+        if (current.getDiscriminatorValue().equals("patient")) {
+            UserForm form = notification.getUserForm();
+            UserForm userForm = userFormRepository.findByUser_IdAndBlank_Id(form.getUser().getId(),form.getBlank().getId());
+            if (!userForm.isActive()) {
+                userForm.setActive(true);
+            }
+            userForm.setData(form.getData());
+        }
+
+
+
+
+
         UserForm userForm = notification.getUserForm();
         SharedForm sharedForm = sharedFormRepository.findByBlank_IdAndPatient_Id(userForm.getBlank().getId(), userForm.getUser().getId());
         if (sharedForm == null) {
@@ -83,7 +97,6 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
             sharedForm.setBlank(userForm.getBlank());
             sharedForm.setPatient((Patient) userRepository.findOne(notification.getFromUser().getId()));
             sharedForm.setData(userForm.getData());
-
         } else {
             sharedForm.setData(userForm.getData());
         }

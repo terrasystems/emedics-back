@@ -51,7 +51,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactoryCommon"/>
     </bean>
 
-    <!--<bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactoryTemplate"/>
     </bean>
     <bean id="entityManagerFactoryTemplate" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
@@ -61,7 +61,7 @@
                 <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
             </props>
         </property>
-    </bean>-->
+    </bean>
 
     <!--Liqubase update-->
 
@@ -80,7 +80,7 @@
         </property>
   </bean>
     <tx:annotation-driven transaction-manager="transactionManagerCommon"/>
-    <!--<tx:annotation-driven transaction-manager="transactionManagerTemplate"/>-->
+    <tx:annotation-driven transaction-manager="transactionManagerTemplate"/>
 
 
 

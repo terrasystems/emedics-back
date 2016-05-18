@@ -10,7 +10,7 @@ public class NotificationDto implements Serializable {
     private static final long serialVersionUID = -920492853856119971L;
     private String id;
     private Date date;
-    private boolean readtype;
+    private Boolean readtype;
     private String type;
     private String title;
     private String text;
@@ -21,7 +21,7 @@ public class NotificationDto implements Serializable {
     public NotificationDto() {
     }
 
-    public NotificationDto(Date date, boolean readtype, String type, String title, String text, String from, String to, String userForm) {
+    public NotificationDto(Date date, Boolean readtype, String type, String title, String text, String from, String to, String userForm) {
         this.date = date;
         this.readtype = readtype;
         this.type = type;
@@ -97,11 +97,11 @@ public class NotificationDto implements Serializable {
         this.date = date;
     }
 
-    public boolean isReadtype() {
+    public Boolean getReadtype() {
         return readtype;
     }
 
-    public void setReadtype(boolean readtype) {
+    public void setReadtype(Boolean readtype) {
         this.readtype = readtype;
     }
 

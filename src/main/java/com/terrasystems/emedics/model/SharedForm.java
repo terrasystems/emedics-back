@@ -3,6 +3,7 @@ package com.terrasystems.emedics.model;
 import javax.persistence.*;
 
 @Entity
+//@Table(name = "shared_forms")
 public class SharedForm extends BaseForm {
 
     @ManyToOne(fetch = FetchType.LAZY)

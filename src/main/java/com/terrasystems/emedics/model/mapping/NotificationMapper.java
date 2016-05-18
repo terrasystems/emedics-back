@@ -30,12 +30,13 @@ public class NotificationMapper {
         dto.setFrom(notification.getFromUser().getId());
         dto.setTo(notification.getToUser().getId());
         dto.setReadtype(notification.getReadtype());
+        dto.setUserForm(notification.getUserForm().getId());
         return dto;
     };
 
     Function<NotificationDto,Notification> fromDto = (notificationDto) -> {
         Notification notification = new Notification();
-        notification.setReadtype(notificationDto.isReadtype());
+        notification.setReadtype(notificationDto.getReadtype());
         notification.setType(notificationDto.getType());
         notification.setDate(new Date());
         notification.setText(notificationDto.getText());
@@ -58,7 +59,7 @@ public class NotificationMapper {
 
     public Notification fromDto(NotificationDto dto) {
         Notification notification = new Notification();
-        notification.setReadtype(dto.isReadtype());
+        notification.setReadtype(dto.getReadtype());
         notification.setType(dto.getType());
         notification.setDate(new Date());
         notification.setText(dto.getText());
