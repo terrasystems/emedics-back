@@ -42,7 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/rest/public/**").permitAll()
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
-                //.antMatchers("/rest/private/dashboard/patient/**").hasAnyRole("PATIENT", "DOCTOR")
                 .antMatchers("/rest/private/**").hasAnyRole("PATIENT","DOCTOR")
                 .antMatchers(HttpMethod.GET, "/rest/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole()

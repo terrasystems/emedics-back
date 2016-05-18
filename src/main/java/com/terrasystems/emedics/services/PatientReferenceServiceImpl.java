@@ -35,20 +35,30 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     public List<ReferenceDto> findAllReferencesByCriteria(String search) {
-        Patient currentUser = (Patient) userRepository.findByEmail(getPrincipals());
+        User currentUser = userRepository.findByEmail(getPrincipals());
         Set<User> currentRefs = currentUser.getUserRef();
         ReferenceConverter converter = new ReferenceConverter();
         List<ReferenceDto> result = new ArrayList<>();
-        List<Doctor> doctorRefs =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search).stream()
-                .filter(doctor -> !currentRefs.contains(doctor))
-                .collect(Collectors.toList());
-        List<Stuff> stuffRef =  stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search).stream()
-                .filter((stuff -> !currentRefs.contains(stuff)))
-                .collect(Collectors.toList());
-        result.addAll(converter.convertFromDoctors(doctorRefs));
-        result.addAll(converter.convertFromStuff(stuffRef));
 
-        return result;
+        if(currentUser.getDiscriminatorValue().equals("patient")) {
+            List<Doctor> doctorRefs = doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search).stream()
+                    .filter(doctor -> !currentRefs.contains(doctor))
+                    .collect(Collectors.toList());
+            List<Stuff> stuffRef = stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search).stream()
+                    .filter((stuff -> !currentRefs.contains(stuff)))
+                    .collect(Collectors.toList());
+            result.addAll(converter.convertFromDoctors(doctorRefs));
+            result.addAll(converter.convertFromStuff(stuffRef));
+
+            return result;
+        } else {
+            List<Stuff> stuffRef = stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search, search).stream()
+                    .filter((stuff -> !currentRefs.contains(stuff)))
+                    .collect(Collectors.toList());
+            result.addAll(converter.convertFromStuff(stuffRef));
+
+            return result;
+        }
     }
 
 
