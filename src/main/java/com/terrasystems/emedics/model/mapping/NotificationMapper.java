@@ -57,8 +57,13 @@ public class NotificationMapper {
     }
 
     public Notification fromDto(NotificationDto dto) {
-        return (Notification) fromDto;
-
+        Notification notification = new Notification();
+        notification.setReadtype(dto.isReadtype());
+        notification.setType(dto.getType());
+        notification.setDate(new Date());
+        notification.setText(dto.getText());
+        notification.setTitle(dto.getTitle());
+        return notification;
     }
 
 }

@@ -1,9 +1,6 @@
 package com.terrasystems.emedics.controllers;
 
-import com.terrasystems.emedics.model.dto.DashboardNotificationResponse;
-import com.terrasystems.emedics.model.dto.DashboardNotificationsRequest;
-import com.terrasystems.emedics.model.dto.NotificationDto;
-import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,31 +13,6 @@ public class NotificationController {
 
     @Autowired
     NotificationService notificationsService;
-
-/*
-
-    @RequestMapping(value = "/notifications/edit", method = RequestMethod.POST)
-    @ResponseBody
-    public DashboardNotificationResponse notificationEdit(@RequestBody NotificationsDto request) {
-        DashboardNotificationResponse response = new DashboardNotificationResponse();
-        Notification notifications = notificationsService.editNotifications(request);
-        List<NotificationsDto> notificationsDto = new ArrayList<>();
-        StateDto state = new StateDto();
-        if(notifications == null) {
-            state.setMessage("error");
-            state.setValue(false);
-        } else {
-            state.setMessage("Edited");
-            state.setValue(true);
-            notificationsDto.add(new NotificationsDto(notifications.getId(), notifications.getTimestamp(), notifications.getReadtype(),
-                    notifications.getType(), notifications.getTitle(), notifications.getText()));
-        }
-
-        response.setState(state);
-        response.setResult(notificationsDto);
-        return response;
-    }
-*/
 
 
 
@@ -59,54 +31,20 @@ public class NotificationController {
         response.setState(state);
         return response;
     }
-/*
-
-@RequestMapping(value = "/notifications/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/notifications/send", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardNotificationResponse notificationsAdd(@RequestBody NotificationsDto request) {
+    public DashboardNotificationResponse notificationsSend(@RequestBody DashboardNotificationsRequest request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-    }
-
-    @RequestMapping(value = "/notifications/remove/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public DashboardNotificationResponse notificationsRemove(@PathVariable String id) {
-        DashboardNotificationResponse response = new DashboardNotificationResponse();
-        if(notificationsService.getNotificationsById(id) == null) {
-            response.setState(new StateDto(false, "Notification doesn't exist"));
-        } else {
-            notificationsService.removeNotifications(id);
-            response.setState(new StateDto(true, "Notification remove"));
-        }
-
+        StateDto status;
+        status = notificationsService.sendNotification(request.getNotification());
+        response.setState(status);
         return response;
     }
-*/
-
-/*
-
-
-    @RequestMapping(value = "notifications/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/notifications/accept/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public DashboardNotificationResponse notificationsGetById(@PathVariable String id) {
+    public DashboardNotificationResponse notificationAccept(@PathVariable String id) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        Notification notifications = notificationsService.getNotificationsById(id);
-
-        if(notifications != null) {
-            NotificationsDto  notificationsDto = new NotificationsDto(notifications.getId(), notifications.getTimestamp(), notifications.getReadtype(),
-                    notifications.getType(), notifications.getTitle(), notifications.getText());
-            response.setState(new StateDto(true, "Notification by id"));
-            response.setResult(notificationsDto);
-        } else {
-            response.setState(new StateDto(false, "Notification with such id doesn't exist"));
-            response.setResult(null);
-        }
-
-
+        response.setState(notificationsService.accept(id));
         return response;
     }
-
-
-*/
-
-
 }

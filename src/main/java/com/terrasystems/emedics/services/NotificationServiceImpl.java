@@ -2,11 +2,10 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.dao.NotificationRepository;
+import com.terrasystems.emedics.dao.SharedFormRepository;
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Notification;
-import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.UserForm;
+import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.NotificationDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.mapping.NotificationMapper;
@@ -27,13 +26,15 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
     UserRepository userRepository;
     @Autowired
     UserFormRepository userFormRepository;
+    @Autowired
+    SharedFormRepository sharedFormRepository;
 
     @Override
     public List<NotificationDto> getReceived() {
         NotificationMapper mapper = new NotificationMapper();
         User current = userRepository.findByEmail(getPrincipals());
         List<NotificationDto> dtos = mapper
-                .fromNotifications(notificationRepository.findByFromUser_Id(current.getId()));
+                .fromNotifications(notificationRepository.findByToUser_Id(current.getId()));
         return dtos;
     }
 
@@ -71,7 +72,27 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
 
     @Override
     public StateDto accept(String id) {
-        return null;
+        StateDto state = new StateDto();
+        User current = userRepository.findByEmail(getPrincipals());
+        Notification notification = notificationRepository.findOne(id);
+        UserForm userForm = notification.getUserForm();
+        SharedForm sharedForm = sharedFormRepository.findByBlank_IdAndPatient_Id(userForm.getBlank().getId(), userForm.getUser().getId());
+        if (sharedForm == null) {
+            sharedForm = new SharedForm();
+            sharedForm.setUser(current);
+            sharedForm.setBlank(userForm.getBlank());
+            sharedForm.setPatient((Patient) userRepository.findOne(notification.getFromUser().getId()));
+            sharedForm.setData(userForm.getData());
+
+        } else {
+            sharedForm.setData(userForm.getData());
+        }
+        sharedFormRepository.save(sharedForm);
+        notification.setReadtype(true);
+        notificationRepository.save(notification);
+        state.setMessage("Notification Accepted");
+        state.setValue(true);
+        return state;
     }
 
     @Override

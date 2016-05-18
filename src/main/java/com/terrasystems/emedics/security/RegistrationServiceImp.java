@@ -28,7 +28,7 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
     private static final String ROLE_STUFF = "ROLE_STUFF_ADMIN";
-    private static final String USER_EXIST = "User with such password is already exist";
+    private static final String USER_EXIST = "User with such email addres is already exist";
     public static final String REGISTERED = "Registered";
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
     private final TokenUtil tokenUtil;
@@ -165,8 +165,15 @@ public class RegistrationServiceImp implements RegistrationService {
     @Override
     public StateDto resetPassword(String email) {
         User loadedUser = userRepository.findByEmail(email);
+        StateDto state = new StateDto();
+        if (loadedUser == null) {
+
+            state.setMessage("User with such email address doesn't exist");
+            state.setValue(false);
+            return state;
+        }
         String newpass = RandomStringUtils.randomAscii(7);
-        StateDto state = mailService.sendResetPasswordMail(email, newpass);
+        state = mailService.sendResetPasswordMail(email, newpass);
         if (state.isValue()){
             loadedUser.resetPassword(newpass);
             userRepository.save(loadedUser);

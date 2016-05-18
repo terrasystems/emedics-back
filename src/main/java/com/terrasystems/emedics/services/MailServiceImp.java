@@ -49,9 +49,9 @@ public class MailServiceImp implements MailService {
     public StateDto sendResetPasswordMail(String address, String newPass) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
-        message.setSubject("test");
-        message.setText(newPass);
-        message.setFrom("minilis@minilis.org");
+        message.setSubject("Password Reset");
+        message.setText("Your new password is:"+" " + newPass);
+        message.setFrom("admin@emedics.org");
         try {
             mailSender.send(message);
         } catch (MailException ex) {
