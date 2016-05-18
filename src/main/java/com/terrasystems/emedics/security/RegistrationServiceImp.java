@@ -28,8 +28,8 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
     private static final String ROLE_STUFF = "ROLE_STUFF_ADMIN";
-    private static final String USER_EXIST = "User with such email addres is already exist";
-    public static final String REGISTERED = "Registered";
+    private static final String USER_EXIST = "User with such email address is already exist";
+    public static final String REGISTERED = "We send the letter with activation cod on your email address. Please activate your account.";
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
     private final TokenUtil tokenUtil;
     @Autowired
