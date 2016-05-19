@@ -2,11 +2,14 @@ package com.terrasystems.emedics.model.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = 1509556509931292216L;
+    private String id;
     private String type;
     private String email;
 
@@ -21,6 +24,13 @@ public class UserDto implements Serializable {
         this.username = username;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getType() {
         return type;
@@ -57,25 +67,39 @@ public class UserDto implements Serializable {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("type", type)
                 .add("email", email)
                 .add("password", password)
                 .add("username", username)
-                .add("type", type)
                 .toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
         if (o == null || getClass() != o.getClass()) return false;
+
         UserDto userDto = (UserDto) o;
-        return Objects.equal(email, userDto.email) &&
-                Objects.equal(password, userDto.password) &&
-                Objects.equal(username, userDto.username);
+
+        return new EqualsBuilder()
+                .append(id, userDto.id)
+                .append(type, userDto.type)
+                .append(email, userDto.email)
+                .append(password, userDto.password)
+                .append(username, userDto.username)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(email, password, username);
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(type)
+                .append(email)
+                .append(password)
+                .append(username)
+                .toHashCode();
     }
 }

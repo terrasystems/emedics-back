@@ -24,11 +24,12 @@ public class NotificationMapper {
 
     Function<Notification, NotificationDto> toDto = (notification) -> {
         NotificationDto dto = new NotificationDto();
+        UserMapper userMapper = UserMapper.getInstance();
         dto.setType(notification.getType());
         dto.setId(notification.getId());
         dto.setDate(notification.getDate());
-        dto.setFromId(notification.getFromUser().getId());
-        dto.setToId(notification.getToUser().getId());
+        dto.setFromUser(userMapper.toDTO(notification.getFromUser()));
+        dto.setToUser(userMapper.toDTO(notification.getToUser()));
         dto.setReadtype(notification.getReadtype());
         dto.setUserForm(notification.getUserForm().getId());
         return dto;

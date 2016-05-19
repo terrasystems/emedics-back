@@ -14,21 +14,21 @@ public class NotificationDto implements Serializable {
     private String type;
     private String title;
     private String text;
-    private String fromId;
-    private String toId;
+    private UserDto fromUser;
+    private UserDto toUser;
     private String userForm;
 
     public NotificationDto() {
     }
 
-    public NotificationDto(Date date, Boolean readtype, String type, String title, String text, String fromId, String toId, String userForm) {
+    public NotificationDto(Date date, Boolean readtype, String type, String title, String text, UserDto fromUser, UserDto toUser, String userForm) {
         this.date = date;
         this.readtype = readtype;
         this.type = type;
         this.title = title;
         this.text = text;
-        this.fromId = fromId;
-        this.toId = toId;
+        this.fromUser = fromUser;
+        this.toUser = toUser;
         this.userForm = userForm;
     }
 
@@ -72,22 +72,21 @@ public class NotificationDto implements Serializable {
         this.text = text;
     }
 
-    public String getFromId() {
-        return fromId;
+    public UserDto getFromUser() {
+        return fromUser;
     }
 
-    public void setFromId(String fromId) {
-        this.fromId = fromId;
+    public void setFromUser(UserDto fromUser) {
+        this.fromUser = fromUser;
     }
 
-    public String getToId() {
-        return toId;
+    public UserDto getToUser() {
+        return toUser;
     }
 
-    public void setToId(String toId) {
-        this.toId = toId;
+    public void setToUser(UserDto toUser) {
+        this.toUser = toUser;
     }
-
 
     public Date getDate() {
         return date;
@@ -114,8 +113,9 @@ public class NotificationDto implements Serializable {
                 .add("type", type)
                 .add("title", title)
                 .add("text", text)
-                .add("fromId", fromId)
-                .add("toId", toId)
+                .add("fromUser", fromUser)
+                .add("toUser", toUser)
+                .add("userForm", userForm)
                 .toString();
     }
 }

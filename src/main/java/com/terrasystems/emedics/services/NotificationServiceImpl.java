@@ -59,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         User current = userRepository.findByEmail(getPrincipals());
         Notification notification;
         UserForm form = userFormRepository.findOne(notificationToSend.getUserForm());
-        User user = userRepository.findOne(notificationToSend.getToId());
+        User user = userRepository.findOne(notificationToSend.getToUser().getId());
         notification = mapper.fromDto(notificationToSend);
         notification.setFromUser(current);
         notification.setToUser(user);
