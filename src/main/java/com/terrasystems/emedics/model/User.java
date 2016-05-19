@@ -233,7 +233,7 @@ public  class User implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof User)) return false;
 
         User user = (User) o;
 
@@ -246,8 +246,6 @@ public  class User implements UserDetails {
                 .append(password, user.password)
                 .append(email, user.email)
                 .append(expires, user.expires)
-                .append(roles, user.roles)
-                .append(reference, user.reference)
                 .isEquals();
     }
 
@@ -262,8 +260,6 @@ public  class User implements UserDetails {
                 .append(email)
                 .append(expires)
                 .append(enabled)
-                .append(roles)
-                .append(reference)
                 .toHashCode();
     }
 }

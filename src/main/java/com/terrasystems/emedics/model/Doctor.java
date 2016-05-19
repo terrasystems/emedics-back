@@ -1,6 +1,9 @@
 package com.terrasystems.emedics.model;
 
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -62,5 +65,27 @@ public class Doctor extends User {
         super(username, password, email);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (!(o instanceof Doctor)) return false;
+
+        Doctor doctor = (Doctor) o;
+
+        return new EqualsBuilder()
+                .appendSuper(super.equals(o))
+                .append(type, doctor.type)
+                .append(clinic, doctor.clinic)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .appendSuper(super.hashCode())
+                .append(type)
+                .append(clinic)
+                .toHashCode();
+    }
 }

@@ -40,7 +40,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         ReferenceConverter converter = new ReferenceConverter();
         List<ReferenceDto> result = new ArrayList<>();
 
-        if(currentUser.getDiscriminatorValue().equals("patient")) {
+        if (currentUser.getDiscriminatorValue().equals("patient")) {
             List<Doctor> doctorRefs = doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search).stream()
                     .filter(doctor -> !currentRefs.contains(doctor))
                     .collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     @Override
     public StateDto addReferences(Set<String> references) {
         User current = userRepository.findByEmail(getPrincipals());
-        Set<User> refs = userRepository.findAll(references);
+        List<User> refs = userRepository.findAll(references);
         Set<User> currentRefs = current.getUserRef();
         currentRefs.addAll(refs);
         current.setUserRef(currentRefs);
@@ -77,13 +77,13 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         ReferenceConverter converter = new ReferenceConverter();
         User current = userRepository.findByEmail(getPrincipals());
         Set<User> userRefs = current.getUserRef();
-        List<String> doctors = userRefs.stream()
+        List<String> refs = userRefs.stream()
                 .map(user -> {
                     return user.getId();
                 }).collect(Collectors.toList());
-        List<Doctor> doctorList = (List<Doctor>) doctorRepository.findAll(doctors);
+        List<User> refsList = (List<User>) userRepository.findAll(refs);
 
-        return converter.convertFromDoctors(doctorList);
+        return converter.convertFromUsers(refsList);
     }
 
     @Override
