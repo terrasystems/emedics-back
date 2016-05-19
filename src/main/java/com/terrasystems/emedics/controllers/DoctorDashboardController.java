@@ -8,7 +8,6 @@ import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -17,61 +16,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/rest/private/dashboard/patient")
-public class DashboardController {
+@RequestMapping(value = "/rest/private/dashboard/doctor")
+public class DoctorDashboardController {
     @Autowired
     UserFormRepository userFormRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
-    DashboardService patientDashboardService;
+    DashboardService doctorDashboardService;
 
-    @RequestMapping(value = "/forms/active", method = RequestMethod.POST)
-    @ResponseBody
-    public ListDashboardUserFormsResponse userFormsGetActive(@RequestBody DashboardUserFormsRequest request) {
-        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
-        response.setState(new StateDto(true, "Active forms"));
-        ObjectMapper mapper = new ObjectMapper();
-        List<UserFormDto> list = patientDashboardService.getActiveUserForms().stream()
-                .map(item -> {
-                    UserFormDto form = new UserFormDto();
-                    BlankDto blank = new BlankDto();
-                    blank.setDescr(item.getBlank().getDescr());
-                    blank.setName(item.getBlank().getName());
-                    blank.setBody(null);
-                    blank.setCategory(item.getBlank().getCategory());
-                    blank.setNumber(item.getBlank().getNumber());
-                    blank.setType(item.getBlank().getType());
-                    form.setBlank(blank);
-                    form.setActive(item.isActive());
-                    form.setId(item.getId());
-                    try {
-                        form.setData(mapper.readTree(item.getData()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return form;
-                })
-                .collect(Collectors.toList());
-        response.setResult(list);
-
-        return response ;
-    }
-
-    @RequestMapping(value = "/forms/active/modify", method = RequestMethod.POST)
-    @ResponseBody
-    public ListDashboardUserFormsResponse userFormsActiveModify(@RequestBody DashboardUserFormsRequest req) {
-
-
-        return patientDashboardService.changeActiveUserForms(req.getCriteria().getList());
-
-    }
     @RequestMapping(value = "/forms", method = RequestMethod.POST)
     @ResponseBody
     public ListDashboardUserFormsResponse userFormsGetAll(@RequestBody DashboardUserFormsRequest request) {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         ObjectMapper mapper = new ObjectMapper();
-        List<UserFormDto> userForms = patientDashboardService.getAllUserForms().stream()
+        List<UserFormDto> userForms = doctorDashboardService.getAllUserForms().stream()
                 .map(item -> {
                     UserFormDto userForm = new UserFormDto();
                     BlankDto blank = new BlankDto();
@@ -99,7 +58,7 @@ public class DashboardController {
     @ResponseBody
     public ListDashboardUserFormsResponse userFormsGetById(@PathVariable String id) throws IOException {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
-        UserForm userForm = patientDashboardService.getUserFormById(id);
+        UserForm userForm = doctorDashboardService.getUserFormById(id);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode body = null;
         try {
@@ -134,7 +93,7 @@ public class DashboardController {
     @ResponseBody
     public ListDashboardUserFormsResponse UserFormsEdit(@RequestBody UserFormDto request) {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
-        UserForm userForm = patientDashboardService.editUserForm(request);
+        UserForm userForm = doctorDashboardService.editUserForm(request);
         List<UserFormDto> userForms = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         StateDto state = new StateDto();
@@ -155,5 +114,46 @@ public class DashboardController {
         response.setState(state);
         response.setResult(userForms);
         return response;
+    }
+
+    @RequestMapping(value = "/forms/active", method = RequestMethod.POST)
+    @ResponseBody
+    public ListDashboardUserFormsResponse userFormsGetActive(@RequestBody DashboardUserFormsRequest request) {
+        ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
+        response.setState(new StateDto(true, "Active forms"));
+        ObjectMapper mapper = new ObjectMapper();
+        List<UserFormDto> list = doctorDashboardService.getActiveUserForms().stream()
+                .map(item -> {
+                    UserFormDto form = new UserFormDto();
+                    BlankDto blank = new BlankDto();
+                    blank.setDescr(item.getBlank().getDescr());
+                    blank.setName(item.getBlank().getName());
+                    blank.setBody(null);
+                    blank.setCategory(item.getBlank().getCategory());
+                    blank.setNumber(item.getBlank().getNumber());
+                    blank.setType(item.getBlank().getType());
+                    form.setBlank(blank);
+                    form.setActive(item.isActive());
+                    form.setId(item.getId());
+                    try {
+                        form.setData(mapper.readTree(item.getData()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return form;
+                })
+                .collect(Collectors.toList());
+        response.setResult(list);
+
+        return response ;
+    }
+
+    @RequestMapping(value = "/forms/active/modify", method = RequestMethod.POST)
+    @ResponseBody
+    public ListDashboardUserFormsResponse userFormsActiveModify(@RequestBody DashboardUserFormsRequest req) {
+
+
+        return doctorDashboardService.changeActiveUserForms(req.getCriteria().getList());
+
     }
 }
