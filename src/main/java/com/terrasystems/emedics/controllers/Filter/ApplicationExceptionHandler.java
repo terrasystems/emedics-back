@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.controllers.Filter;
 
 import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
+import com.terrasystems.emedics.model.dto.ExceptionHandlerResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,8 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @RequestMapping("resourcenotfound")
     @ResponseBody
-    public DashboardReferenceResponse resourceNotFound(HttpServletRequest request) throws Exception {
-        DashboardReferenceResponse response = new DashboardReferenceResponse();
+    public ExceptionHandlerResponse resourceNotFound(HttpServletRequest request) throws Exception {
+        ExceptionHandlerResponse response = new ExceptionHandlerResponse();
         StateDto stateDto = new StateDto(false, "Resource Not Found");
         response.setState(stateDto);
         return response;
@@ -30,9 +31,9 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @RequestMapping("unauthorised")
     @ResponseBody
-    public DashboardReferenceResponse unAuthorised(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ExceptionHandlerResponse unAuthorised(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        DashboardReferenceResponse resp = new DashboardReferenceResponse();
+        ExceptionHandlerResponse resp = new ExceptionHandlerResponse();
         StateDto stateDto = new StateDto(false, "User with this password doesn't exist or not activated");
         resp.setState(stateDto);
         return resp;
