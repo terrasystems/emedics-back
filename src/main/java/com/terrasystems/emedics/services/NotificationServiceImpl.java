@@ -59,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         User current = userRepository.findByEmail(getPrincipals());
         Notification notification;
         UserForm form = userFormRepository.findOne(notificationToSend.getUserForm());
-        User user = userRepository.findOne(notificationToSend.getTo());
+        User user = userRepository.findOne(notificationToSend.getToId());
         notification = mapper.fromDto(notificationToSend);
         notification.setFromUser(current);
         notification.setToUser(user);
@@ -88,10 +88,6 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
             state.setValue(true);
             return state;
         }
-
-
-
-
 
         UserForm userForm = notification.getUserForm();
         SharedForm sharedForm = sharedFormRepository.findByBlank_IdAndPatient_Id(userForm.getBlank().getId(), userForm.getUser().getId());

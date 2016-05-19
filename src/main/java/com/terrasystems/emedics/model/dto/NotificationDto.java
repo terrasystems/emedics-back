@@ -14,21 +14,21 @@ public class NotificationDto implements Serializable {
     private String type;
     private String title;
     private String text;
-    private String from;
-    private String to;
+    private String fromId;
+    private String toId;
     private String userForm;
 
     public NotificationDto() {
     }
 
-    public NotificationDto(Date date, Boolean readtype, String type, String title, String text, String from, String to, String userForm) {
+    public NotificationDto(Date date, Boolean readtype, String type, String title, String text, String fromId, String toId, String userForm) {
         this.date = date;
         this.readtype = readtype;
         this.type = type;
         this.title = title;
         this.text = text;
-        this.from = from;
-        this.to = to;
+        this.fromId = fromId;
+        this.toId = toId;
         this.userForm = userForm;
     }
 
@@ -72,20 +72,20 @@ public class NotificationDto implements Serializable {
         this.text = text;
     }
 
-    public String getFrom() {
-        return from;
+    public String getFromId() {
+        return fromId;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
     }
 
-    public String getTo() {
-        return to;
+    public String getToId() {
+        return toId;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 
 
@@ -114,8 +114,8 @@ public class NotificationDto implements Serializable {
                 .add("type", type)
                 .add("title", title)
                 .add("text", text)
-                .add("from", from)
-                .add("to", to)
+                .add("fromId", fromId)
+                .add("toId", toId)
                 .toString();
     }
 }
