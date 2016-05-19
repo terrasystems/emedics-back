@@ -61,11 +61,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         }
     }
 
-
     @Override
     public StateDto addReferences(Set<String> references) {
-        User current =  userRepository.findByEmail(getPrincipals());
-        Set<User> refs = (Set<User>) userRepository.findAll(references);
+        User current = userRepository.findByEmail(getPrincipals());
+        Set<User> refs = userRepository.findAll(references);
         Set<User> currentRefs = current.getUserRef();
         currentRefs.addAll(refs);
         current.setUserRef(currentRefs);
@@ -76,7 +75,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     @Override
     public Iterable<ReferenceDto> getAllReferences() {
         ReferenceConverter converter = new ReferenceConverter();
-        User current = (Patient) userRepository.findByEmail(getPrincipals());
+        User current = userRepository.findByEmail(getPrincipals());
         Set<User> userRefs = current.getUserRef();
         List<String> doctors = userRefs.stream()
                 .map(user -> {
@@ -89,7 +88,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     public StateDto removeReferences(Set<String> refs) throws Exception{
-        User current = (Patient) userRepository.findByEmail(getPrincipals());
+        User current = userRepository.findByEmail(getPrincipals());
         StateDto state = new StateDto();
         Set<User> removed =  current.getUserRef().stream()
                 .filter(user -> !refs.contains(user.getId()))
@@ -103,7 +102,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     public StateDto createReference(String email) {
-        User currrent = userRepository.findByEmail(getPrincipals());
+        User current = userRepository.findByEmail(getPrincipals());
         RegisterDto registerDto = new RegisterDto();
         UserDto userDto = new UserDto();
         userDto.setEmail(email);
@@ -114,8 +113,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             User doctor =  userRepository.findByEmail(email);
             Set<User> doctors = new HashSet<>();
             doctors.add(doctor);
-            currrent.getUserRef().addAll(doctors);
-            userRepository.save(currrent);
+            current.getUserRef().addAll(doctors);
+            userRepository.save(current);
         }
         return status;
     }
