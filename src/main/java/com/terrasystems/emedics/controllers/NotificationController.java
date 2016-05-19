@@ -33,10 +33,10 @@ public class NotificationController {
     }
     @RequestMapping(value = "/notifications/send", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardNotificationResponse notificationsSend(@RequestBody DashboardNotificationsRequest request) {
+    public DashboardNotificationResponse notificationsSend(@RequestBody NotificationDto request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
         StateDto status;
-        status = notificationsService.sendNotification(request.getNotification());
+        status = notificationsService.sendNotification(request);
         response.setState(status);
         return response;
     }
@@ -45,6 +45,14 @@ public class NotificationController {
     public DashboardNotificationResponse notificationAccept(@PathVariable String id) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
         response.setState(notificationsService.accept(id));
+        return response;
+    }
+    @RequestMapping(value = "/notifications/decline/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardNotificationResponse notificationDecline(@PathVariable String id) {
+        DashboardNotificationResponse response = new DashboardNotificationResponse();
+        StateDto state = notificationsService.decline(id);
+        response.setState(state);
         return response;
     }
 }

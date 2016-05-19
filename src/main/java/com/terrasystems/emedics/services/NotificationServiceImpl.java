@@ -78,11 +78,15 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
 
         if (current.getDiscriminatorValue().equals("patient")) {
             UserForm form = notification.getUserForm();
-            UserForm userForm = userFormRepository.findByUser_IdAndBlank_Id(form.getUser().getId(),form.getBlank().getId());
+            UserForm userForm = userFormRepository.findByUser_IdAndBlank_Id(current.getId(),form.getBlank().getId());
             if (!userForm.isActive()) {
                 userForm.setActive(true);
             }
             userForm.setData(form.getData());
+            userFormRepository.save(userForm);
+            state.setMessage("Notification accepted");
+            state.setValue(true);
+            return state;
         }
 
 
@@ -110,6 +114,14 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
 
     @Override
     public StateDto decline(String id) {
-        return null;
+        User current = userRepository.findByEmail(getPrincipals());
+        StateDto state = new StateDto();
+        Notification notification = notificationRepository.findOne(id);
+        notification.setReadtype(false);
+        notificationRepository.save(notification);
+        state.setMessage("Notification declined");
+        state.setValue(true);
+
+        return state;
     }
 }
