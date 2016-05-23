@@ -1,23 +1,38 @@
 package com.terrasystems.emedics.model.mapping;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.model.Blank;
 import com.terrasystems.emedics.model.dto.BlankDto;
 
-public final class  BlankMapper {
+import java.io.IOException;
 
-    public static BlankDto toDto(Blank entity) {
+public final class  BlankMapper {
+    private ObjectMapper objectMapper;
+    private static BlankMapper mapper;
+
+    public static BlankMapper getInstance() {
+        if (mapper == null) {
+            mapper = new BlankMapper();
+            return mapper;
+        }
+        return mapper;
+    }
+    public BlankMapper() {
+        objectMapper = new ObjectMapper();
+    }
+    public BlankDto toDto(Blank entity) throws IOException {
         BlankDto dto = new BlankDto();
-        //dto.setBody(entity.getBody());
         dto.setCategory(entity.getCategory());
         dto.setDescr(entity.getDescr());
         dto.setId(entity.getId());
         dto.setType(entity.getType());
-        //dto.setUserForms(entity.getUserForms());
+        dto.setBody(objectMapper.readTree(entity.getBody()));
+
         return dto;
     }
 
-    public static Blank toEntity(BlankDto dto) {
+    public Blank toEntity(BlankDto dto) {
         Blank entity = new Blank();
         //entity.setBody(dto.getBody());
         entity.setCategory(dto.getCategory());

@@ -2,41 +2,30 @@ package com.terrasystems.emedics.model.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public class PatientDto implements Serializable {
     private static final long serialVersionUID = -8311646841406921946L;
-    private String type;
+    private String id;
     private String email;
-    private String password;
-    private String username;
+    private String phone;
+    private String name;
+    private List<UserFormDto> forms;
     private int allowedFormsCount;
 
     public PatientDto() {
     }
 
-    public PatientDto(String email, String username) {
+    public PatientDto(String email, String name) {
         this.email = email;
-        this.username = username;
+        this.name = name;
     }
 
-    public PatientDto(String type, String email, String password, String username, int allowedFormsCount) {
-        this.type = type;
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.allowedFormsCount = allowedFormsCount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getEmail() {
         return email;
@@ -46,20 +35,20 @@ public class PatientDto implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public List<UserFormDto> getForms() {
+        return forms;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setForms(List<UserFormDto> forms) {
+        this.forms = forms;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getAllowedFormsCount() {
@@ -70,13 +59,29 @@ public class PatientDto implements Serializable {
         this.allowedFormsCount = allowedFormsCount;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("type", type)
+
                 .add("email", email)
-                .add("password", password)
-                .add("username", username)
+
+                .add("name", name)
                 .add("allowedFormsCount", allowedFormsCount)
                 .toString();
     }
@@ -84,18 +89,24 @@ public class PatientDto implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PatientDto)) return false;
 
-        PatientDto patientDto = (PatientDto) o;
-        return  Objects.equal(email, patientDto.email) &&
-                Objects.equal(password, patientDto.password) &&
-                Objects.equal(username, patientDto.username)&&
-                Objects.equal(allowedFormsCount, patientDto.allowedFormsCount);
+        if (o == null || getClass() != o.getClass()) return false;
 
+        PatientDto that = (PatientDto) o;
+
+        return new EqualsBuilder()
+                .append(allowedFormsCount, that.allowedFormsCount)
+                .append(email, that.email)
+                .append(name, that.name)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(email, password, username, allowedFormsCount);
+        return new HashCodeBuilder(17, 37)
+                .append(email)
+                .append(name)
+                .append(allowedFormsCount)
+                .toHashCode();
     }
 }

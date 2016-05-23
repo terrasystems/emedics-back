@@ -12,7 +12,7 @@ public class UserFormDto implements Serializable {
     private String id;
     private BlankDto blank;
     private JsonNode data;
-    private boolean active;
+    private Boolean active;
 
     public UserFormDto() {
     }
@@ -23,10 +23,11 @@ public class UserFormDto implements Serializable {
         this.blank = blank;
     }
 
-    public UserFormDto(String id, BlankDto blank, String data, boolean active) {
+    public UserFormDto(String id, BlankDto blank, JsonNode data, Boolean active) {
         this.id = id;
         this.blank = blank;
         this.active = active;
+        this.data = data;
     }
 
     public JsonNode getData() {
@@ -37,11 +38,11 @@ public class UserFormDto implements Serializable {
         this.data = data;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -60,9 +61,6 @@ public class UserFormDto implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
-
-
 
 
     @Override
