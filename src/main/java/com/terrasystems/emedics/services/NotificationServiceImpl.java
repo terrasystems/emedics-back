@@ -1,10 +1,7 @@
 package com.terrasystems.emedics.services;
 
 
-import com.terrasystems.emedics.dao.NotificationRepository;
-import com.terrasystems.emedics.dao.SharedFormRepository;
-import com.terrasystems.emedics.dao.UserFormRepository;
-import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.NotificationDto;
 import com.terrasystems.emedics.model.dto.StateDto;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,6 +26,8 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
     UserFormRepository userFormRepository;
     @Autowired
     SharedFormRepository sharedFormRepository;
+    @Autowired
+    HistoryRepository historyRepository;
 
     @Override
     public List<NotificationDto> getReceived() {
@@ -103,6 +103,11 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         sharedFormRepository.save(sharedForm);
         notification.setReadtype(true);
         notificationRepository.save(notification);
+        History history = new History();
+        history.setData(notification.getUserForm().getData());
+        history.setDate(new Date());
+        history.setUserForm(notification.getUserForm());
+        historyRepository.save(history);
         state.setMessage("Notification Accepted");
         state.setValue(true);
         return state;

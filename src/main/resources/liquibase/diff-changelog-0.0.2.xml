@@ -7,4 +7,21 @@
 
 
 
+
+    <changeSet author="tester (generated)" id="1464012069139-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="history">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="TEXT"/>
+            <column name="date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="form_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1464012069139-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="history_pkey" tableName="history"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1464012069139-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="form_id" baseTableName="history" constraintName="fkbfsjkkakd6ev0t4378d0f43l8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_forms"/>
+    </changeSet>
 </databaseChangeLog>

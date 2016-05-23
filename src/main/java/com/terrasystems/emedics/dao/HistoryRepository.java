@@ -8,6 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface HistoryRepository extends CrudRepository<History, String>{
-    //List<History> findOrderByDate();
-    //History findOrderByDate(Date date);
+    //List<History> findByUserFormOrderByDateAsc(List<String> ids);
+    List<History> findByUserForm_User_Id(String id);
 }

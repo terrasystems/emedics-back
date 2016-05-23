@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.model;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,9 +19,9 @@ public class History {
     @Column(name = "date")
     private Date date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blank_id")
-    private Blank blank;
+    @Column(name = "data")
+    @Type(type = "text")
+    private String data;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id")
@@ -29,9 +30,9 @@ public class History {
 
     public History() {}
 
-    public History(Date date, Blank blank, UserForm userForm) {
+    public History(Date date, String data, UserForm userForm) {
+        this.data = data;
         this.date = date;
-        this.blank = blank;
         this.userForm = userForm;
     }
 
@@ -51,12 +52,12 @@ public class History {
         this.date = date;
     }
 
-    public Blank getBlank() {
-        return blank;
+    public String getData() {
+        return data;
     }
 
-    public void setBlank(Blank blank) {
-        this.blank = blank;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public UserForm getUserForm() {

@@ -1,17 +1,20 @@
 package com.terrasystems.emedics.services;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.terrasystems.emedics.dao.HistoryRepository;
 import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.PatientDto;
 import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.UserFormDto;
+import com.terrasystems.emedics.model.mapping.FormMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -21,6 +24,8 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
     PatientRepository patientRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    HistoryRepository historyRepository;
 
     @Override
     public StateDto patientAdd(String id) {
@@ -45,12 +50,34 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
     }
 
     @Override
-    public List<PatientDto> allPatients() {
+    public List<PatientDto> allPatients()  {
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         PatientMapper mapper = PatientMapper.getInstance();
+        FormMapper formMapper = FormMapper.getInstance();
+        ObjectMapper objectMapper = new ObjectMapper();
         List<PatientDto> dtos = current.getPatients().stream()
-                .map(patient ->  mapper.toDto(patient)
-                ).collect(Collectors.toList());
+                .map(patient ->  {
+                    PatientDto patientDto = mapper.toDto(patient);
+                    List<History> patientHistory = historyRepository.findByUserForm_User_Id(patient.getId());
+                    List<UserFormDto> patientForms = patientHistory.stream()
+                            .map(history -> {
+                                UserFormDto dto = null;
+                                try {
+                                    dto = formMapper.toDto(history.getUserForm());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    dto.setData(objectMapper.readTree(history.getData()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                return dto;
+                            })
+                            .collect(Collectors.toList());
+                    patientDto.setForms(patientForms);
+                    return patientDto;
+                }).collect(Collectors.toList());
         return dtos;
     }
 
