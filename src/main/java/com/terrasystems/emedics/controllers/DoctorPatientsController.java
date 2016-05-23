@@ -29,7 +29,7 @@ public class DoctorPatientsController {
         response.setResult(result);
         return response;
     }
-    @RequestMapping(value = "/doctor/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/docpatients/search", method = RequestMethod.POST)
     @ResponseBody
     public DashboardPatientsResponse patientsSearch(@RequestBody DashboardPatientsRequest request) {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
@@ -41,7 +41,7 @@ public class DoctorPatientsController {
         response.setResult(result);
         return response;
     }
-    @RequestMapping(value = "/doctor/patients/add")
+    @RequestMapping(value = "/docpatients/add")
     @ResponseBody
     public DashboardPatientsResponse patientsAdd(@RequestBody DashboardPatientsRequest request) {
         DashboardPatientsResponse response = new DashboardPatientsResponse();

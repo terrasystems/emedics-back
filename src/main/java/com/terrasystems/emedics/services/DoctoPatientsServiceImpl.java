@@ -56,8 +56,12 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
 
     @Override
     public List<PatientDto> findPatientsByCriteria(String search) {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        List<Patient> currentPats = current.getPatients();
         PatientMapper mapper = PatientMapper.getInstance();
-        List<Patient> patients = patientRepository.findByNameContainingOrEmailContaining(search,search);
+        List<Patient> patients = patientRepository.findByNameContainingOrEmailContaining(search,search).stream()
+                .filter(patient -> !currentPats.contains(patient))
+                .collect(Collectors.toList());
         List<PatientDto> patientDtos = patients.stream()
                 .map(patient -> {
                     PatientDto dto = new PatientDto();
