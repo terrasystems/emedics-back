@@ -23,6 +23,8 @@ public final class  BlankMapper {
     }
     public BlankDto toDto(Blank entity) throws IOException {
         BlankDto dto = new BlankDto();
+        dto.setName(entity.getName());
+        dto.setNumber(entity.getNumber());
         dto.setCategory(entity.getCategory());
         dto.setDescr(entity.getDescr());
         dto.setId(entity.getId());

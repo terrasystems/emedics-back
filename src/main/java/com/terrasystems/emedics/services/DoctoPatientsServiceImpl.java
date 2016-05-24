@@ -6,6 +6,7 @@ import com.terrasystems.emedics.dao.HistoryRepository;
 import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.HistoryDto;
 import com.terrasystems.emedics.model.dto.PatientDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.UserFormDto;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -49,7 +51,7 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         return null;
     }
 
-    @Override
+    /*@Override
     public List<PatientDto> allPatients()  {
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         PatientMapper mapper = PatientMapper.getInstance();
@@ -79,6 +81,41 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
                     return patientDto;
                 }).collect(Collectors.toList());
         return dtos;
+    }*/
+    @Override
+    public List<PatientDto> allPatients() {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        PatientMapper mapper = PatientMapper.getInstance();
+        FormMapper formMapper = FormMapper.getInstance();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<PatientDto> dtos = current.getPatients().stream()
+                .map(patient -> {
+                    PatientDto patientDto = mapper.toDto(patient);
+                    List<History> patientHistory = historyRepository.findByUserForm_User_Id(patient.getId());
+                    List<HistoryDto> historyDtos = patientHistory.stream()
+                            .map(history -> {
+                                HistoryDto historyDto = new HistoryDto();
+                                try {
+                                    historyDto.setData(objectMapper.readTree(history.getData()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                historyDto.setId(history.getId());
+                                try {
+                                    historyDto.setForm(formMapper.toDto(history.getUserForm()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                historyDto.getForm().getBlank().setBody(null);
+                                historyDto.getForm().setData(null);
+                                historyDto.setDate(history.getDate());
+                                return historyDto;
+                            }).collect(Collectors.toList());
+                    patientDto.setHistory(historyDtos);
+                    return patientDto;
+                }).collect(Collectors.toList());
+        return dtos;
+
     }
 
     @Override
@@ -99,6 +136,40 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
 
 
         return patientDtos;
+    }
+    @Override
+    public HistoryDto getPatientHistory(String id) {
+        FormMapper formMapper = FormMapper.getInstance();
+        ObjectMapper objectMapper = new ObjectMapper();
+        History history = historyRepository.findOne(id);
+        HistoryDto dto = new HistoryDto();
+        dto.setDate(history.getDate());
+        try {
+            dto.setData(objectMapper.readTree(history.getData()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            dto.setForm(formMapper.toDto(history.getUserForm()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        dto.getForm().setData(null);
+
+
+        return dto;
+    }
+
+    @Override
+    public StateDto editPatientHistory(HistoryDto dto) {
+        StateDto state = new StateDto();
+        History history =  historyRepository.findOne(dto.getId());
+        history.setDate(new Date());
+        history.setData(dto.getData().toString());
+        historyRepository.save(history);
+        state.setValue(true);
+        state.setMessage("Forms edited");
+        return state;
     }
 
 

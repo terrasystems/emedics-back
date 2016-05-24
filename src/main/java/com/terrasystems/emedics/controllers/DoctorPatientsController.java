@@ -1,10 +1,7 @@
 package com.terrasystems.emedics.controllers;
 
 
-import com.terrasystems.emedics.model.dto.DashboardPatientsRequest;
-import com.terrasystems.emedics.model.dto.DashboardPatientsResponse;
-import com.terrasystems.emedics.model.dto.PatientDto;
-import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DoctorPatientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +43,25 @@ public class DoctorPatientsController {
     public DashboardPatientsResponse patientsAdd(@RequestBody DashboardPatientsRequest request) {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
         StateDto state = doctorPatientsService.patientAdd(request.getCriteria().getList().get(0).getId());
+        response.setState(state);
+        return response;
+    }
+    @RequestMapping(value = "/docpatients/forms/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardPatientsResponse getHistoryById(@PathVariable String id) {
+        DashboardPatientsResponse response = new DashboardPatientsResponse();
+        StateDto state = new StateDto();
+        response.setResult(doctorPatientsService.getPatientHistory(id));
+        state.setMessage("Patient form");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+    @RequestMapping(value = "/docpatients/forms/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardPatientsResponse editHistory(@RequestBody HistoryDto history) {
+        DashboardPatientsResponse response = new DashboardPatientsResponse();
+        StateDto state = doctorPatientsService.editPatientHistory(history);
         response.setState(state);
         return response;
     }

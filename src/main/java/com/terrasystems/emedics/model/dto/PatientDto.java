@@ -15,7 +15,8 @@ public class PatientDto implements Serializable {
     private String email;
     private String phone;
     private String name;
-    private List<UserFormDto> forms;
+    //private List<UserFormDto> forms;
+    private List<HistoryDto> history;
     private int allowedFormsCount;
 
     public PatientDto() {
@@ -26,6 +27,13 @@ public class PatientDto implements Serializable {
         this.name = name;
     }
 
+    public List<HistoryDto> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<HistoryDto> history) {
+        this.history = history;
+    }
 
     public String getEmail() {
         return email;
@@ -35,13 +43,13 @@ public class PatientDto implements Serializable {
         this.email = email;
     }
 
-    public List<UserFormDto> getForms() {
+ /*   public List<UserFormDto> getForms() {
         return forms;
     }
 
     public void setForms(List<UserFormDto> forms) {
         this.forms = forms;
-    }
+    }*/
 
     public String getName() {
         return name;

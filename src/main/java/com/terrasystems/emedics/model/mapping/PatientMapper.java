@@ -40,7 +40,7 @@ public class PatientMapper {
         dto.setEmail(entity.getEmail());
         dto.setName(entity.getName());
         dto.setPhone(entity.getPhone());
-        dto.setForms(formDtos);
+        //dto.setForms(formDtos);
         dto.setAllowedFormsCount(entity.getAllowedFormsCount());
 
         return dto;
