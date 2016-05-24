@@ -65,5 +65,13 @@ public class DoctorPatientsController {
         response.setState(state);
         return response;
     }
+    @RequestMapping(value = "/docpatients/remove", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardPatientsResponse removePatient(@RequestBody DashboardPatientsRequest request) {
+        DashboardPatientsResponse response = new DashboardPatientsResponse();
+        StateDto state = doctorPatientsService.removePatient(request.getCriteria().getList().get(0).getId());
+        response.setState(state);
+        return response;
+    }
 
 }

@@ -14,5 +14,5 @@ public interface DoctorPatientsService {
     List<PatientDto> findPatientsByCriteria(String search);
     HistoryDto getPatientHistory(String id);
     StateDto editPatientHistory(HistoryDto dto);
-
+    StateDto removePatient(String id);
 }

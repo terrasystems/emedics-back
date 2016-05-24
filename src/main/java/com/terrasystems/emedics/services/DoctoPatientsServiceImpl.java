@@ -172,5 +172,17 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         return state;
     }
 
+    @Override
+    public StateDto removePatient(String id) {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        Patient patient = (Patient) userRepository.findOne(id);
+        current.getPatients().remove(patient);
+        userRepository.save(current);
+        StateDto state = new StateDto();
+        state.setMessage("Patient removed");
+        state.setValue(true);
+        return state;
+    }
+
 
 }
