@@ -82,5 +82,15 @@ public class PatientReferencesController {
         return response;
     }
 
+    @RequestMapping(value = "/references/invite", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardReferenceResponse inviteReference(@RequestBody String email) {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        StateDto status = new StateDto();
+        status.setMessage("Invited");
+        status.setValue(true);
+        return response;
+    }
+
 
 }

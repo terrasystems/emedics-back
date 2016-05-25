@@ -74,4 +74,14 @@ public class DoctorPatientsController {
         return response;
     }
 
+    @RequestMapping(value = "/docpatients/invite", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardPatientsResponse inviteReference(@RequestBody String email) {
+        DashboardPatientsResponse response = new DashboardPatientsResponse();
+        StateDto status = new StateDto();
+        status.setMessage("Invited");
+        status.setValue(true);
+        return response;
+    }
+
 }
