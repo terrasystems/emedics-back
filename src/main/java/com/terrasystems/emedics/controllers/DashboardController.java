@@ -8,7 +8,6 @@ import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -132,7 +131,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/forms/edit", method = RequestMethod.POST)
     @ResponseBody
-    public ListDashboardUserFormsResponse UserFormsEdit(@RequestBody UserFormDto request) {
+    public ListDashboardUserFormsResponse userFormsEdit(@RequestBody UserFormDto request) {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         UserForm userForm = patientDashboardService.editUserForm(request);
         List<UserFormDto> userForms = new ArrayList<>();
