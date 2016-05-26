@@ -52,6 +52,9 @@ public  class User implements UserDetails {
     protected String email;
 
     @Column
+    protected String typeExp;
+
+    @Column
     protected Long expires;
 
     @Column
@@ -82,6 +85,14 @@ public  class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
     )
     private Set<User> userRef;
+
+    public String getTypeExp() {
+        return typeExp;
+    }
+
+    public void setTypeExp(String typeExp) {
+        this.typeExp = typeExp;
+    }
 
     public String getPhone() {
         return phone;

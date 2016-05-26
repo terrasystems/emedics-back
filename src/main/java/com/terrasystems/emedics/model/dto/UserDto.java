@@ -12,6 +12,7 @@ public class UserDto implements Serializable {
     private String id;
     private String type;
     private String email;
+    private String typeExp;
 
     private String password;
     private String username;
@@ -22,6 +23,14 @@ public class UserDto implements Serializable {
         this.email = email;
         //this.password = password;
         this.username = username;
+    }
+
+    public String getTypeExp() {
+        return typeExp;
+    }
+
+    public void setTypeExp(String typeExp) {
+        this.typeExp = typeExp;
     }
 
     public String getId() {
