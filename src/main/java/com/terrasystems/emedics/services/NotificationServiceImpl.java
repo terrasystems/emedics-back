@@ -65,6 +65,9 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         notification.setToUser(user);
         notification.setUserForm(form);
         notificationRepository.save(notification);
+        form.setData("{}");
+        form.setActive(false);
+        userFormRepository.save(form);
         state.setMessage("Notification sent");
         state.setValue(true);
         return state;
@@ -75,7 +78,6 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         StateDto state = new StateDto();
         User current = userRepository.findByEmail(getPrincipals());
         Notification notification = notificationRepository.findOne(id);
-
         if (current.getDiscriminatorValue().equals("patient")) {
             UserForm form = notification.getUserForm();
             UserForm userForm = userFormRepository.findByUser_IdAndBlank_Id(current.getId(),form.getBlank().getId());
@@ -115,7 +117,6 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
 
     @Override
     public StateDto decline(String id) {
-        User current = userRepository.findByEmail(getPrincipals());
         StateDto state = new StateDto();
         Notification notification = notificationRepository.findOne(id);
         notification.setReadtype(false);

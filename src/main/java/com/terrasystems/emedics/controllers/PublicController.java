@@ -38,11 +38,7 @@ public class PublicController {
         return response;
     }
 
-    /*@RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public RegisterResponseDto login() {
-        r
-    }*/
+
 
     @RequestMapping(value = "reset_pass", method = RequestMethod.POST)
     @ResponseBody

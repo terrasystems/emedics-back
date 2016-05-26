@@ -21,6 +21,7 @@ public final class UserMapper {
         dto.setId(entity.getId());
         dto.setEmail(entity.getEmail());
         dto.setUsername(entity.getName());
+        dto.setTypeExp(entity.getTypeExp());
         return dto;
     }
 
