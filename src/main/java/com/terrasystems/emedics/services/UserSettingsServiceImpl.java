@@ -33,6 +33,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto();
         UserMapper userMapper = new UserMapper();
+        UserDto respDto = new UserDto();
         if (user.getEmail().equals(userDto.getEmail())) {
             user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
@@ -41,7 +42,9 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             state.setMessage("Updated");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
-            response.setUser(userMapper.toDTO(user));
+            respDto = userMapper.toDTO(user);
+            respDto.setType(type[2]);
+            response.setUser(respDto);
             response.setToken(token);
             response.setState(state);
             return response;
@@ -50,7 +53,9 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             state.setMessage("User with this email already registered");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
-            response.setUser(userMapper.toDTO(user));
+            respDto = userMapper.toDTO(user);
+            respDto.setType(type[2]);
+            response.setUser(respDto);
             response.setToken(token);
             response.setState(state);
             return response;
@@ -63,7 +68,9 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             state.setMessage("Updated");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
-            response.setUser(userMapper.toDTO(user));
+            respDto = userMapper.toDTO(user);
+            respDto.setType(type[2]);
+            response.setUser(respDto);
             response.setState(state);
             response.setToken(token);
             return response;
