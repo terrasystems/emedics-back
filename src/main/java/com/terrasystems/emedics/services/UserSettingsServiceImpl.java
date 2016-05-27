@@ -6,6 +6,7 @@ import com.terrasystems.emedics.model.dto.ChangePasswordDto;
 import com.terrasystems.emedics.model.dto.RegisterResponseDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.UserDto;
+import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.security.token.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         User user = userRepository.findByEmail(getPrincipals());
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto();
+        UserMapper userMapper = new UserMapper();
         if (user.getEmail().equals(userDto.getEmail())) {
             user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
@@ -39,19 +41,19 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             state.setMessage("Updated");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
-            response.setState(state);
+            response.setUser(userMapper.toDTO(user));
             response.setToken(token);
             response.setState(state);
             return response;
         } else if (userRepository.existsByEmail(userDto.getEmail())){
-                state.setValue(false);
-                state.setMessage("User with this email already registered");
-                String token = tokenUtil.createTokenForUser(user);
-                String[] type = token.split(":");
-                response.setState(state);
-                response.setToken(token);
-                response.setState(state);
-                return response;
+            state.setValue(false);
+            state.setMessage("User with this email already registered");
+            String token = tokenUtil.createTokenForUser(user);
+            String[] type = token.split(":");
+            response.setUser(userMapper.toDTO(user));
+            response.setToken(token);
+            response.setState(state);
+            return response;
         } else {
             user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
@@ -61,6 +63,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             state.setMessage("Updated");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
+            response.setUser(userMapper.toDTO(user));
             response.setState(state);
             response.setToken(token);
             return response;
