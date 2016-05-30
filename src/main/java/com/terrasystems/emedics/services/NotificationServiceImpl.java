@@ -65,7 +65,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         notification.setToUser(user);
         notification.setUserForm(form);
         notificationRepository.save(notification);
-        form.setData("{}");
+        //form.setData("{}");
         form.setActive(false);
         userFormRepository.save(form);
         state.setMessage("Notification sent");
@@ -97,7 +97,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
             sharedForm = new SharedForm();
             sharedForm.setUser(current);
             sharedForm.setBlank(userForm.getBlank());
-            sharedForm.setPatient((Patient) userRepository.findOne(notification.getFromUser().getId()));
+            sharedForm.setPatient((Patient) userRepository.findByEmail(notification.getFromUser().getEmail()));
             sharedForm.setData(userForm.getData());
         } else {
             sharedForm.setData(userForm.getData());
