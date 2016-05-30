@@ -24,4 +24,10 @@ public class UserSettingsController {
         return userSettingsService.changePassword(changePasswordDto);
     }
 
+    @RequestMapping(value = "/settings", method = RequestMethod.GET)
+    @ResponseBody
+    public RegisterResponseDto settingsPage() {
+        return userSettingsService.settingsPage();
+    }
+
 }

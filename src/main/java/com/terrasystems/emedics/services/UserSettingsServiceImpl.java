@@ -33,7 +33,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto();
         UserMapper userMapper = new UserMapper();
-        UserDto respDto = new UserDto();
+        UserDto respDto;
         if (user.getEmail().equals(userDto.getEmail())) {
             user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
@@ -101,6 +101,16 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             response.setToken(token);
             return response;
         }
+    }
+
+    @Override
+    public RegisterResponseDto settingsPage() {
+        User user = userRepository.findByEmail(getPrincipals());
+        RegisterResponseDto response = new RegisterResponseDto();
+        UserMapper userMapper = new UserMapper();
+        response.setUser(userMapper.toDTO(user));
+        response.setState(new StateDto(true, "Settings Page"));
+        return response;
     }
 
 
