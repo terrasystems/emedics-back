@@ -157,7 +157,7 @@ public class RegistrationServiceImp implements RegistrationService {
         registeredUser.setRoles(roles);
         organizationRepository.save(organization);
 
-        status.setMessage("User and Organization registered");
+        status.setMessage("MSG_USER_REG");
         status.setValue(true);
         return status;
     }
@@ -168,7 +168,7 @@ public class RegistrationServiceImp implements RegistrationService {
         StateDto state = new StateDto();
         if (loadedUser == null) {
 
-            state.setMessage("User with such email address doesn't exist");
+            state.setMessage("MSG_EMAIL_NOT_EXIST");
             state.setValue(false);
             return state;
         }
@@ -196,7 +196,7 @@ public class RegistrationServiceImp implements RegistrationService {
         userRepository.save(user);
         userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
-        StateDto state = new StateDto(true, "User Activated");
+        StateDto state = new StateDto(true, "MSG_USER_ACTIVED");
         UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
         String[] type = token.split(":");
         userDto.setType(type[2]);

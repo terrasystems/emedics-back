@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.HistoryRepository;
 import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.HistoryDto;
 import com.terrasystems.emedics.model.dto.PatientDto;
@@ -36,13 +37,13 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         StateDto state = new StateDto();
         if (patient == null) {
             state.setValue(false);
-            state.setMessage("Patient with such id doesn't exist");
+            state.setMessage("MSG_PATS_NOT_EXIST");
             return state;
         }
         current.getPatients().add(patient);
         userRepository.save(current);
         state.setValue(true);
-        state.setMessage("Patient added");
+        state.setMessage("MSG_PAT_ADD");
         return state;
     }
 
@@ -168,7 +169,7 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         history.setData(dto.getData().toString());
         historyRepository.save(history);
         state.setValue(true);
-        state.setMessage("Forms edited");
+        state.setMessage("MSG_FORM_EDIT");
         return state;
     }
 
@@ -179,7 +180,7 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         current.getPatients().remove(patient);
         userRepository.save(current);
         StateDto state = new StateDto();
-        state.setMessage("Patient removed");
+        state.setMessage("MSG_PAT_REMOVE");
         state.setValue(true);
         return state;
     }

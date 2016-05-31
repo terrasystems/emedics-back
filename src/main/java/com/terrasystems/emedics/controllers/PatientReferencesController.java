@@ -27,7 +27,7 @@ public class PatientReferencesController {
     public DashboardReferenceResponse searchReferences(@RequestBody DashboardReferenceRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         response.setResult(referenceService.findAllReferencesByCriteria(request.getCriteria().getSearch()));
-        response.setState(new StateDto(true, "Search result"));
+        response.setState(new StateDto(true, "MSG_SEARCH"));
         return response;
     }
     @RequestMapping(value = "/references/add", method = RequestMethod.POST)
@@ -46,10 +46,10 @@ public class PatientReferencesController {
         StateDto state = new StateDto();
         if (references == null) {
             state.setValue(false);
-            state.setMessage("Cant get References");
+            state.setMessage("MSG_CANT_GET_REFS");
         } else {
             state.setValue(true);
-            state.setMessage("All References");
+            state.setMessage("MSG_ALL_REFS");
         }
         response.setResult(references);
         response.setState(state);
@@ -62,11 +62,11 @@ public class PatientReferencesController {
         StateDto state = new StateDto();
         try {
             referenceService.removeReferences(request.getCriteria().getList());
-            state.setMessage("References Removed");
+            state.setMessage("MSG_REMOVE_REF");
             state.setValue(true);
         } catch (Exception e) {
             e.printStackTrace();
-            state.setMessage("Cant  remove references");
+            state.setMessage("MSG_CANT_REMOVE_REF");
             state.setValue(false);
         }
         response.setState(state);
@@ -87,7 +87,7 @@ public class PatientReferencesController {
     public DashboardReferenceResponse inviteReference(@RequestBody String email) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto status = new StateDto();
-        status.setMessage("Invited");
+        status.setMessage("MSG_INVITE");
         status.setValue(true);
         return response;
     }

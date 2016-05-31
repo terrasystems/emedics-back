@@ -20,11 +20,11 @@ public class NotificationController {
     @ResponseBody
     public DashboardNotificationResponse notificationsGetAll(@RequestBody DashboardNotificationsRequest request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        StateDto state = new StateDto(true,"Your notifications");
+        StateDto state = new StateDto(true,"MSG_NOTIF");
         List<NotificationDto> notifications = notificationsService.getReceived();
         if (notifications == null) {
             state.setValue(false);
-            state.setMessage("Can't get notifications");
+            state.setMessage("MSG_CANT_GET_NOTIF");
         }
 
         response.setResult(notifications);

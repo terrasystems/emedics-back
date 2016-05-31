@@ -61,7 +61,7 @@ public class DoctorDashboardService implements DashboardService {
                 .filter(item -> item.isActive())
                 .collect(Collectors.toList());
         System.out.println(doctor.getEmail());
-        response.setState(new StateDto(true, "Active forms changed"));
+        response.setState(new StateDto(true, "MSG_FORM_CHANGE"));
         return response;
     }
 

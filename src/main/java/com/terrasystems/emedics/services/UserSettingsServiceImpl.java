@@ -39,7 +39,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setTypeExp(userDto.getTypeExp());
             userRepository.save(user);
             state.setValue(true);
-            state.setMessage("Updated");
+            state.setMessage("MSG_UPDATE");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -50,7 +50,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             return response;
         } else if (userRepository.existsByEmail(userDto.getEmail())){
             state.setValue(false);
-            state.setMessage("User with this email already registered");
+            state.setMessage("MSG_EMAIL_EXIST");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -65,7 +65,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setEmail(userDto.getEmail());
             userRepository.save(user);
             state.setValue(true);
-            state.setMessage("Updated");
+            state.setMessage("MSG_UPDATE");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -88,13 +88,13 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             state.setValue(true);
-            state.setMessage("Changed");
+            state.setMessage("MSG_CHANGE");
             response.setState(state);
             response.setToken(token);
             return response;
         } else {
             state.setValue(false);
-            state.setMessage("Old password are incorrect");
+            state.setMessage("MSG_OLD_PASS_BAD");
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             response.setState(state);
@@ -102,7 +102,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             return response;
         }
     }
-
+/*
     @Override
     public RegisterResponseDto settingsPage() {
         User user = userRepository.findByEmail(getPrincipals());
@@ -111,7 +111,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         response.setUser(userMapper.toDTO(user));
         response.setState(new StateDto(true, "Settings Page"));
         return response;
-    }
+    }*/
 
 
 }

@@ -34,7 +34,7 @@ public class ApplicationExceptionHandler {
     public ExceptionHandlerResponse unAuthorised(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         ExceptionHandlerResponse resp = new ExceptionHandlerResponse();
-        StateDto stateDto = new StateDto(false, "User with this password doesn't exist or not activated");
+        StateDto stateDto = new StateDto(false, "MSG_NOT_ACTIVATE");
         resp.setState(stateDto);
         return resp;
     }

@@ -9,5 +9,5 @@ import com.terrasystems.emedics.model.dto.UserDto;
 public interface UserSettingsService {
     RegisterResponseDto editUser(UserDto userDto);
     RegisterResponseDto changePassword(ChangePasswordDto changePasswordDto);
-    RegisterResponseDto settingsPage();
+    //RegisterResponseDto settingsPage();
 }

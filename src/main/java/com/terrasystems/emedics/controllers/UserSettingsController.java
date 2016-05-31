@@ -23,11 +23,13 @@ public class UserSettingsController {
     public RegisterResponseDto changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return userSettingsService.changePassword(changePasswordDto);
     }
+/*
 
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     @ResponseBody
     public RegisterResponseDto settingsPage() {
         return userSettingsService.settingsPage();
     }
+*/
 
 }

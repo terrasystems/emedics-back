@@ -52,7 +52,7 @@ public class DoctorPatientsController {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
         StateDto state = new StateDto();
         response.setResult(doctorPatientsService.getPatientHistory(id));
-        state.setMessage("Patient form");
+        state.setMessage("MSG_FORM");
         state.setValue(true);
         response.setState(state);
         return response;
@@ -78,8 +78,9 @@ public class DoctorPatientsController {
     @ResponseBody
     public DashboardPatientsResponse inviteReference(@RequestBody String email) {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
+
         StateDto status = new StateDto();
-        status.setMessage("Invited");
+        status.setMessage("MSG_INVITE");
         status.setValue(true);
         return response;
     }

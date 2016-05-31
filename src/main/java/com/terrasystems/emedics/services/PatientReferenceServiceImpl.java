@@ -69,7 +69,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         currentRefs.addAll(refs);
         current.setUserRef(currentRefs);
         userRepository.save(current);
-        return new StateDto(true, "Saved to Your refs");
+        return new StateDto(true, "MSG_SAVE_REFS");
     }
 
     @Override
@@ -96,7 +96,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         current.setUserRef(removed);
         userRepository.save(current);
         state.setValue(true);
-        state.setMessage("References removed");
+        state.setMessage("MSG_REMOVE_REFS");
         return state;
     }
 

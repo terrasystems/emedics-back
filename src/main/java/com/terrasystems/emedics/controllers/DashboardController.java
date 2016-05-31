@@ -29,7 +29,7 @@ public class DashboardController {
     @ResponseBody
     public ListDashboardUserFormsResponse userFormsGetActive(@RequestBody DashboardUserFormsRequest request) {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
-        response.setState(new StateDto(true, "Active forms"));
+        response.setState(new StateDto(true, "MSG_ACTIVE_FORMS"));
         ObjectMapper mapper = new ObjectMapper();
         List<UserFormDto> list = patientDashboardService.getActiveUserForms().stream()
                 .map(item -> {
@@ -89,7 +89,7 @@ public class DashboardController {
                     }
                     return userForm;
                 }).collect(Collectors.toList());
-        response.setState(new StateDto(true,"All UserForms"));
+        response.setState(new StateDto(true,"MSG_ALL_FORMS"));
         response.setResult(userForms);
         return  response;
     }
@@ -138,10 +138,10 @@ public class DashboardController {
         ObjectMapper mapper = new ObjectMapper();
         StateDto state = new StateDto();
         if (userForm == null) {
-            state.setMessage("error");
+            state.setMessage("MSG_ERROR");
             state.setValue(false);
         } else {
-            state.setMessage("Edited");
+            state.setMessage("MSG_EDITE");
             state.setValue(true);
             try {
                 userForms.add(new UserFormDto(userForm.getId(),mapper.readTree(userForm.getData()), null));

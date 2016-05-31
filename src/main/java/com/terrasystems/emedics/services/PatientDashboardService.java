@@ -57,7 +57,7 @@ public class PatientDashboardService implements DashboardService {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         if (newActiveUserForms.size() > patient.getAllowedFormsCount()){
-            response.setState(new StateDto(false, "U can't change more forms then u permitted"));
+            response.setState(new StateDto(false, "MSG_CANT_CHANGE_FORMS"));
             return response;
         }
         else {
@@ -80,7 +80,7 @@ public class PatientDashboardService implements DashboardService {
                     .filter(item -> item.isActive())
                     .collect(Collectors.toList());
             System.out.println(patient.getEmail());
-            response.setState(new StateDto(true, "Active forms changed"));
+            response.setState(new StateDto(true, "MSG_FORM_CHANGE"));
             return response;
         }
     }

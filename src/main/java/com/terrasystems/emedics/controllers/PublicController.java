@@ -34,7 +34,7 @@ public class PublicController {
         response.setState(status);
         user.setPassword(null);
         response.setUser(user);
-        System.out.println("Sending responce" );
+        System.out.println("Sending response" );
         return response;
     }
 

@@ -36,10 +36,10 @@ public class MailServiceImp implements MailService {
             mailSender.send(message);
         } catch (MailException ex) {
             System.out.println("Email Exception - "+ ex.getMessage());
-            return new StateDto(false, "Error while send message");
+            return new StateDto(false, "MSG_ERROR_SEND_MAIL");
         }
         System.out.println("After catch");
-        return new StateDto(true,"Mail Send");
+        return new StateDto(true,"MSG_SEND_MAIL");
     }
 
     @Override
@@ -52,9 +52,9 @@ public class MailServiceImp implements MailService {
         try {
             mailSender.send(message);
         } catch (MailException ex) {
-            return new StateDto(false, "Error while send message");
+            return new StateDto(false, "MSG_ERROR_SEND_MAIL");
         }
-        return new StateDto(true,"Mail Send");
+        return new StateDto(true,"MSG_SEND_MAIL");
 
     }
 
