@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DashboardService;
@@ -29,7 +30,7 @@ public class DashboardController {
     @ResponseBody
     public ListDashboardUserFormsResponse userFormsGetActive(@RequestBody DashboardUserFormsRequest request) {
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
-        response.setState(new StateDto(true, "MSG_ACTIVE_FORMS"));
+        response.setState(new StateDto(true, MessageEnums.MSG_ACTIVE_FORMS.toString()));
         ObjectMapper mapper = new ObjectMapper();
         List<UserFormDto> list = patientDashboardService.getActiveUserForms().stream()
                 .map(item -> {
@@ -89,7 +90,7 @@ public class DashboardController {
                     }
                     return userForm;
                 }).collect(Collectors.toList());
-        response.setState(new StateDto(true,"MSG_ALL_FORMS"));
+        response.setState(new StateDto(true,MessageEnums.MSG_ALL_FORMS.toString()));
         response.setResult(userForms);
         return  response;
     }
@@ -138,10 +139,10 @@ public class DashboardController {
         ObjectMapper mapper = new ObjectMapper();
         StateDto state = new StateDto();
         if (userForm == null) {
-            state.setMessage("MSG_ERROR");
+            state.setMessage(MessageEnums.MSG_ERROR.toString());
             state.setValue(false);
         } else {
-            state.setMessage("MSG_EDITE");
+            state.setMessage(MessageEnums.MSG_EDITE.toString());
             state.setValue(true);
             try {
                 userForms.add(new UserFormDto(userForm.getId(),mapper.readTree(userForm.getData()), null));

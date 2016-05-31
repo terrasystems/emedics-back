@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.dto.DashboardReferenceRequest;
 import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
@@ -27,7 +28,7 @@ public class PatientReferencesController {
     public DashboardReferenceResponse searchReferences(@RequestBody DashboardReferenceRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         response.setResult(referenceService.findAllReferencesByCriteria(request.getCriteria().getSearch()));
-        response.setState(new StateDto(true, "MSG_SEARCH"));
+        response.setState(new StateDto(true, MessageEnums.MSG_SEARCH.toString()));
         return response;
     }
     @RequestMapping(value = "/references/add", method = RequestMethod.POST)
@@ -46,10 +47,10 @@ public class PatientReferencesController {
         StateDto state = new StateDto();
         if (references == null) {
             state.setValue(false);
-            state.setMessage("MSG_CANT_GET_REFS");
+            state.setMessage(MessageEnums.MSG_CANT_GET_REFS.toString());
         } else {
             state.setValue(true);
-            state.setMessage("MSG_ALL_REFS");
+            state.setMessage(MessageEnums.MSG_ALL_REFS.toString());
         }
         response.setResult(references);
         response.setState(state);
@@ -62,11 +63,11 @@ public class PatientReferencesController {
         StateDto state = new StateDto();
         try {
             referenceService.removeReferences(request.getCriteria().getList());
-            state.setMessage("MSG_REMOVE_REF");
+            state.setMessage(MessageEnums.MSG_REMOVE_REF.toString());
             state.setValue(true);
         } catch (Exception e) {
             e.printStackTrace();
-            state.setMessage("MSG_CANT_REMOVE_REF");
+            state.setMessage(MessageEnums.MSG_CANT_REMOVE_REF.toString());
             state.setValue(false);
         }
         response.setState(state);
@@ -87,7 +88,7 @@ public class PatientReferencesController {
     public DashboardReferenceResponse inviteReference(@RequestBody String email) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto status = new StateDto();
-        status.setMessage("MSG_INVITE");
+        status.setMessage(MessageEnums.MSG_INVITE.toString());
         status.setValue(true);
         return response;
     }

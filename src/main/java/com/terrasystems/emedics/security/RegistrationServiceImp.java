@@ -4,6 +4,7 @@ import com.terrasystems.emedics.dao.OrganizationRepository;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.StuffRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.security.token.TokenAuthService;
@@ -28,8 +29,8 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
     private static final String ROLE_STUFF = "ROLE_STUFF_ADMIN";
-    private static final String USER_EXIST = "User with such email address is already exist";
-    public static final String REGISTERED = "We send the letter with activation cod on your email address. Please activate your account.";
+    private static final String USER_EXIST = MessageEnums.MSG_USER_EXIST.toString();
+    public static final String REGISTERED = MessageEnums.MSG_SEND_LETTER.toString();
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
     private final TokenUtil tokenUtil;
     @Autowired
@@ -90,7 +91,7 @@ public class RegistrationServiceImp implements RegistrationService {
                     stateDto = registerOrganisation(user,org);
                     break;
                 default:
-                    stateDto.setMessage("Registration failed");
+                    stateDto.setMessage(MessageEnums.MSG_REG_FAILED.toString());
                     stateDto.setValue(false);
 
         }}
@@ -157,7 +158,7 @@ public class RegistrationServiceImp implements RegistrationService {
         registeredUser.setRoles(roles);
         organizationRepository.save(organization);
 
-        status.setMessage("MSG_USER_REG");
+        status.setMessage(MessageEnums.MSG_USER_REG.toString());
         status.setValue(true);
         return status;
     }
@@ -168,7 +169,7 @@ public class RegistrationServiceImp implements RegistrationService {
         StateDto state = new StateDto();
         if (loadedUser == null) {
 
-            state.setMessage("MSG_EMAIL_NOT_EXIST");
+            state.setMessage(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
             state.setValue(false);
             return state;
         }
@@ -186,7 +187,7 @@ public class RegistrationServiceImp implements RegistrationService {
     public RegisterResponseDto activateUser(String link) {
         String email = emailsStore.get(link);
         if (email == null) {
-            return new RegisterResponseDto(null, null, new StateDto(false, "Bad activating code"));
+            return new RegisterResponseDto(null, null, new StateDto(false, MessageEnums.MSG_BAD.toString()));
         }
         User user = userRepository.findByEmail(emailsStore.get(link));
         String token = tokenUtil.createTokenForUser(user);
@@ -196,7 +197,7 @@ public class RegistrationServiceImp implements RegistrationService {
         userRepository.save(user);
         userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
-        StateDto state = new StateDto(true, "MSG_USER_ACTIVED");
+        StateDto state = new StateDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
         UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
         String[] type = token.split(":");
         userDto.setType(type[2]);

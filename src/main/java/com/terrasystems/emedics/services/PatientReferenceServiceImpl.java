@@ -4,6 +4,7 @@ package com.terrasystems.emedics.services;
 import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.StuffRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import com.terrasystems.emedics.model.dto.RegisterDto;
@@ -69,7 +70,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         currentRefs.addAll(refs);
         current.setUserRef(currentRefs);
         userRepository.save(current);
-        return new StateDto(true, "MSG_SAVE_REFS");
+        return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
     }
 
     @Override
@@ -96,7 +97,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         current.setUserRef(removed);
         userRepository.save(current);
         state.setValue(true);
-        state.setMessage("MSG_REMOVE_REFS");
+        state.setMessage(MessageEnums.MSG_REMOVE_REFS.toString());
         return state;
     }
 

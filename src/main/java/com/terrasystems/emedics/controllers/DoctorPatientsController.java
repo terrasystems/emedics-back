@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.DoctorPatientsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class DoctorPatientsController {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
         StateDto state = new StateDto();
         response.setResult(doctorPatientsService.getPatientHistory(id));
-        state.setMessage("MSG_FORM");
+        state.setMessage(MessageEnums.MSG_FORM.toString());
         state.setValue(true);
         response.setState(state);
         return response;
@@ -80,7 +81,7 @@ public class DoctorPatientsController {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
 
         StateDto status = new StateDto();
-        status.setMessage("MSG_INVITE");
+        status.setMessage(MessageEnums.MSG_INVITE.toString());
         status.setValue(true);
         return response;
     }

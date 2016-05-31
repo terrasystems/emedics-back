@@ -32,10 +32,10 @@ public class ReferenceController {
         List<ReferenceDto> references = new ArrayList<>();
         StateDto state = new StateDto();
         if(reference == null) {
-            state.setMessage("error");
+            state.setMessage(MessageEnums.MSG_ERROR.toString());
             state.setValue(false);
         } else {
-            state.setMessage("Edited");
+            state.setMessage(MessageEnums.MSG_EDITE.toString());
             state.setValue(true);
             references.add(new ReferenceDto(reference.getId(), reference.getName(), reference.getType(), reference.getPhone()));
         }

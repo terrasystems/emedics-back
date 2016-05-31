@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.dao.*;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.NotificationDto;
 import com.terrasystems.emedics.model.dto.StateDto;
@@ -68,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         //form.setData("{}");
         form.setActive(false);
         userFormRepository.save(form);
-        state.setMessage("MSG_NOTIF_SEND");
+        state.setMessage(MessageEnums.MSG_NOTIF_SEND.toString());
         state.setValue(true);
         return state;
     }
@@ -86,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
             }
             userForm.setData(form.getData());
             userFormRepository.save(userForm);
-            state.setMessage("MSG_NOTIF_ACCEPT");
+            state.setMessage(MessageEnums.MSG_NOTIF_ACCEPT.toString());
             state.setValue(true);
             return state;
         }
@@ -110,7 +111,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         history.setDate(new Date());
         history.setUserForm(notification.getUserForm());
         historyRepository.save(history);
-        state.setMessage("MSG_NOTIF_ACCEPT");
+        state.setMessage(MessageEnums.MSG_NOTIF_ACCEPT.toString());
         state.setValue(true);
         return state;
     }
@@ -121,7 +122,7 @@ public class NotificationServiceImpl implements NotificationService, CurrentUser
         Notification notification = notificationRepository.findOne(id);
         notification.setReadtype(false);
         notificationRepository.save(notification);
-        state.setMessage("MSG_NOTIF_DECLINE");
+        state.setMessage(MessageEnums.MSG_NOTIF_DECLINE.toString());
         state.setValue(true);
 
         return state;

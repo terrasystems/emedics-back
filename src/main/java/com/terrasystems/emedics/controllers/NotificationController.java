@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.controllers;
 
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,11 @@ public class NotificationController {
     @ResponseBody
     public DashboardNotificationResponse notificationsGetAll(@RequestBody DashboardNotificationsRequest request) {
         DashboardNotificationResponse response = new DashboardNotificationResponse();
-        StateDto state = new StateDto(true,"MSG_NOTIF");
+        StateDto state = new StateDto(true, MessageEnums.MSG_NOTIF.toString());
         List<NotificationDto> notifications = notificationsService.getReceived();
         if (notifications == null) {
             state.setValue(false);
-            state.setMessage("MSG_CANT_GET_NOTIF");
+            state.setMessage(MessageEnums.MSG_CANT_GET_NOTIF.toString());
         }
 
         response.setResult(notifications);

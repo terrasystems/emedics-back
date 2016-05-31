@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.dto.UserFormDto;
@@ -57,7 +58,7 @@ public class PatientDashboardService implements DashboardService {
         Patient patient = (Patient) userRepository.findByEmail(getPrincipals());
         ListDashboardUserFormsResponse response = new ListDashboardUserFormsResponse();
         if (newActiveUserForms.size() > patient.getAllowedFormsCount()){
-            response.setState(new StateDto(false, "MSG_CANT_CHANGE_FORMS"));
+            response.setState(new StateDto(false, MessageEnums.MSG_CANT_CHANGE_FORMS.toString()));
             return response;
         }
         else {
@@ -80,7 +81,7 @@ public class PatientDashboardService implements DashboardService {
                     .filter(item -> item.isActive())
                     .collect(Collectors.toList());
             System.out.println(patient.getEmail());
-            response.setState(new StateDto(true, "MSG_FORM_CHANGE"));
+            response.setState(new StateDto(true, MessageEnums.MSG_FORM_CHANGE.toString()));
             return response;
         }
     }

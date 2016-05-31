@@ -3,6 +3,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.UserForm;
@@ -61,7 +62,7 @@ public class DoctorDashboardService implements DashboardService {
                 .filter(item -> item.isActive())
                 .collect(Collectors.toList());
         System.out.println(doctor.getEmail());
-        response.setState(new StateDto(true, "MSG_FORM_CHANGE"));
+        response.setState(new StateDto(true, MessageEnums.MSG_FORM_CHANGE.toString()));
         return response;
     }
 

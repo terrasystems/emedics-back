@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.ChangePasswordDto;
 import com.terrasystems.emedics.model.dto.RegisterResponseDto;
@@ -39,7 +40,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setTypeExp(userDto.getTypeExp());
             userRepository.save(user);
             state.setValue(true);
-            state.setMessage("MSG_UPDATE");
+            state.setMessage(MessageEnums.MSG_UPDATE.toString());
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -50,7 +51,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             return response;
         } else if (userRepository.existsByEmail(userDto.getEmail())){
             state.setValue(false);
-            state.setMessage("MSG_EMAIL_EXIST");
+            state.setMessage(MessageEnums.MSG_EMAIL_EXIST.toString());
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -65,7 +66,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setEmail(userDto.getEmail());
             userRepository.save(user);
             state.setValue(true);
-            state.setMessage("MSG_UPDATE");
+            state.setMessage(MessageEnums.MSG_UPDATE.toString());
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             respDto = userMapper.toDTO(user);
@@ -88,13 +89,13 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             state.setValue(true);
-            state.setMessage("MSG_CHANGE");
+            state.setMessage(MessageEnums.MSG_CHANGE.toString());
             response.setState(state);
             response.setToken(token);
             return response;
         } else {
             state.setValue(false);
-            state.setMessage("MSG_OLD_PASS_BAD");
+            state.setMessage(MessageEnums.MSG_OLD_PASS_BAD.toString());
             String token = tokenUtil.createTokenForUser(user);
             String[] type = token.split(":");
             response.setState(state);

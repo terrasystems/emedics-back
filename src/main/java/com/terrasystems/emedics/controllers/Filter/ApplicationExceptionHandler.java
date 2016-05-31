@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.controllers.Filter;
 
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
 import com.terrasystems.emedics.model.dto.ExceptionHandlerResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
@@ -34,7 +35,7 @@ public class ApplicationExceptionHandler {
     public ExceptionHandlerResponse unAuthorised(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         ExceptionHandlerResponse resp = new ExceptionHandlerResponse();
-        StateDto stateDto = new StateDto(false, "MSG_NOT_ACTIVATE");
+        StateDto stateDto = new StateDto(false, MessageEnums.MSG_NOT_ACTIVATE.toString());
         resp.setState(stateDto);
         return resp;
     }
