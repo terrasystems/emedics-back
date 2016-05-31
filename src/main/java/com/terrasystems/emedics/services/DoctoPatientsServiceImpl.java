@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.HistoryRepository;
 import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.HistoryDto;
 import com.terrasystems.emedics.model.dto.PatientDto;
