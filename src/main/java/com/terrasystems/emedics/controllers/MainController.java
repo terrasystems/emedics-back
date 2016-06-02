@@ -95,11 +95,11 @@ public class MainController  {
         userRepository.save(patient);
         return "UserForm added";
     }
-    @RequestMapping(value = "/rest/forms", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/template", method = RequestMethod.GET)
     @ResponseBody
-    public String addForms() {
+    public String addTemplates() {
         userFormsDashboardService.init();
-        return "Blanks added";
+        return "Templates added";
     }
 
     @RequestMapping(value = "/rest/disc", method = RequestMethod.GET)
