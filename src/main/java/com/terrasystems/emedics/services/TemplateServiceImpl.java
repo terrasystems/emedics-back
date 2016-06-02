@@ -124,9 +124,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     @Override
     public Template previewTemplate(String id) {
         Template template = templateRepository.findOne(id);
-        if(template != null) {
 
-        }
         return template;
     }
 

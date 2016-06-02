@@ -65,20 +65,26 @@ public class TemplateController {
 
     @RequestMapping(value = "/dashboard/template/delete/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public StateDto deleteUserTemplate(@PathVariable String id) {
-        return templateService.deleteUserTemplateById(id);
+    public DashboardTemplateResponse deleteUserTemplate(@PathVariable String id) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
+        response.setState(templateService.deleteUserTemplateById(id));
+        return response;
     }
 
     @RequestMapping(value = "/dashboard/template/pay/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public StateDto payTemplate(@PathVariable String id) {
-        return templateService.payTemplate(id);
+    public DashboardTemplateResponse payTemplate(@PathVariable String id) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
+        response.setState(templateService.payTemplate(id));
+        return response;
     }
 
     @RequestMapping(value = "/dashboard/template/load/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public StateDto loadTemplate(@PathVariable String id) {
-        return templateService.loadTemplate(id);
+    public DashboardTemplateResponse loadTemplate(@PathVariable String id) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
+        response.setState(templateService.loadTemplate(id));
+        return response;
     }
 
     @RequestMapping(value = "/dashboard/template/preview/{id}", method = RequestMethod.GET)
