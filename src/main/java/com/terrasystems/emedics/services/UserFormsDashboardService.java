@@ -1,9 +1,11 @@
 package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.BlankRepository;
+import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Blank;
+import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class UserFormsDashboardService {
     UserFormRepository userFormRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    TemplateRepository templateRepository;
     @Autowired
     BlankRepository blankRepository;
 
@@ -38,10 +42,10 @@ public class UserFormsDashboardService {
     }
 
     public void init() {
-        List<Blank> blanks = new ArrayList<>();
+        List<Template> templates = new ArrayList<>();
         for (int i = 0; i<3; i++) {
 
-            blanks.add(new Blank("type1","category","{\"sections\":[\n" +
+            templates.add(new Template("type1","category","{\"sections\":[\n" +
                     "            {\n" +
                     "               \"sectionA\": [\n" +
                     "                  {\n" +
@@ -142,7 +146,7 @@ public class UserFormsDashboardService {
                     "               ]\n" +
                     "            }\n" +
                     "         ]}", "desc", "name", Integer.toString(i)));
-            blanks.add(new Blank("type2","category","{\"sections\":[\n" +
+            templates.add(new Template("type2","category","{\"sections\":[\n" +
                     "            {\n" +
                     "               \"sectionA\": [\n" +
                     "                  {\n" +
@@ -244,7 +248,7 @@ public class UserFormsDashboardService {
                     "            }\n" +
                     "         ]}", "desc", "name", Integer.toString(i)));
         }
-        blankRepository.save(blanks);
+        templateRepository.save(templates);
         System.out.println("added blanks");
     }
 }

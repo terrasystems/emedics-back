@@ -10,7 +10,7 @@ public final class DoctorMapper {
         DoctorDto dto = new DoctorDto();
         dto.setEmail(entity.getEmail());
         dto.setType(entity.getDiscriminatorValue()); //without test
-        dto.setUsername(entity.getUsername());  //without test
+        dto.setUsername(entity.getName());  //without test
         dto.setPassword(entity.getPassword());
         dto.setClinic(entity.getClinic());
         return dto;
