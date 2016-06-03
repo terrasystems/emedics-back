@@ -67,6 +67,8 @@ public  class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UserForm> userForms;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<UserTemplate> userTemplates;
 
     @ManyToMany(
             cascade = {CascadeType.ALL},
@@ -83,6 +85,14 @@ public  class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
     )
     private Set<User> userRef;
+
+    public List<UserTemplate> getUserTemplates() {
+        return userTemplates;
+    }
+
+    public void setUserTemplates(List<UserTemplate> userTemplates) {
+        this.userTemplates = userTemplates;
+    }
 
     public String getTypeExp() {
         return typeExp;
