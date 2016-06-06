@@ -49,6 +49,7 @@ public class TaskController {
         DashboardTaskResponse response = new DashboardTaskResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
+
         try {
             response.setResult(mapper.toDto(taskService.createTask(request.getCriteria().getCreate())));
         } catch (IOException e) {
