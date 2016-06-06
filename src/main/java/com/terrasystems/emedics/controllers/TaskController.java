@@ -84,8 +84,25 @@ public class TaskController {
     }
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardTaskResponse editTask(@RequestBody DashboardReferenceRequest request) {
+    public DashboardTaskResponse editTask(@RequestBody DashboardTaskRequest request) {
         DashboardTaskResponse response = new DashboardTaskResponse();
-        return null;
+        EventMapper mapper = EventMapper.getInstance();
+        StateDto state = new StateDto();
+        Event event = taskService.editTask(request.getCriteria().getEdit());
+        if (event == null) {
+            state.setMessage("Failed edit Task");
+            state.setValue(false);
+            response.setState(state);
+            return response;
+        }
+        state.setMessage("Task Edited");
+        state.setValue(true);
+        response.setState(state);
+        try {
+            response.setResult(mapper.toDto(event));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 }

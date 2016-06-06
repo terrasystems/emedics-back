@@ -60,6 +60,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         Event event = eventRepository.findOne(eventDto.getId());
         event.setDate(new Date());
         event.setData(eventDto.getData().toString());
-        return null;
+        //event.setStatus(StatusEnum.valueOf(eventDto.getStatus()));
+
+        return eventRepository.save(event);
     }
 }
