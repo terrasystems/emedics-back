@@ -1,0 +1,41 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+
+    <changeSet author="tester (generated)" id="1465200316371-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="event_journal">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="TEXT"/>
+            <column name="date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="descr" type="VARCHAR(255)"/>
+            <column name="status" type="INT"/>
+            <column name="from_user_id" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="temlate_id" type="VARCHAR(255)"/>
+            <column name="to_user_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465200316371-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="event_journal_pkey" tableName="event_journal"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465200316371-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="temlate_id" baseTableName="event_journal" constraintName="fkedog7pf440bos6k5gkk6nu5vw" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="templates"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465200316371-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="event_journal" constraintName="fkjyx2e6k59ct2ysnrnrs61995i" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465200316371-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="event_journal" constraintName="fkoxlbc5yy31hyx7rcyhrq5i468" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465200316371-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="event_journal" constraintName="fktgsgc8eud9e6xiw5t5p35c1rn" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+</databaseChangeLog>

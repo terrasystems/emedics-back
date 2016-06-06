@@ -2,15 +2,21 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.StateDto;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MailServiceImp implements MailService {
@@ -21,6 +27,8 @@ public class MailServiceImp implements MailService {
     JavaMailSender mailSender;
     @Autowired
     HttpServletRequest request;
+    @Autowired
+    VelocityEngine velocityEngine;
 
     @Override
     public StateDto sendRegistrationMail(String address, String activateToken, String password) {
@@ -57,6 +65,34 @@ public class MailServiceImp implements MailService {
         }
         return new StateDto(true,MessageEnums.MSG_SEND_MAIL.toString());
 
+    }
+    @Override
+    public void velocityTest(User user ) {
+        /*MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            @Override
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+                Map model = new HashMap<>();
+
+                message.setTo("serhiimorunov@gmail.com");
+                message.setSubject("test");
+                message.setText("test text");
+                message.setFrom("admin@emedics.org");
+
+            }
+        };*/
+        mailSender.send(mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+            Map model = new HashMap<>();
+            model.put("user", user);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "classpath*:velocity/test.vm", model);
+
+
+            message.setTo("serhiimorunov@gmail.com");
+            message.setSubject("test");
+            message.setText(text);
+            message.setFrom("admin@emedics.org");
+        });
     }
 
 

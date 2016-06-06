@@ -178,7 +178,22 @@
 			<artifactId>liquibase-maven-plugin</artifactId>
 			<version>3.5.0</version>
 		</dependency>
+
+		<!--com.terrasystems.emedics.velocity-->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+
 	</dependencies>
+
+
 
 
 </project>

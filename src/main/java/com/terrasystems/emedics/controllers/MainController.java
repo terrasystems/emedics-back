@@ -6,10 +6,12 @@ import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.services.MailService;
 import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class MainController  {
     StuffRepository stuffRepository;
     @Autowired
     OrganizationRepository organizationRepository;
+    @Autowired
+    MailService mailService;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -160,5 +164,12 @@ public class MainController  {
 
 
         return stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search);
+    }
+    @RequestMapping(value = "/rest/velocity", method = RequestMethod.GET)
+    @ResponseBody
+    public String testVelocity() {
+        User user = new User("testname","testpass","testmail");
+        mailService.velocityTest(user);
+        return "Sended";
     }
 }
