@@ -28,9 +28,18 @@ public class EventMapper {
         EventDto dto = new EventDto();
         dto.setDate(entity.getDate());
         dto.setId(entity.getId());
+        dto.setStatus(entity.getStatus().name());
         dto.setData(objectMapper.readTree(entity.getData()));
-        dto.setToUser(userMapper.toDTO(entity.getToUser()));
-        dto.setFromUser(userMapper.toDTO(entity.getFromUser()));
+        if (entity.getToUser() == null) {
+            dto.setToUser(null);
+        } else {
+            dto.setToUser(userMapper.toDTO(entity.getToUser()));
+        }
+        if (entity.getFromUser() == null){
+            dto.setFromUser(null);
+        } else {
+            dto.setFromUser(userMapper.toDTO(entity.getFromUser()));
+        }
         dto.setPatient(userMapper.toDTO(entity.getPatient()));
         dto.setTemplate(templateMapper.toDto(entity.getTemplate()));
         dto.setDescr(entity.getDescr());
