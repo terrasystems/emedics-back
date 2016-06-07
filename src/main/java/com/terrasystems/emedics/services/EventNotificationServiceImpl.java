@@ -95,12 +95,12 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
         Event newEvent = new Event();
         newEvent.setStatus(StatusEnum.NEW);
         newEvent.setData(event.getData());
-        newEvent.setFromUser(event.getFromUser());
+        newEvent.setFromUser(event.getToUser());
         newEvent.setDescr(event.getDescr());
         newEvent.setDate(new Date());
         newEvent.setPatient(event.getPatient());
         newEvent.setTemplate(event.getTemplate());
-        newEvent.setToUser(event.getToUser());
+        newEvent.setToUser(null);
         return newEvent;
 
     }
