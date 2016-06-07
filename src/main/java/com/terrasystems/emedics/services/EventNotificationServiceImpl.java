@@ -44,6 +44,30 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     }
 
     @Override
+    public StateDto declineNotification(String eventId) {
+        Event event = eventRepository.findOne(eventId);
+        if(event != null) {
+            event.setStatus(StatusEnum.DECLINDED);
+            eventRepository.save(event);
+            return new StateDto(true, "Notification declined");
+        } else {
+            return new StateDto(false, "Event with such id or recipient doesn't exist");
+        }
+    }
+
+    @Override
+    public StateDto acceptNotification(String eventId) {
+        Event event = eventRepository.findOne(eventId);
+        if(event != null) {
+            event.setStatus(StatusEnum.ACCEPTED);
+            eventRepository.save(event);
+            return new StateDto(true, "Notification accepted");
+        } else {
+            return new StateDto(false, "Event with such id or recipient doesn't exist");
+        }
+    }
+
+    @Override
     public List<EventDto> getNotifications() {
         User current = userRepository.findByEmail(getPrincipals());
         List<EventDto> eventDtos = eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.SENT).stream()
