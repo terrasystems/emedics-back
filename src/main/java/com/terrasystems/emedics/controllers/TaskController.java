@@ -19,8 +19,8 @@ public class TaskController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
-    public DashboardTaskResponse getAllTasks() {
-        DashboardTaskResponse response = new DashboardTaskResponse();
+    public DashboardEventResponse getAllTasks() {
+        DashboardEventResponse response = new DashboardEventResponse();
         StateDto state = new StateDto();
         EventMapper mapper = EventMapper.getInstance();
         List<EventDto> events = taskService.getAllTasks().stream()
@@ -45,8 +45,8 @@ public class TaskController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardTaskResponse createTask(@RequestBody DashboardTaskRequest request) {
-        DashboardTaskResponse response = new DashboardTaskResponse();
+    public DashboardEventResponse createTask(@RequestBody DashboardEventRequest request) {
+        DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
 
@@ -69,10 +69,10 @@ public class TaskController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public DashboardTaskResponse getTask(@PathVariable String id) {
+    public DashboardEventResponse getTask(@PathVariable String id) {
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
-        DashboardTaskResponse response = new DashboardTaskResponse();
+        DashboardEventResponse response = new DashboardEventResponse();
         try {
             response.setResult(mapper.toDto(taskService.getTask(id)));
         } catch (IOException e) {
@@ -85,8 +85,8 @@ public class TaskController {
     }
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardTaskResponse editTask(@RequestBody DashboardTaskRequest request) {
-        DashboardTaskResponse response = new DashboardTaskResponse();
+    public DashboardEventResponse editTask(@RequestBody DashboardEventRequest request) {
+        DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
         Event event = taskService.editTask(request.getCriteria().getEdit());

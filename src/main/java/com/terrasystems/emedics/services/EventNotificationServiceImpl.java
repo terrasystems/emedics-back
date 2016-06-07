@@ -27,14 +27,18 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
 
     @Override
     @Transactional
-    public StateDto sentAction(String id) {
-        Event event = eventRepository.findOne(id);
-        if(event != null){
+    public StateDto sentAction(String eventId, String toUser) {
+        User current = userRepository.findByEmail(getPrincipals());
+        Event event = eventRepository.findOne(eventId);
+        User recipient = userRepository.findOne(toUser);
+        if(event != null && recipient != null){
             event.setStatus(StatusEnum.SENT);
+            event.setFromUser(current);
+            event.setToUser(recipient);
             eventRepository.save(event);
             return new StateDto(true, "Notification Send");
         } else {
-            return new StateDto(false,"Event with such id doesn't exist");
+            return new StateDto(false,"Event with such id or recipient doesn't exist");
         }
     }
 

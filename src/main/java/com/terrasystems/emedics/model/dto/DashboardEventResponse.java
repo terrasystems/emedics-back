@@ -3,13 +3,13 @@ package com.terrasystems.emedics.model.dto;
 
 import java.io.Serializable;
 
-public class DashboardTaskResponse implements Serializable {
+public class DashboardEventResponse implements Serializable {
     private static final long serialVersionUID = -6892305772656775607L;
 
     private StateDto state;
     private Object result;
 
-    public DashboardTaskResponse() {}
+    public DashboardEventResponse() {}
 
     public StateDto getState() {
         return state;

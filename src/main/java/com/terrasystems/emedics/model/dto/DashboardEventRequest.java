@@ -3,12 +3,12 @@ package com.terrasystems.emedics.model.dto;
 
 import java.io.Serializable;
 
-public class DashboardTaskRequest implements Serializable {
+public class DashboardEventRequest implements Serializable {
     private static final long serialVersionUID = 6538492383617120033L;
     private PageDto page;
     private EventCriteria criteria;
 
-    DashboardTaskRequest() {}
+    DashboardEventRequest() {}
 
     public PageDto getPage() {
         return page;

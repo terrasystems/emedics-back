@@ -1,23 +1,22 @@
 package com.terrasystems.emedics.controllers;
 
-import com.terrasystems.emedics.model.dto.DashboardTemplateResponse;
-import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.EventNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/rest/private")
+@RequestMapping(value = "/rest/private/dashboard/tasks")
 public class EventNotificationController {
 
     @Autowired
     EventNotificationService eventNotificationService;
 
-    @RequestMapping(value = "/tasks/send/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardTemplateResponse sendNotification(@PathVariable String id){
-        DashboardTemplateResponse response = new DashboardTemplateResponse();
-        response.setState(eventNotificationService.sentAction(id));
+    public DashboardEventResponse sendNotification(@RequestBody DashboardEventRequest request){
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(eventNotificationService.sentAction(request.getCriteria().getEvent(),request.getCriteria().getToUser()));
         return response;
     }
 
