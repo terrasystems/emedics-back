@@ -45,13 +45,13 @@ public class TaskController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse createTask(@RequestBody DashboardEventRequest request) {
+    public DashboardEventResponse createTask(@RequestBody EventCreateRequest request) {
         DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
 
         try {
-            response.setResult(mapper.toDto(taskService.createTask(request.getCriteria().getCreate())));
+            response.setResult(mapper.toDto(taskService.createTask(request.getTemplate())));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,11 +85,11 @@ public class TaskController {
     }
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse editTask(@RequestBody DashboardEventRequest request) {
+    public DashboardEventResponse editTask(@RequestBody EventEditRequest request) {
         DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
-        Event event = taskService.editTask(request.getCriteria().getEdit());
+        Event event = taskService.editTask(request.getEvent());
         if (event == null) {
             state.setMessage("Failed edit Task");
             state.setValue(false);

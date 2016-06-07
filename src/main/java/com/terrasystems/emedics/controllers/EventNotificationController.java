@@ -14,13 +14,13 @@ public class EventNotificationController {
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse sendNotification(@RequestBody DashboardEventRequest request){
+    public DashboardEventResponse sendNotification(@RequestBody EventSendRequest request){
         DashboardEventResponse response = new DashboardEventResponse();
-        response.setState(eventNotificationService.sentAction(request.getCriteria().getEvent(),request.getCriteria().getToUser()));
+        response.setState(eventNotificationService.sentAction(request.getEvent(),request.getToUser()));
         return response;
     }
 
-    @RequestMapping(value = "/tasks/notifications/list", method = RequestMethod.GET)
+    @RequestMapping(value = "notifications/list", method = RequestMethod.GET)
     @ResponseBody
     public DashboardTemplateResponse getAllNotifications(){
         DashboardTemplateResponse response = new DashboardTemplateResponse();

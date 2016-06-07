@@ -7,8 +7,17 @@ public class DashboardEventRequest implements Serializable {
     private static final long serialVersionUID = 6538492383617120033L;
     private PageDto page;
     private EventCriteria criteria;
+    private Object model;
 
     DashboardEventRequest() {}
+
+    public Object getModel() {
+        return model;
+    }
+
+    public void setModel(Object model) {
+        this.model = model;
+    }
 
     public PageDto getPage() {
         return page;
