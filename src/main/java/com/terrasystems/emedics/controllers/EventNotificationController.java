@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/rest/private/dashboard/tasks")
+@RequestMapping(value = "/rest/private/dashboard/")
 public class EventNotificationController {
 
     @Autowired
     EventNotificationService eventNotificationService;
 
-    @RequestMapping(value = "/send", method = RequestMethod.POST)
+    @RequestMapping(value = "tasks/send", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse sendNotification(@RequestBody EventSendRequest request){
         DashboardEventResponse response = new DashboardEventResponse();
@@ -20,7 +20,7 @@ public class EventNotificationController {
         return response;
     }
 
-    @RequestMapping(value = "/notifications/all", method = RequestMethod.GET)
+    @RequestMapping(value = "events/notifications/all", method = RequestMethod.GET)
     @ResponseBody
     public DashboardEventResponse getAllNotifications(){
         DashboardEventResponse response = new DashboardEventResponse();
