@@ -29,13 +29,13 @@
     <bean id="dataSourceCommon"
           class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName"
-                  value="${db.driver}"/>
+                  value="org.postgresql.Driver"/>
         <property name="url"
-                  value="${db.url}"/>
+                  value="jdbc:postgresql://localhost:5432/emedics"/>
         <property name="username"
-                  value="${db.username}"/>
+                  value="postgres"/>
         <property name="password"
-                  value="${db.password}"/>
+                  value="postgres"/>
 
     </bean>
 

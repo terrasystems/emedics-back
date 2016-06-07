@@ -38,7 +38,7 @@ public class TemplateController {
                 }).collect(Collectors.toList());
 
         response.setResult(templates);
-        response.setState(new StateDto(true, "All user templates"));
+        response.setState(new StateDto(true, "All templates"));
         return response;
     }
 
