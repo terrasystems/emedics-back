@@ -35,11 +35,11 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     public Event createTask(UserTemplateDto userTemplate) {
         User current = userRepository.findByEmail(getPrincipals());
         Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
-        boolean existNew = eventRepository.existsByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
+       /* boolean existNew = eventRepository.existsByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
         boolean existAccepted = eventRepository.existsByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
         if (existNew || existAccepted) {
             return null;
-        }
+        }*/
 
         Event event = new Event();
         event.setDate(new Date());
