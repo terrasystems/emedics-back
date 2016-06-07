@@ -14,18 +14,28 @@
 
     <jpa:repositories base-package="com.terrasystems.emedics.dao" transaction-manager-ref="transactionManagerCommon" entity-manager-factory-ref="entityManagerFactoryCommon"/>
 
+    <!--com.terrasystems.emedics.velocity config-->
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+
     <!-- COMMON SESSION FACTORY AND DATASOURCES -->
 
     <bean id="dataSourceCommon"
           class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName"
-                  value="${db.driver}"/>
+                  value="org.postgresql.Driver"/>
         <property name="url"
-                  value="${db.url}"/>
+                  value="jdbc:postgresql://localhost:5432/emedics"/>
         <property name="username"
-                  value="${db.username}"/>
+                  value="postgres"/>
         <property name="password"
-                  value="${db.password}"/>
+                  value="postgres"/>
 
     </bean>
 
@@ -51,7 +61,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactoryCommon"/>
     </bean>
 
-    <!--<bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
+   <!-- <bean id="transactionManagerTemplate" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactoryTemplate"/>
     </bean>
     <bean id="entityManagerFactoryTemplate" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
