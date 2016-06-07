@@ -57,7 +57,7 @@ public class TaskController {
             return response;
         }
         try {
-            response.setResult(mapper.toDto(taskService.createTask(request.getTemplate())));
+            response.setResult(mapper.toDto(event));
         } catch (IOException e) {
             e.printStackTrace();
         }
