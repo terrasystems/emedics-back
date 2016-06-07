@@ -49,7 +49,13 @@ public class TaskController {
         DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
-
+        Event event = taskService.createTask(request.getTemplate());
+        if (event == null) {
+            state.setValue(false);
+            state.setMessage("You already have task with this template");
+            response.setState(state);
+            return response;
+        }
         try {
             response.setResult(mapper.toDto(taskService.createTask(request.getTemplate())));
         } catch (IOException e) {

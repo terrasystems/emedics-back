@@ -14,6 +14,7 @@ import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,20 +35,32 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     public Event createTask(UserTemplateDto userTemplate) {
         User current = userRepository.findByEmail(getPrincipals());
         Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
+        boolean existNew = eventRepository.existsByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
+        boolean existAccepted = eventRepository.existsByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
+        if (existNew || existAccepted) {
+            return null;
+        }
+
         Event event = new Event();
         event.setDate(new Date());
         event.setPatient(current);
+        event.setFromUser(current);
         event.setTemplate(template);
         event.setData("{}");
-        event.setStatus(StatusEnum.SENT);
+        event.setStatus(StatusEnum.NEW);
         eventRepository.save(event);
         return event;
     }
 
     @Override
     public List<Event> getAllTasks() {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = new ArrayList<>();
+        events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(),StatusEnum.NEW));
+        events.addAll(eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.ACCEPTED));
 
-        return (List<Event>) eventRepository.findAll();
+
+        return events;
     }
 
     @Override
