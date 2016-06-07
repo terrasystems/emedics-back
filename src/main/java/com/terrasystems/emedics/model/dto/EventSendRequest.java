@@ -7,8 +7,17 @@ public class EventSendRequest implements Serializable {
     private static final long serialVersionUID = -697920223965574405L;
     private String toUser;
     private String event;
+    private String message;
 
     public EventSendRequest() {}
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getToUser() {
         return toUser;

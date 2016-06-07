@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface EventRepository extends CrudRepository<Event, String> {
     List<Event> findByToUser_IdAndStatus(String id, StatusEnum status);
+    /*boolean existsByPatient_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateI);
+    boolean existsByToUser_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateId);*/
 }

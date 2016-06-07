@@ -8,6 +8,6 @@ import com.terrasystems.emedics.model.dto.StateDto;
 import java.util.List;
 
 public interface EventNotificationService {
-    StateDto sentAction(String eventId, String toUser);
+    StateDto sentAction(String eventId, String toUser, String message);
     List<EventDto> getNotifications();
 }
