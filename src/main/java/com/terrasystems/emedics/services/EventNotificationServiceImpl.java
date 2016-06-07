@@ -9,11 +9,13 @@ import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.mapping.EventMapper;
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     public StateDto declineNotification(String eventId) {
         Event event = eventRepository.findOne(eventId);
         if(event != null) {
-            event.setStatus(StatusEnum.DECLINDED);
+            event.setStatus(StatusEnum.DECLINED);
             eventRepository.save(event);
             return new StateDto(true, "Notification declined");
         } else {
@@ -58,9 +60,13 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     @Override
     public StateDto acceptNotification(String eventId) {
         Event event = eventRepository.findOne(eventId);
-        if(event != null) {
-            event.setStatus(StatusEnum.ACCEPTED);
+
+        if (event != null) {
+            Event newEvent = cloneEvent(event);
+            newEvent.setId(null);
+            event.setStatus(StatusEnum.CLOSED);
             eventRepository.save(event);
+            eventRepository.save(newEvent);
             return new StateDto(true, "Notification accepted");
         } else {
             return new StateDto(false, "Event with such id or recipient doesn't exist");
@@ -83,6 +89,20 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
                 }).collect(Collectors.toList());
 
         return eventDtos;
+    }
+
+    private static Event cloneEvent(Event event) {
+        Event newEvent = new Event();
+        newEvent.setStatus(StatusEnum.NEW);
+        newEvent.setData(event.getData());
+        newEvent.setFromUser(event.getFromUser());
+        newEvent.setDescr(event.getDescr());
+        newEvent.setDate(new Date());
+        newEvent.setPatient(event.getPatient());
+        newEvent.setTemplate(event.getTemplate());
+        newEvent.setToUser(event.getToUser());
+        return newEvent;
+
     }
 
 

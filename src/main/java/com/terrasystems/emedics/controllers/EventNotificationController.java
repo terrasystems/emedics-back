@@ -28,4 +28,25 @@ public class EventNotificationController {
         response.setResult(eventNotificationService.getNotifications());
         return response;
     }
+
+    @RequestMapping(value = "events/notifications/accept/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse acceptNotification(@PathVariable String id){
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(eventNotificationService.acceptNotification(id));
+        response.setResult(null);
+        return response;
+    }
+
+    @RequestMapping(value = "events/notifications/decline/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse declineNotification(@PathVariable String id){
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(eventNotificationService.declineNotification(id));
+        response.setResult(null);
+        return response;
+    }
+
+
+
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "event_journal")
-public class Event {
+public class Event  {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -119,4 +119,9 @@ public class Event {
     public void setDescr(String descr) {
         this.descr = descr;
     }
+
+
+
+
+
 }
