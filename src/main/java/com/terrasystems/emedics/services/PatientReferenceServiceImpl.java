@@ -14,6 +14,7 @@ import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,14 +61,33 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
+    @Transactional
     public StateDto addReferences(Set<String> references) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<User> refs = userRepository.findAll(references);
-        Set<User> currentRefs = current.getUserRef();
-        currentRefs.addAll(refs);
-        current.setUserRef(currentRefs);
-        userRepository.save(current);
-        return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        if(current.getDiscriminatorValue().equals("patient")){
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.addAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            Doctor doctor = (Doctor) refs.get(0);
+            List<Patient> patients = doctor.getPatients();
+            if(patients.contains((Patient) current)){
+                return new StateDto(false, "This references exist already");
+            } else {
+                patients.add((Patient) current);
+                userRepository.save(doctor);
+                return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+            }
+        } else {
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.addAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        }
+
     }
 
     @Override
