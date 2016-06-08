@@ -16,7 +16,7 @@ public class EventNotificationController {
     @ResponseBody
     public DashboardEventResponse sendNotification(@RequestBody EventSendRequest request){
         DashboardEventResponse response = new DashboardEventResponse();
-        response.setState(eventNotificationService.sentAction(request.getEvent(),request.getToUser()));
+        response.setState(eventNotificationService.sentAction(request.getEvent(),request.getToUser()), request.getPatient());
         return response;
     }
 

@@ -31,12 +31,14 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
     @Override
-    public Event createTask(UserTemplateDto userTemplate) {
+    public Event createTask(UserTemplateDto userTemplate, String patientId) {
         User current = userRepository.findByEmail(getPrincipals());
         Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
+        User patient = userRepository.findOne(patientId);
         Event event = new Event();
+        event.setFromUser(current);
+        event.setPatient(patient);
         event.setDate(new Date());
-        event.setPatient(current);
         event.setTemplate(template);
         event.setData("{}");
         event.setStatus(StatusEnum.SENT);

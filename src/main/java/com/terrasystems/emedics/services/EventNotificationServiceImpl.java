@@ -27,7 +27,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
 
     @Override
     @Transactional
-    public StateDto sentAction(String eventId, String toUser) {
+    public StateDto sentAction(String eventId, String toUser, String patientId) {
         User current = userRepository.findByEmail(getPrincipals());
         Event event = eventRepository.findOne(eventId);
         User recipient = userRepository.findOne(toUser);
