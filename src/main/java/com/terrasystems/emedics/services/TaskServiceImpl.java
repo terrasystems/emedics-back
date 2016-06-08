@@ -46,8 +46,6 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         event.setFromUser(current);
         event.setPatient(patient);
         event.setDate(new Date());
-        event.setPatient(current);
-        event.setFromUser(current);
         event.setTemplate(template);
         event.setData("{}");
         event.setStatus(StatusEnum.NEW);
