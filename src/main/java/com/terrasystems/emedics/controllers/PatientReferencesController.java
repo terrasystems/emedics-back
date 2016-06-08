@@ -2,10 +2,7 @@ package com.terrasystems.emedics.controllers;
 
 
 import com.terrasystems.emedics.enums.MessageEnums;
-import com.terrasystems.emedics.model.dto.DashboardReferenceRequest;
-import com.terrasystems.emedics.model.dto.DashboardReferenceResponse;
-import com.terrasystems.emedics.model.dto.ReferenceDto;
-import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -93,5 +90,16 @@ public class PatientReferencesController {
         return response;
     }
 
+    @RequestMapping(value = "/references/refs", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardReferenceResponse getMyRefs(@RequestBody MyRefsRequest request) {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        StateDto status = new StateDto();
+        response.setResult(referenceService.findMyRefs(request.getSearch(),request.getType()));
+        status.setMessage("Refs");
+        status.setValue(true);
+        response.setState(status);
+        return response;
+    }
 
 }

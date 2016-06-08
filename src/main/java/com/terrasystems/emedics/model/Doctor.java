@@ -12,25 +12,14 @@ import java.util.List;
 @Table(name = "doctors")
 @DiscriminatorValue("doctor")
 public class Doctor extends User {
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
 
-    @Column(name = "email")
-    @NotNull
-    private String email;
-
-    @Column(name = "password")
-    @NotNull
-    private String password;*/
     private String type;
     private String clinic;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patients_doctors",
-            joinColumns = @JoinColumn(name = "pat_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "doc_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "doc_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "pat_id", referencedColumnName = "id")
     )
     private List<Patient> patients;
 
