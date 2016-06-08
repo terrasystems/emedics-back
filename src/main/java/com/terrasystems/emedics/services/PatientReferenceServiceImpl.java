@@ -15,10 +15,7 @@ import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service(value = "patientReferenceService")
@@ -118,6 +115,22 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             userRepository.save(current);
         }
         return status;
+    }
+
+    @Override
+    public List<ReferenceDto> findMyRefs(String search, String type) {
+        ReferenceConverter converter = new ReferenceConverter();
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        List<ReferenceDto> myRefs = new ArrayList<>();
+        if (!type.equals("pat")) {
+            myRefs.addAll(converter.convertFromPatients(current.getPatients()));
+        } else {
+            myRefs.addAll(converter.convertFromPatients(current.getPatients()));
+            myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
+        }
+        return myRefs.stream().filter(referenceDto -> {
+            return referenceDto.getName().contains(search);
+        }).collect(Collectors.toList());
     }
 
 

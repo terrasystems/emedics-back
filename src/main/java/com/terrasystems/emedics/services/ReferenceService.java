@@ -13,4 +13,5 @@ public interface ReferenceService {
     Iterable<ReferenceDto> getAllReferences();
     StateDto removeReferences(Set<String> refs) throws Exception;
     StateDto createReference(String email);
+    List<ReferenceDto> findMyRefs(String search, String type);
 }
