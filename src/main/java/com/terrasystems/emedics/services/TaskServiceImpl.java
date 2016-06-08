@@ -32,7 +32,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
     @Override
-    public Event createTask(UserTemplateDto userTemplate) {
+    public Event createTask(UserTemplateDto userTemplate, String patientId) {
         User current = userRepository.findByEmail(getPrincipals());
         Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
         Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
@@ -41,7 +41,10 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return null;
         }
 
+        User patient = userRepository.findOne(patientId);
         Event event = new Event();
+        event.setFromUser(current);
+        event.setPatient(patient);
         event.setDate(new Date());
         event.setPatient(current);
         event.setFromUser(current);
