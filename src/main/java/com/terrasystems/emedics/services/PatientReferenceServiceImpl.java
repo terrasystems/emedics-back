@@ -14,11 +14,9 @@ import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service(value = "patientReferenceService")
@@ -63,14 +61,33 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
+    @Transactional
     public StateDto addReferences(Set<String> references) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<User> refs = userRepository.findAll(references);
-        Set<User> currentRefs = current.getUserRef();
-        currentRefs.addAll(refs);
-        current.setUserRef(currentRefs);
-        userRepository.save(current);
-        return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        if(current.getDiscriminatorValue().equals("patient")){
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.addAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            Doctor doctor = (Doctor) refs.get(0);
+            List<Patient> patients = doctor.getPatients();
+            if(patients.contains((Patient) current)){
+                return new StateDto(false, "This references exist already");
+            } else {
+                patients.add((Patient) current);
+                userRepository.save(doctor);
+                return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+            }
+        } else {
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.addAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        }
+
     }
 
     @Override
@@ -88,17 +105,27 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
-    public StateDto removeReferences(Set<String> refs) throws Exception{
+    public StateDto removeReferences(Set<String> references) throws Exception{
         User current = userRepository.findByEmail(getPrincipals());
-        StateDto state = new StateDto();
-        Set<User> removed =  current.getUserRef().stream()
-                .filter(user -> !refs.contains(user.getId()))
-                .collect(Collectors.toSet());
-        current.setUserRef(removed);
-        userRepository.save(current);
-        state.setValue(true);
-        state.setMessage(MessageEnums.MSG_REMOVE_REFS.toString());
-        return state;
+        if(current.getDiscriminatorValue().equals("patient")){
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.removeAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            Doctor doctor = (Doctor) refs.get(0);
+            List<Patient> patients = doctor.getPatients();
+            patients.remove((Patient) current);
+            userRepository.save(doctor);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        } else {
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.removeAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        }
     }
 
     @Override
@@ -118,6 +145,32 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             userRepository.save(current);
         }
         return status;
+    }
+
+    @Override
+    public List<ReferenceDto> findMyRefs(String search, String type) {
+        ReferenceConverter converter = new ReferenceConverter();
+        User current = userRepository.findByEmail(getPrincipals());
+        if(current.getDiscriminatorValue().equals("doctor")) {
+            Doctor doctor = (Doctor) current;
+            List<ReferenceDto> myRefs = new ArrayList<>();
+            if (!type.equals("pat")) {
+                myRefs.addAll(converter.convertFromPatients(doctor.getPatients()));
+            } else {
+                myRefs.addAll(converter.convertFromPatients(doctor.getPatients()));
+                myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
+            }
+            return myRefs.stream().filter(referenceDto -> {
+                return referenceDto.getName().contains(search);
+            }).collect(Collectors.toList());
+        } else if (current.getDiscriminatorValue().equals("patient")){
+            Patient patient = (Patient) current;
+            List<ReferenceDto> myRefs = new ArrayList<>();
+            myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
+            return myRefs;
+        } else {
+            return null;
+        }
     }
 
 

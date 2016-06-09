@@ -8,6 +8,7 @@ public class EventSendRequest implements Serializable {
     private String toUser;
     private String event;
     private String message;
+    private String patient;
 
     public EventSendRequest() {}
 
@@ -17,6 +18,14 @@ public class EventSendRequest implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getPatient() {
+        return patient;
+    }
+
+    public void setPatient(String patient) {
+        this.patient = patient;
     }
 
     public String getToUser() {
@@ -35,3 +44,6 @@ public class EventSendRequest implements Serializable {
         this.event = event;
     }
 }
+
+
+

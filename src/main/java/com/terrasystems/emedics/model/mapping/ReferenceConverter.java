@@ -1,10 +1,7 @@
 package com.terrasystems.emedics.model.mapping;
 
 
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Reference;
-import com.terrasystems.emedics.model.Stuff;
-import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 
 import java.util.List;
@@ -57,5 +54,18 @@ public class ReferenceConverter {
                 })
                 .collect(Collectors.toList());
         return references;
+    }
+    public List<ReferenceDto> convertFromPatients(List<Patient> patients) {
+        List<ReferenceDto> refs = patients.stream()
+                .map(patient -> {
+                    ReferenceDto ref = new ReferenceDto();
+                    ref.setId(patient.getId());
+                    ref.setEmail(patient.getEmail());
+                    ref.setPhone(patient.getPhone());
+                    ref.setName(patient.getName());
+                    return ref;
+                })
+                .collect(Collectors.toList());
+        return refs;
     }
 }

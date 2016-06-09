@@ -26,18 +26,28 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     EventRepository  eventRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    TaskService taskService;
 
     @Override
     @Transactional
-    public StateDto sentAction(String eventId, String toUser, String message) {
+    public StateDto sentAction(String eventId, String toUser, String message, String patientId) {
+        if (patientId == null) {
+            return new StateDto(false, "U mast choose patient");
+        }
         User current = userRepository.findByEmail(getPrincipals());
+        /*if (current.getDiscriminatorValue().equals("doctor")) {
+
+        }*/
         Event event = eventRepository.findOne(eventId);
         User recipient = userRepository.findOne(toUser);
+        User patient = userRepository.findOne(patientId);
         if(event != null && recipient != null){
             event.setStatus(StatusEnum.SENT);
             event.setFromUser(current);
             event.setToUser(recipient);
             event.setDescr(message);
+            event.setPatient(patient);
             eventRepository.save(event);
             return new StateDto(true, "Notification Send");
         } else {

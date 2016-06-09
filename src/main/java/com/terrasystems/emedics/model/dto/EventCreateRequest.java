@@ -8,9 +8,17 @@ public class EventCreateRequest implements Serializable{
 
 
     private UserTemplateDto template;
+    private String patient;
 
     public EventCreateRequest() {}
 
+    public String getPatient() {
+        return patient;
+    }
+
+    public void setPatient(String patient) {
+        this.patient = patient;
+    }
 
     public UserTemplateDto getTemplate() {
         return template;
