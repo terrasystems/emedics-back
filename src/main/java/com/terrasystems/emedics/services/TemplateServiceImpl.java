@@ -4,6 +4,7 @@ import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.UserTemplateRepository;
 import com.terrasystems.emedics.enums.FormEnum;
+import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.UserTemplate;
@@ -124,8 +125,16 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     @Override
     public Template previewTemplate(String id) {
         Template template = templateRepository.findOne(id);
-
         return template;
+    }
+
+    public StateDto giftTemplate(String templateId, String patientId) {
+        Template template = templateRepository.findOne(templateId);
+        if (userTemplateRepository.countByTemplate_Id(template.getId()) == 0) {
+            Patient patient = (Patient) userRepository.findOne(patientId);
+        }
+
+        return null;
     }
 
 
