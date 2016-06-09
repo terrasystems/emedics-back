@@ -150,17 +150,27 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     @Override
     public List<ReferenceDto> findMyRefs(String search, String type) {
         ReferenceConverter converter = new ReferenceConverter();
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-        List<ReferenceDto> myRefs = new ArrayList<>();
-        if (!type.equals("pat")) {
-            myRefs.addAll(converter.convertFromPatients(current.getPatients()));
-        } else {
-            myRefs.addAll(converter.convertFromPatients(current.getPatients()));
+        User current = userRepository.findByEmail(getPrincipals());
+        if(current.getDiscriminatorValue().equals("doctor")) {
+            Doctor doctor = (Doctor) current;
+            List<ReferenceDto> myRefs = new ArrayList<>();
+            if (!type.equals("pat")) {
+                myRefs.addAll(converter.convertFromPatients(doctor.getPatients()));
+            } else {
+                myRefs.addAll(converter.convertFromPatients(doctor.getPatients()));
+                myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
+            }
+            return myRefs.stream().filter(referenceDto -> {
+                return referenceDto.getName().contains(search);
+            }).collect(Collectors.toList());
+        } else if (current.getDiscriminatorValue().equals("patient")){
+            Patient patient = (Patient) current;
+            List<ReferenceDto> myRefs = new ArrayList<>();
             myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
+            return myRefs;
+        } else {
+            return null;
         }
-        return myRefs.stream().filter(referenceDto -> {
-            return referenceDto.getName().contains(search);
-        }).collect(Collectors.toList());
     }
 
 
