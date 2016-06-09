@@ -105,17 +105,27 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
-    public StateDto removeReferences(Set<String> refs) throws Exception{
+    public StateDto removeReferences(Set<String> references) throws Exception{
         User current = userRepository.findByEmail(getPrincipals());
-        StateDto state = new StateDto();
-        Set<User> removed =  current.getUserRef().stream()
-                .filter(user -> !refs.contains(user.getId()))
-                .collect(Collectors.toSet());
-        current.setUserRef(removed);
-        userRepository.save(current);
-        state.setValue(true);
-        state.setMessage(MessageEnums.MSG_REMOVE_REFS.toString());
-        return state;
+        if(current.getDiscriminatorValue().equals("patient")){
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.removeAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            Doctor doctor = (Doctor) refs.get(0);
+            List<Patient> patients = doctor.getPatients();
+            patients.remove((Patient) current);
+            userRepository.save(doctor);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        } else {
+            List<User> refs = userRepository.findAll(references);
+            Set<User> currentRefs = current.getUserRef();
+            currentRefs.removeAll(refs);
+            current.setUserRef(currentRefs);
+            userRepository.save(current);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        }
     }
 
     @Override

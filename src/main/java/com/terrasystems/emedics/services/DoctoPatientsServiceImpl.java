@@ -15,6 +15,7 @@ import com.terrasystems.emedics.model.mapping.FormMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,20 +32,29 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
     HistoryRepository historyRepository;
 
     @Override
+    @Transactional
     public StateDto patientAdd(String id) {
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Patient patient = patientRepository.findOne(id);
         StateDto state = new StateDto();
+        List<Patient> patients = current.getPatients();
         if (patient == null) {
             state.setValue(false);
             state.setMessage(MessageEnums.MSG_PATS_NOT_EXIST.toString());
             return state;
+        } if(patients.contains(patient)) {
+            state.setValue(false);
+            state.setMessage("This patient exist already");
+            return state;
+        } else {
+            current.getPatients().add(patient);
+            userRepository.save(current);
+            patient.getUserRef().add(current);
+            userRepository.save(patient);
+            state.setValue(true);
+            state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
+            return state;
         }
-        current.getPatients().add(patient);
-        userRepository.save(current);
-        state.setValue(true);
-        state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
-        return state;
     }
 
     @Override
@@ -179,6 +189,8 @@ public class DoctoPatientsServiceImpl implements DoctorPatientsService, CurrentU
         Patient patient = (Patient) userRepository.findOne(id);
         current.getPatients().remove(patient);
         userRepository.save(current);
+        patient.getUserRef().remove(current);
+        userRepository.save(patient);
         StateDto state = new StateDto();
         state.setMessage(MessageEnums.MSG_PAT_REMOVE.toString());
         state.setValue(true);
