@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+    <changeSet author="tester (generated)" id="1465548250066-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="templates">
+            <column name="commercial" type="int4"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1465548250066-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="templates">
+            <column name="med_type" type="int4"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
