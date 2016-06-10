@@ -51,8 +51,8 @@ public class TaskController {
         StateDto state = new StateDto();
         Event event = taskService.createTask(request.getTemplate(), request.getPatient());
         if (event == null) {
-            state.setValue(false);
-            state.setMessage("You already have task with this template");
+            state.setValue(true);
+            state.setMessage("Task Created");
             response.setState(state);
             return response;
         }
