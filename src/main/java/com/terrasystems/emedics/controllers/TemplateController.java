@@ -82,9 +82,8 @@ public class TemplateController {
     @RequestMapping(value = "/dashboard/template/load/{id}", method = RequestMethod.GET)
     @ResponseBody
     public DashboardTemplateResponse loadTemplate(@PathVariable String id) {
-        DashboardTemplateResponse response = new DashboardTemplateResponse();
-        response.setState(templateService.loadTemplate(id));
-        return response;
+
+        return templateService.loadTemplate(id);
     }
 
     @RequestMapping(value = "/dashboard/template/preview/{id}", method = RequestMethod.GET)

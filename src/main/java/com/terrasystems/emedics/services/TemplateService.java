@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.UserTemplate;
+import com.terrasystems.emedics.model.dto.DashboardTemplateResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
 
 import java.util.List;
@@ -12,6 +13,6 @@ public interface TemplateService {
 
     List<Template> getAllTemplates();
     StateDto payTemplate(String id);
-    StateDto loadTemplate(String id);
+    DashboardTemplateResponse loadTemplate(String id);
     Template previewTemplate(String id);
 }
