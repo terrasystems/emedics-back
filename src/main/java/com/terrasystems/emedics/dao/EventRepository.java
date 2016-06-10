@@ -14,4 +14,5 @@ public interface EventRepository extends CrudRepository<Event, String> {
     List<Event> findByFromUser_IdAndStatus(String id, StatusEnum status);
     Long countByFromUser_IdAndTemplate_IdAndStatus (String userId, String templateId, StatusEnum status);
     Long countByToUser_IdAndTemplate_IdAndStatus(String userId, String templateId, StatusEnum status);
+    List<Event> findByFromUser_Id(String userId);
 }

@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="tester (generated)" id="1464084253159-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <!--<changeSet author="tester (generated)" id="1464084253159-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="history">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -20,5 +20,5 @@
     </changeSet>
     <changeSet author="tester (generated)" id="1464084253159-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="form_id" baseTableName="history" constraintName="fkbfsjkkakd6ev0t4378d0f43l8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_forms"/>
-    </changeSet>
+    </changeSet>-->
 </databaseChangeLog>
