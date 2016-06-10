@@ -91,34 +91,40 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     public StateDto loadTemplate(String id) {
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
-        long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
-        //TODO dehardcode 5
-        if(count < 5) {
-            if(template != null) {
-                UserTemplate userTemplate = new UserTemplate();
-                userTemplate.setType(FormEnum.FREE.toString());
-                userTemplate.setDescription(template.getDescr());
-                userTemplate.setTemplate(template);
-                userTemplate.setUser(currentUser);
-                List<UserTemplate> userTemplates = currentUser.getUserTemplates();
-                userTemplates.add(userTemplate);
-                userTemplateRepository.save(userTemplate);
-                userRepository.save(currentUser);
-                StateDto state = new StateDto();
-                state.setValue(true);
-                state.setMessage("Template load");
-                return state;
+        if(userTemplateRepository.countByTemplate_Id(template.getId()) > 0) {
+            StateDto state = new StateDto();
+            state.setValue(true);
+            state.setMessage("Template load");
+            return state;
+        } else {
+            long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
+            if(count < 5) {
+                if(template != null) {
+                    UserTemplate userTemplate = new UserTemplate();
+                    userTemplate.setType(FormEnum.FREE.toString());
+                    userTemplate.setDescription(template.getDescr());
+                    userTemplate.setTemplate(template);
+                    userTemplate.setUser(currentUser);
+                    List<UserTemplate> userTemplates = currentUser.getUserTemplates();
+                    userTemplates.add(userTemplate);
+                    userTemplateRepository.save(userTemplate);
+                    userRepository.save(currentUser);
+                    StateDto state = new StateDto();
+                    state.setValue(true);
+                    state.setMessage("Template load");
+                    return state;
+                } else {
+                    StateDto state = new StateDto();
+                    state.setValue(false);
+                    state.setMessage("Template with such id doesn't exist");
+                    return state;
+                }
             } else {
                 StateDto state = new StateDto();
                 state.setValue(false);
-                state.setMessage("Template with such id doesn't exist");
+                state.setMessage("You can't load more than 5 Templates");
                 return state;
             }
-        } else {
-            StateDto state = new StateDto();
-            state.setValue(false);
-            state.setMessage("You can't load more than 5 Templates");
-            return state;
         }
     }
 
@@ -136,7 +142,6 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
 
         return null;
     }
-
 
 
 }
