@@ -107,7 +107,6 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
             if(count < 5) {
                 if(template != null) {
                     UserTemplate userTemplate = new UserTemplate();
-                    UserTemplateMapper mapper = UserTemplateMapper.getInstance();
                     userTemplate.setType(FormEnum.FREE.toString());
                     userTemplate.setDescription(template.getDescr());
                     userTemplate.setTemplate(template);
@@ -120,12 +119,8 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                     state.setValue(true);
                     state.setMessage("Template loaded");
                     response.setState(state);
-                    try {
-                        response.setResult(mapper.toDto(userTemplate));
-                    } catch (IOException e) {
-                        response.setState(new StateDto(false, "IOException"));
-                        e.printStackTrace();
-                    }
+                    response.setResult(userTemplate.getId());
+
                     return response;
                 } else {
                     StateDto state = new StateDto();
