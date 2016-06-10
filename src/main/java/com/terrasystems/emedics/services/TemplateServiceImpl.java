@@ -8,11 +8,15 @@ import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.UserTemplate;
+import com.terrasystems.emedics.model.dto.DashboardTemplateResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.mapping.TemplateMapper;
+import com.terrasystems.emedics.model.mapping.UserTemplateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -88,14 +92,16 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
 
     @Override
     @Transactional
-    public StateDto loadTemplate(String id) {
+    public DashboardTemplateResponse loadTemplate(String id) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
         if(userTemplateRepository.countByTemplate_Id(template.getId()) > 0) {
             StateDto state = new StateDto();
             state.setValue(true);
-            state.setMessage("Template load");
-            return state;
+            state.setMessage("Template loaded");
+            response.setState(state);
+            return response;
         } else {
             long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
             if(count < 5) {
@@ -111,19 +117,24 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                     userRepository.save(currentUser);
                     StateDto state = new StateDto();
                     state.setValue(true);
-                    state.setMessage("Template load");
-                    return state;
+                    state.setMessage("Template loaded");
+                    response.setState(state);
+                    response.setResult(userTemplate.getId());
+
+                    return response;
                 } else {
                     StateDto state = new StateDto();
                     state.setValue(false);
                     state.setMessage("Template with such id doesn't exist");
-                    return state;
+                    response.setState(state);
+                    return response;
                 }
             } else {
                 StateDto state = new StateDto();
                 state.setValue(false);
                 state.setMessage("You can't load more than 5 Templates");
-                return state;
+                response.setState(state);
+                return response;
             }
         }
     }
