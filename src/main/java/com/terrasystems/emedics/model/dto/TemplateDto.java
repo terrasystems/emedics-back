@@ -21,12 +21,13 @@ public class TemplateDto implements Serializable {
     private String number;
     private CommercialEnum commercialEnum;
     private TypeEnum typeEnum;
+    private boolean existPaid;
 
     public TemplateDto() {
     }
 
     public TemplateDto(String id, String type, String category, String name, JsonNode body, String descr, String number,
-                       CommercialEnum commercialEnum, TypeEnum typeEnum) {
+                       CommercialEnum commercialEnum, TypeEnum typeEnum, boolean existPaid) {
         this.id = id;
         this.type = type;
         this.category = category;
@@ -36,6 +37,15 @@ public class TemplateDto implements Serializable {
         this.number = number;
         this.commercialEnum = commercialEnum;
         this.typeEnum = typeEnum;
+        this.existPaid = existPaid;
+    }
+
+    public boolean isExistPaid() {
+        return existPaid;
+    }
+
+    public void setExistPaid(boolean existPaid) {
+        this.existPaid = existPaid;
     }
 
     public String getId() {
@@ -122,6 +132,7 @@ public class TemplateDto implements Serializable {
                 .add("number", number)
                 .add("commercialEnum", commercialEnum)
                 .add("typeEnum", typeEnum)
+                .add("existPaid", existPaid)
                 .toString();
     }
 
@@ -143,6 +154,7 @@ public class TemplateDto implements Serializable {
                 .append(number, that.number)
                 .append(commercialEnum, that.commercialEnum)
                 .append(typeEnum, that.typeEnum)
+                .append(existPaid, that.existPaid)
                 .isEquals();
     }
 
@@ -158,6 +170,7 @@ public class TemplateDto implements Serializable {
                 .append(number)
                 .append(commercialEnum)
                 .append(typeEnum)
+                .append(existPaid)
                 .toHashCode();
     }
 }
