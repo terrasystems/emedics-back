@@ -25,7 +25,7 @@ public class TemplateController {
     @ResponseBody
     public DashboardTemplateResponse listTemplates() {
         DashboardTemplateResponse response = new DashboardTemplateResponse();
-        List<TemplateDto> templates = templateService.getAllTemplates().stream()
+        /*List<TemplateDto> templates = templateService.getAllTemplates().stream()
                 .map(item -> {
                     TemplateMapper mapper = TemplateMapper.getInstance();
                     TemplateDto templateDto = new TemplateDto();
@@ -35,9 +35,9 @@ public class TemplateController {
                         e.printStackTrace();
                     }
                     return templateDto;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList());*/
 
-        response.setResult(templates);
+        response.setResult(templateService.getAllTemplates());
         response.setState(new StateDto(true, "All templates"));
         return response;
     }

@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.UserTemplateRepository;
@@ -10,6 +11,7 @@ import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.UserTemplate;
 import com.terrasystems.emedics.model.dto.DashboardTemplateResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
+import com.terrasystems.emedics.model.dto.TemplateDto;
 import com.terrasystems.emedics.model.mapping.TemplateMapper;
 import com.terrasystems.emedics.model.mapping.UserTemplateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TemplateServiceImpl implements TemplateService, CurrentUserService{
@@ -30,9 +35,39 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     UserRepository userRepository;
 
     @Override
-    public List<Template> getAllTemplates() {
+    @Transactional
+    public List<TemplateDto> getAllTemplates() {
         List<Template> templates = (List) templateRepository.findAll();
-        return templates;
+        List<UserTemplate> userTemplates = userTemplateRepository.findByType("PAID");
+        List<String> idPaidTemplates = userTemplates.stream()
+                .map(userTemplate -> userTemplate.getTemplate().getId())
+                .collect(Collectors.toList());
+
+
+        return templates.stream()
+               .map(template -> {
+                   ObjectMapper objectMapper = new ObjectMapper();
+                    TemplateDto dto = new TemplateDto();
+                    if (idPaidTemplates.contains(template.getId())) {
+                        dto.setExistPaid(true);
+
+                    }
+                   dto.setName(template.getName());
+                   dto.setNumber(template.getNumber());
+                   dto.setCategory(template.getCategory());
+                   dto.setDescr(template.getDescr());
+                   dto.setId(template.getId());
+                   dto.setType(template.getType());
+                   try {
+                       dto.setBody(objectMapper.readTree(template.getBody()));
+                   } catch (IOException e) {
+                       e.printStackTrace();
+                   }
+                   dto.setCommercialEnum(template.getCommercialEnum());
+                   dto.setTypeEnum(template.getTypeEnum());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

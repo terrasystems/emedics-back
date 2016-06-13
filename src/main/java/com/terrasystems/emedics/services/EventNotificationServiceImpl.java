@@ -4,6 +4,7 @@ package com.terrasystems.emedics.services;
 import com.terrasystems.emedics.dao.EventRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.StatusEnum;
+import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.EventDto;
@@ -70,17 +71,50 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     @Override
     public StateDto acceptNotification(String eventId) {
         Event event = eventRepository.findOne(eventId);
-
-        if (event != null) {
-            Event newEvent = cloneEvent(event);
-            newEvent.setId(null);
-            event.setStatus(StatusEnum.CLOSED);
-            eventRepository.save(event);
-            eventRepository.save(newEvent);
-            return new StateDto(true, "Notification accepted");
-        } else {
+        User current = userRepository.findByEmail(getPrincipals());
+        if(event != null){
+            if(current.getDiscriminatorValue().equals("doctor")){
+                if(event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)){
+                    Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.NEW);
+                    Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.ACCEPTED);
+                    if (countNew > 0 || countAccepted > 0) {
+                        return new StateDto(false, "You already have this task");
+                    } else {
+                        Event newEvent = cloneEvent(event);
+                        newEvent.setId(null);
+                        event.setStatus(StatusEnum.CLOSED);
+                        eventRepository.save(event);
+                        eventRepository.save(newEvent);
+                        return new StateDto(true, "Notification accepted");
+                    }
+                } else {
+                    Event newEvent = cloneEvent(event);
+                    newEvent.setId(null);
+                    event.setStatus(StatusEnum.CLOSED);
+                    eventRepository.save(event);
+                    eventRepository.save(newEvent);
+                    return new StateDto(true, "Notification accepted");
+                }
+            } else if (current.getDiscriminatorValue().equals("patient")) {
+                Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.NEW);
+                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.ACCEPTED);
+                if (countNew > 0 || countAccepted > 0) {
+                    return new StateDto(false, "You already have this task");
+                } else {
+                    Event newEvent = cloneEvent(event);
+                    newEvent.setId(null);
+                    event.setStatus(StatusEnum.CLOSED);
+                    eventRepository.save(event);
+                    eventRepository.save(newEvent);
+                    return new StateDto(true, "Notification accepted");
+                }
+            } else {
+                return null;
+            }
+        }else {
             return new StateDto(false, "Event with such id or recipient doesn't exist");
         }
+
     }
 
     @Override
