@@ -46,7 +46,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     @Override
     public Event createTask(UserTemplateDto userTemplate, String patientId) {
         User current = userRepository.findByEmail(getPrincipals());
-        Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
+        Template template = templateRepository.findOne(userTemplate.getId());
         User patient = null;
         if (patientId != null) {
             patient = userRepository.findOne(patientId);
