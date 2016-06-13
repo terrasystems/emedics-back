@@ -1,11 +1,14 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.sun.xml.internal.bind.v2.runtime.output.SAXOutput;
 import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.UserFormRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.TemplateEventDto;
+import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.MailService;
 import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
@@ -38,6 +41,10 @@ public class MainController  {
     OrganizationRepository organizationRepository;
     @Autowired
     MailService mailService;
+    @Autowired
+    EventRepository eventRepository;
+    @Autowired
+    EventPatientService eventPatientService;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -172,4 +179,21 @@ public class MainController  {
         mailService.velocityTest(user);
         return "Sended";
     }
+
+    /*@RequestMapping(value = "/rest/pats/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String testVelocity(@PathVariable String id) {
+        List<String> strings = eventRepository.findTemplate_IdByPatient_Id(id);
+        strings.forEach(System.out::println);
+        return "Sended";
+    }*/
+
+    @RequestMapping(value = "/rest/pats/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<TemplateEventDto> testPatients(@PathVariable String id) {
+
+
+        return eventPatientService.getPatientsEvents(id);
+    }
+
 }

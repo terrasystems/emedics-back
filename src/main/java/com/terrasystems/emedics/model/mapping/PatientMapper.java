@@ -22,27 +22,12 @@ public class PatientMapper {
     }
 
     public PatientDto toDto(Patient entity) {
-        FormMapper mapper = FormMapper.getInstance();
         PatientDto dto = new PatientDto();
-        List<UserForm> forms = entity.getUserForms();
-        List<UserFormDto> formDtos = forms.stream()
-                .map(userForm -> {
-                    UserFormDto form = new UserFormDto();
-                    try {
-                        form = mapper.toDto(userForm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return form;
-                })
-                .collect(Collectors.toList());
-        dto.setId(entity.getId());
-        dto.setEmail(entity.getEmail());
         dto.setName(entity.getName());
+        dto.setId(entity.getId());
         dto.setPhone(entity.getPhone());
-        //dto.setForms(formDtos);
+        dto.setEmail(entity.getEmail());
         dto.setAllowedFormsCount(entity.getAllowedFormsCount());
-
         return dto;
     }
 

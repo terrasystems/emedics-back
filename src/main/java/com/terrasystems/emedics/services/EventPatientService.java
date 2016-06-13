@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface EventPatientService {
     List<PatientDto> getAllPatients();
-    List<TemplateEventDto> getPatientsEvents();
+    List<TemplateEventDto> getPatientsEvents(String patientId);
 
 }
