@@ -163,7 +163,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                     state.setValue(true);
                     state.setMessage("Template loaded");
                     response.setState(state);
-                    response.setResult(userTemplate.getId());
+                    response.setResult(template.getId());
 
                     return response;
                 } else {
