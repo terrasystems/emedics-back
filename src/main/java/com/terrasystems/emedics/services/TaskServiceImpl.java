@@ -51,7 +51,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         if (patientId != null) {
             patient = userRepository.findOne(patientId);
         }
-        if(current.getDiscriminatorValue().equals("doctor")) {
+        if (current.getDiscriminatorValue().equals("doctor")) {
             if(template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
                 Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
                 Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);

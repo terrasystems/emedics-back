@@ -96,12 +96,12 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         DashboardTemplateResponse response = new DashboardTemplateResponse();
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
-        if(userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(),currentUser.getId()) > 0) {
+        if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(),currentUser.getId()) > 0) {
             StateDto state = new StateDto();
             state.setValue(true);
             state.setMessage("Template loaded");
             response.setState(state);
-            response.setResult(template);
+            response.setResult(userTemplateRepository.findByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()).getId());
             return response;
         } else {
             long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());

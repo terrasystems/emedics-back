@@ -10,4 +10,5 @@ public interface UserTemplateRepository extends CrudRepository<UserTemplate, Str
     Long countByTypeAndUser_Id(String type, String id);
     Long countByTemplate_Id(String templateId);
     Long countByTemplate_IdAndUser_Id(String templateId, String userId);
+    UserTemplate findByTemplate_IdAndUser_Id(String templateId, String userId);
 }
