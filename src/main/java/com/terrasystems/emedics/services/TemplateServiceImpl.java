@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.UserTemplateRepository;
+import com.terrasystems.emedics.enums.CommercialEnum;
 import com.terrasystems.emedics.enums.FormEnum;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
@@ -131,6 +132,37 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         DashboardTemplateResponse response = new DashboardTemplateResponse();
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
+        if(template.getCommercialEnum().equals(CommercialEnum.PAID)){
+            StateDto state = new StateDto();
+            state.setValue(false);
+            state.setMessage("You can't load paid template");
+            response.setState(state);
+            return response;
+        } else {
+            if(userTemplateRepository.countByTemplate_Id(template.getId()) > 0) {
+                StateDto state = new StateDto();
+                state.setValue(true);
+                state.setMessage("Template loaded");
+                response.setState(state);
+                return response;
+            } else {
+                long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
+                if(count < 5) {
+                    if(template != null) {
+                        UserTemplate userTemplate = new UserTemplate();
+                        userTemplate.setType(FormEnum.FREE.toString());
+                        userTemplate.setDescription(template.getDescr());
+                        userTemplate.setTemplate(template);
+                        userTemplate.setUser(currentUser);
+                        List<UserTemplate> userTemplates = currentUser.getUserTemplates();
+                        userTemplates.add(userTemplate);
+                        userTemplateRepository.save(userTemplate);
+                        userRepository.save(currentUser);
+                        StateDto state = new StateDto();
+                        state.setValue(true);
+                        state.setMessage("Template loaded");
+                        response.setState(state);
+                        response.setResult(userTemplate.getId());
         if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(),currentUser.getId()) > 0) {
             StateDto state = new StateDto();
             state.setValue(true);
@@ -159,20 +191,21 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                     //response.setResult(userTemplate.getId());
                     response.setResult(template.getId());
 
-                    return response;
+                        return response;
+                    } else {
+                        StateDto state = new StateDto();
+                        state.setValue(false);
+                        state.setMessage("Template with such id doesn't exist");
+                        response.setState(state);
+                        return response;
+                    }
                 } else {
                     StateDto state = new StateDto();
                     state.setValue(false);
-                    state.setMessage("Template with such id doesn't exist");
+                    state.setMessage("You can't load more than 5 Templates");
                     response.setState(state);
                     return response;
                 }
-            } else {
-                StateDto state = new StateDto();
-                state.setValue(false);
-                state.setMessage("You can't load more than 5 Templates");
-                response.setState(state);
-                return response;
             }
         }
     }
