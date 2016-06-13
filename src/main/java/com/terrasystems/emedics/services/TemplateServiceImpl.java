@@ -101,6 +101,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
             state.setValue(true);
             state.setMessage("Template loaded");
             response.setState(state);
+            response.setResult(template);
             return response;
         } else {
             long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
