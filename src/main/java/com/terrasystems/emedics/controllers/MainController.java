@@ -1,20 +1,14 @@
 package com.terrasystems.emedics.controllers;
 
 
-import com.sun.xml.internal.bind.v2.runtime.output.SAXOutput;
-import com.terrasystems.emedics.dao.RoleRepository;
-import com.terrasystems.emedics.dao.UserFormRepository;
-import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.MailService;
-import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
