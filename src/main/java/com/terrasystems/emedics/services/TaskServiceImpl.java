@@ -30,8 +30,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     @Autowired
     UserTemplateRepository userTemplateRepository;
 
-    private Event createTaskLogic(String patientId, User current, Template template) {
-        User patient = userRepository.findOne(patientId);
+    private Event createTaskLogic(User patient, User current, Template template) {
         Event event = new Event();
         event.setFromUser(current);
         event.setPatient(patient);
@@ -48,6 +47,10 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     public Event createTask(UserTemplateDto userTemplate, String patientId) {
         User current = userRepository.findByEmail(getPrincipals());
         Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
+        User patient = null;
+        if (patientId != null) {
+            patient = userRepository.findOne(patientId);
+        }
         if(current.getDiscriminatorValue().equals("doctor")) {
             if(template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
                 Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
@@ -55,12 +58,12 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 if (countNew > 0 || countAccepted > 0) {
                     return null;
                 } else {
-                    Event event = createTaskLogic(patientId, current, template);
+                    Event event = createTaskLogic(patient, current, template);
                     return event;
                 }
 
             } else {
-                Event event = createTaskLogic(patientId, current, template);
+                Event event = createTaskLogic(patient, current, template);
                 return event;
             }
         } else if (current.getDiscriminatorValue().equals("patient")){
@@ -70,7 +73,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return null;
             }
 
-            Event event = createTaskLogic(patientId, current, template);
+            Event event = createTaskLogic(patient, current, template);
             return event;
         } else {
             return null;
