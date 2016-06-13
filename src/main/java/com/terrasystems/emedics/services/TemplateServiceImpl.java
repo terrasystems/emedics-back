@@ -37,7 +37,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     @Override
     @Transactional
     public List<TemplateDto> getAllTemplates() {
-        List<Template> templates = (List) templateRepository.findAll();
+        List<Template> templates = (List<Template>) templateRepository.findAll();
         List<UserTemplate> userTemplates = userTemplateRepository.findByType("PAID");
         List<String> idPaidTemplates = userTemplates.stream()
                 .map(userTemplate -> userTemplate.getTemplate().getId())
@@ -136,7 +136,8 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
             state.setValue(true);
             state.setMessage("Template loaded");
             response.setState(state);
-            response.setResult(userTemplateRepository.findByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()).getId());
+            //response.setResult(userTemplateRepository.findByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()).getId());
+            response.setResult(template.getId());
             return response;
         } else {
             long count = userTemplateRepository.countByTypeAndUser_Id(FormEnum.FREE.name(),currentUser.getId());
@@ -155,7 +156,8 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                     state.setValue(true);
                     state.setMessage("Template loaded");
                     response.setState(state);
-                    response.setResult(userTemplate.getId());
+                    //response.setResult(userTemplate.getId());
+                    response.setResult(template.getId());
 
                     return response;
                 } else {
