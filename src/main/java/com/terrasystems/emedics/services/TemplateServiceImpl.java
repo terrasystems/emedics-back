@@ -133,13 +133,13 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         DashboardTemplateResponse response = new DashboardTemplateResponse();
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
-        if(userTemplateRepository.countByTemplate_Id(template.getId()) > 0) {
+        if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()) > 0) {
             StateDto state = new StateDto();
             state.setValue(true);
             state.setMessage("Template loaded");
             response.setState(state);
             return response;
-        } else  if(template.getCommercialEnum().equals(CommercialEnum.PAID)){
+        } else  if (template.getCommercialEnum().equals(CommercialEnum.PAID)){
             StateDto state = new StateDto();
             state.setValue(false);
             state.setMessage("You can't load paid template");
@@ -188,14 +188,14 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         return template;
     }
 
-    public StateDto giftTemplate(String templateId, String patientId) {
+    /*public StateDto giftTemplate(String templateId, String patientId) {
         Template template = templateRepository.findOne(templateId);
         if (userTemplateRepository.countByTemplate_Id(template.getId()) == 0) {
             Patient patient = (Patient) userRepository.findOne(patientId);
         }
 
         return null;
-    }
+    }*/
 
 
 }
