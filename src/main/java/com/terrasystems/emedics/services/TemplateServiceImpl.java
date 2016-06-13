@@ -138,6 +138,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
             state.setValue(true);
             state.setMessage("Template loaded");
             response.setState(state);
+            response.setResult(template.getId());
             return response;
         } else  if (template.getCommercialEnum().equals(CommercialEnum.PAID)){
             StateDto state = new StateDto();
