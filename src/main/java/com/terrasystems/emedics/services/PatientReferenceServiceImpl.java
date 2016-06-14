@@ -129,6 +129,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
+    @Transactional
     public StateDto createReference(String email) {
         User current = userRepository.findByEmail(getPrincipals());
         RegisterDto registerDto = new RegisterDto();
@@ -138,10 +139,9 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         registerDto.setUser(userDto);
         StateDto status = registrationService.registerUser(registerDto,"doc");
         if (status.isValue()){
-            User doctor =  userRepository.findByEmail(email);
-            Set<User> doctors = new HashSet<>();
-            doctors.add(doctor);
-            current.getUserRef().addAll(doctors);
+            Doctor doctor = (Doctor) userRepository.findByEmail(email);
+            current.getUserRef().add(doctor);
+            doctor.getPatients().add((Patient) current);
             userRepository.save(current);
         }
         return status;
