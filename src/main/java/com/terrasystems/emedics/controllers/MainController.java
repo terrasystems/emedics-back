@@ -5,6 +5,7 @@ import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.services.EventPatientService;
+import com.terrasystems.emedics.services.LoaderService;
 import com.terrasystems.emedics.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,8 @@ public class MainController  {
     EventRepository eventRepository;
     @Autowired
     EventPatientService eventPatientService;
+    @Autowired
+    LoaderService loaderService;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -168,6 +171,14 @@ public class MainController  {
 
 
         return eventPatientService.getPatientsEvents(id);
+    }
+
+    @RequestMapping(value = "/rest/init", method = RequestMethod.GET)
+    @ResponseBody
+    public String init() {
+        loaderService.init();
+
+        return "Initializtion";
     }
 
 }
