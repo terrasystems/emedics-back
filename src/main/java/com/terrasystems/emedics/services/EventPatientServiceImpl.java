@@ -2,8 +2,10 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.dao.EventRepository;
+import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Event;
@@ -11,11 +13,13 @@ import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.PatientDto;
+import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +34,8 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     TemplateRepository templateRepository;
     @Autowired
     EventRepository eventRepository;
+    @Autowired
+    PatientRepository patientRepository;
     @Override
     public List<PatientDto> getAllPatients() {
         PatientMapper mapper = PatientMapper.getInstance();
@@ -71,8 +77,66 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         return eventsDto;
     }
 
-    private List<Event> patientEventsByTemplate (String patientId, String templateId) {
+    @Override
+    public List<PatientDto> findPatientByCriteria(String search) {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        List<Patient> currentPats = current.getPatients();
+        PatientMapper mapper = PatientMapper.getInstance();
+        List<Patient> patients = patientRepository.findByNameContainingOrEmailContaining(search,search).stream()
+                .filter(patient -> !currentPats.contains(patient))
+                .collect(Collectors.toList());
+        List<PatientDto> patientDtos = patients.stream()
+                .map(patient -> {
+                    PatientDto dto = new PatientDto();
+                    dto = mapper.toDto(patient);
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
-        return eventRepository.findByPatient_IdAndTemplate_IdAndStatusIsNot(patientId, templateId, StatusEnum.DECLINED);
+
+        return patientDtos;
     }
+
+    @Override
+    @Transactional
+    public StateDto removePatient(String id) {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        Patient patient = (Patient) userRepository.findOne(id);
+        current.getPatients().remove(patient);
+        userRepository.save(current);
+        patient.getUserRef().remove(current);
+        userRepository.save(patient);
+        StateDto state = new StateDto();
+        state.setMessage(MessageEnums.MSG_PAT_REMOVE.toString());
+        state.setValue(true);
+        return state;
+    }
+
+    @Override
+    @Transactional
+    public StateDto addPatient(String id) {
+        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        Patient patient = patientRepository.findOne(id);
+        StateDto state = new StateDto();
+        List<Patient> patients = current.getPatients();
+        if (patient == null) {
+            state.setValue(false);
+            state.setMessage(MessageEnums.MSG_PATS_NOT_EXIST.toString());
+            return state;
+        } if(patients.contains(patient)) {
+            state.setValue(false);
+            state.setMessage("This patient exist already");
+            return state;
+        } else {
+            current.getPatients().add(patient);
+            userRepository.save(current);
+            patient.getUserRef().add(current);
+            userRepository.save(patient);
+            state.setValue(true);
+            state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
+            return state;
+        }
+    }
+
+
 }

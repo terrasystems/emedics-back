@@ -12,6 +12,7 @@ public interface EventPatientService {
     List<TemplateEventDto> getPatientsEvents(String patientId);
     List <PatientDto> findPatientByCriteria(String search);
     StateDto removePatient(String id);
+    StateDto addPatient(String id);
 
 
 }
