@@ -12,7 +12,6 @@ public final class DoctorMapper {
         dto.setType(entity.getDiscriminatorValue()); //without test
         dto.setUsername(entity.getName());  //without test
         dto.setPassword(entity.getPassword());
-        dto.setClinic(entity.getClinic());
         return dto;
     }
 
@@ -22,7 +21,6 @@ public final class DoctorMapper {
         //entity.setDiscriminatorValue(dto.getType());  //methods dto.getType(), setDiscriminatorValue() not supported yet
         //entity.setUsername(dto.getUsername());    //method getUsername() not supported yet
         entity.setPassword(dto.getPassword());
-        entity.setClinic(dto.getClinic());
         return entity;
     }
 }

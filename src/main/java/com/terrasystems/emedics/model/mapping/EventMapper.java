@@ -40,7 +40,11 @@ public class EventMapper {
         } else {
             dto.setFromUser(userMapper.toDTO(entity.getFromUser()));
         }
-        dto.setPatient(userMapper.toDTO(entity.getPatient()));
+        if (entity.getPatient() == null) {
+            dto.setPatient(null);
+        } else {
+            dto.setPatient(userMapper.toDTO(entity.getPatient()));
+        }
         dto.setTemplate(templateMapper.toDto(entity.getTemplate()));
         dto.setDescr(entity.getDescr());
         return dto;

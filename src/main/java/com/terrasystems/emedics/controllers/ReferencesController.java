@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = {"/rest/private/dashboard/patient","/rest/private/dashboard/doctor"})
 
-public class PatientReferencesController {
+public class ReferencesController {
 
     @Autowired
     @Qualifier("patientReferenceService")

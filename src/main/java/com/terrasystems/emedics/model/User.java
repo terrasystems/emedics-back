@@ -18,9 +18,11 @@ import java.util.Set;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
-public  class User implements UserDetails {
-    public User(){}
-    public User(String name, String password, String email){
+public class User implements UserDetails {
+    public User() {
+    }
+
+    public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
         this.email = email;
@@ -58,14 +60,12 @@ public  class User implements UserDetails {
     @Column
     protected boolean enabled = false;
 
+    @Column(name = "allowed_forms_count")
+    protected int allowedFormsCount;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
-    protected Set<Reference> reference;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<UserForm> userForms;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UserTemplate> userTemplates;
@@ -78,7 +78,7 @@ public  class User implements UserDetails {
     )
     private Set<User> users;
 
-    @ManyToMany(cascade = {CascadeType.ALL} , fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_users",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -138,21 +138,6 @@ public  class User implements UserDetails {
         this.enabled = enabled;
     }
 
-    public List<UserForm> getUserForms() {
-        return userForms;
-    }
-
-    public void setUserForms(List<UserForm> userForms) {
-        this.userForms = userForms;
-    }
-
-    public Set<Reference> getReference() {
-        return reference;
-    }
-
-    public void setReference(Set<Reference> reference) {
-        this.reference = reference;
-    }
 
     public String getId() {
         return id;
@@ -235,12 +220,11 @@ public  class User implements UserDetails {
     }
 
     @Transient
-    public String getDiscriminatorValue(){
+    public String getDiscriminatorValue() {
         DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
 
         return val == null ? null : val.value();
     }
-
 
 
     public String resetPassword(String newPass) {
@@ -280,5 +264,10 @@ public  class User implements UserDetails {
                 .append(expires)
                 .append(enabled)
                 .toHashCode();
+    }
+
+    @PrePersist
+    public void preInsert() {
+        allowedFormsCount = 5;
     }
 }

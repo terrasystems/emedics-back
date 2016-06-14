@@ -16,8 +16,7 @@ import java.util.List;
 @DiscriminatorValue("patient")
 public class Patient extends User {
 
-    @Column(name = "allowed_forms_count")
-    private int allowedFormsCount;
+
 
     @ManyToMany(mappedBy = "patients")
     private List<Doctor> doctors;
@@ -45,15 +44,11 @@ public class Patient extends User {
         this.allowedFormsCount = allowedFormsCount;
     }
 
-    @PrePersist
-    public void preInsert() {
-        allowedFormsCount = 5;
-    }
+
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("allowedFormsCount", allowedFormsCount)
                 .add("doctors", doctors)
                 .toString();
     }
@@ -68,7 +63,6 @@ public class Patient extends User {
 
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
-                .append(allowedFormsCount, patient.allowedFormsCount)
                 .isEquals();
     }
 
@@ -76,7 +70,6 @@ public class Patient extends User {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
-                .append(allowedFormsCount)
                 .toHashCode();
     }
 }

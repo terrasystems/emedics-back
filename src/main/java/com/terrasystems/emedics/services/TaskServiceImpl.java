@@ -5,10 +5,10 @@ import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.UserTemplateRepository;
 import com.terrasystems.emedics.enums.StatusEnum;
+import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.UserTemplate;
 import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +30,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     @Autowired
     UserTemplateRepository userTemplateRepository;
 
-
-    @Override
-    public Event createTask(UserTemplateDto userTemplate, String patientId) {
-        User current = userRepository.findByEmail(getPrincipals());
-        Template template = userTemplateRepository.findOne(userTemplate.getId()).getTemplate();
-        Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
-        Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
-        if (countNew > 0 || countAccepted > 0) {
-            return null;
-        }
-
-        User patient = userRepository.findOne(patientId);
+    private Event createTaskLogic(User patient, User current, Template template) {
         Event event = new Event();
         event.setFromUser(current);
         event.setPatient(patient);
@@ -51,6 +40,44 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         event.setStatus(StatusEnum.NEW);
         eventRepository.save(event);
         return event;
+    }
+
+
+    @Override
+    public Event createTask(UserTemplateDto userTemplate, String patientId) {
+        User current = userRepository.findByEmail(getPrincipals());
+        Template template = templateRepository.findOne(userTemplate.getId());
+        User patient = null;
+        if (patientId != null) {
+            patient = userRepository.findOne(patientId);
+        }
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            if(template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
+                Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
+                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
+                if (countNew > 0 || countAccepted > 0) {
+                    return null;
+                } else {
+                    Event event = createTaskLogic(patient, current, template);
+                    return event;
+                }
+
+            } else {
+                Event event = createTaskLogic(patient, current, template);
+                return event;
+            }
+        } else if (current.getDiscriminatorValue().equals("patient")){
+            Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
+            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
+            if (countNew > 0 || countAccepted > 0) {
+                return null;
+            }
+
+            Event event = createTaskLogic(patient, current, template);
+            return event;
+        } else {
+            return null;
+        }
     }
 
     @Override

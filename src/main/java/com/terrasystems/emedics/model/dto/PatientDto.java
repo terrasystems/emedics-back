@@ -34,7 +34,6 @@ public class PatientDto implements Serializable {
     public void setHistory(List<HistoryDto> history) {
         this.history = history;
     }
-
     public String getEmail() {
         return email;
     }
