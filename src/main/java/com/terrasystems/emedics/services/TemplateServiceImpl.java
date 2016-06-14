@@ -105,11 +105,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
 
     }
 
-    @Override
-    @Transactional
-    public StateDto payTemplate(String id) {
-        User currentUser = userRepository.findByEmail(getPrincipals());
-        Template template = templateRepository.findOne(id);
+    public StateDto payTemplateLogic(User currentUser, Template template) {
         if(template != null) {
             UserTemplate userTemplate = new UserTemplate();
             userTemplate.setType(FormEnum.PAID.toString());
@@ -134,10 +130,23 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
 
     @Override
     @Transactional
-    public DashboardTemplateResponse loadTemplate(String id) {
-        DashboardTemplateResponse response = new DashboardTemplateResponse();
+    public StateDto payTemplate(String id) {
+        StateDto stateDto = new StateDto();
         User currentUser = userRepository.findByEmail(getPrincipals());
         Template template = templateRepository.findOne(id);
+        if(currentUser.getDiscriminatorValue().equals("patient")){
+            if(template.getTypeEnum().equals(TypeEnum.MEDICAL)){
+                return new StateDto(false, "Patient can't pay Medical form");
+            } else {
+                return  stateDto = payTemplateLogic(currentUser, template);
+            }
+        } else {
+            return  stateDto = payTemplateLogic(currentUser, template);
+        }
+    }
+
+    public DashboardTemplateResponse loadTemplateLogic(User currentUser, Template template) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
         if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()) > 0) {
             StateDto state = new StateDto();
             state.setValue(true);
@@ -186,6 +195,30 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                 return response;
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public DashboardTemplateResponse loadTemplate(String id) {
+        DashboardTemplateResponse response = new DashboardTemplateResponse();
+        User currentUser = userRepository.findByEmail(getPrincipals());
+        Template template = templateRepository.findOne(id);
+        if(currentUser.getDiscriminatorValue().equals("patient")){
+            if(template.getTypeEnum().equals(TypeEnum.MEDICAL)){
+                StateDto state = new StateDto();
+                state.setValue(false);
+                state.setMessage("Patient can't load Medical form");
+                response.setState(state);
+                return response;
+            } else {
+                response = loadTemplateLogic(currentUser, template);
+                return response;
+            }
+        } else {
+            response = loadTemplateLogic(currentUser, template);
+            return response;
+        }
+
     }
 
     @Override
