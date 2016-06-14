@@ -13,10 +13,9 @@ import java.util.List;
 @Table(name = "templates")
 public class Template {
 
-    public Template(String type, String category, String body, String descr, String name, String number, CommercialEnum commercialEnum,
+    public Template(String category, String body, String descr, String name, String number, CommercialEnum commercialEnum,
                     TypeEnum typeEnum) {
         this.number = number;
-        this.type = type;
         this.category = category;
         this.body = body;
         this.descr = descr;
@@ -39,8 +38,6 @@ public class Template {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "type")
-    private String type;
 
     @Column(name = "category")
     private String category;
@@ -85,14 +82,6 @@ public class Template {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getCategory() {

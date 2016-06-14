@@ -29,7 +29,6 @@ public class TemplateMapper {
         dto.setCategory(entity.getCategory());
         dto.setDescr(entity.getDescr());
         dto.setId(entity.getId());
-        dto.setType(entity.getType());
         dto.setBody(objectMapper.readTree(entity.getBody()));
         dto.setCommercialEnum(entity.getCommercialEnum());
         dto.setTypeEnum(entity.getTypeEnum());
@@ -42,7 +41,6 @@ public class TemplateMapper {
         entity.setCategory(dto.getCategory());
         entity.setDescr(dto.getDescr());
         entity.setId(dto.getId());
-        entity.setType(dto.getType());
         return entity;
     }
 }

@@ -6,7 +6,6 @@ import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.MailService;
-import com.terrasystems.emedics.services.UserFormsDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +22,6 @@ public class MainController  {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
-    @Autowired
-    UserFormRepository userFormRepository;
-    @Autowired
-    UserFormsDashboardService userFormsDashboardService;
     @Autowired
     DoctorRepository doctorRepository;
     @Autowired
@@ -67,7 +62,7 @@ public class MainController  {
     @ResponseBody
     public String createDoctor(@RequestBody Doctor doctor, @PathVariable String role) {
         Doctor loadedUser = new Doctor(doctor.getUsername(), doctor.getPassword(), doctor.getEmail());
-        loadedUser.setClinic("test");
+
         Role newrole = new Role(role);
         newrole.setUser(loadedUser);
         Set<Role> roles = new HashSet<>();
@@ -89,23 +84,8 @@ public class MainController  {
         return "hello";
     }
 
-    @RequestMapping(value = "/rest/patient/form", method = RequestMethod.GET)
-    @ResponseBody
-    public String addUserForm() {
-        Patient patient = new Patient("username", "email", "pass");
-        //UserForm form = formRepository.findOne(3l);
-        List<UserForm> userForms = new ArrayList<>();
-        //userForms.add(form);
-        patient.setUserForms(userForms);
-        userRepository.save(patient);
-        return "UserForm added";
-    }
-    @RequestMapping(value = "/rest/template", method = RequestMethod.GET)
-    @ResponseBody
-    public String addTemplates() {
-        userFormsDashboardService.init();
-        return "Templates added";
-    }
+
+
 
     @RequestMapping(value = "/rest/disc", method = RequestMethod.GET)
     @ResponseBody

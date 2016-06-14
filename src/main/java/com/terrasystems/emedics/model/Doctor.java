@@ -14,7 +14,6 @@ import java.util.List;
 public class Doctor extends User {
 
     private String type;
-    private String clinic;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patients_doctors",
@@ -39,13 +38,6 @@ public class Doctor extends User {
         this.patients = patients;
     }
 
-    public String getClinic() {
-        return clinic;
-    }
-
-    public void setClinic(String clinic) {
-        this.clinic = clinic;
-    }
 
     public Doctor(){
         super();
@@ -65,7 +57,6 @@ public class Doctor extends User {
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
                 .append(type, doctor.type)
-                .append(clinic, doctor.clinic)
                 .isEquals();
     }
 
@@ -74,7 +65,6 @@ public class Doctor extends User {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
                 .append(type)
-                .append(clinic)
                 .toHashCode();
     }
 }

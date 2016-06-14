@@ -65,7 +65,6 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                    dto.setCategory(template.getCategory());
                    dto.setDescr(template.getDescr());
                    dto.setId(template.getId());
-                   dto.setType(template.getType());
                    try {
                        dto.setBody(objectMapper.readTree(template.getBody()));
                    } catch (IOException e) {

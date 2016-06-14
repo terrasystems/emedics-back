@@ -2,13 +2,7 @@ package com.terrasystems.emedics.model.mapping;
 
 
 import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.UserForm;
 import com.terrasystems.emedics.model.dto.PatientDto;
-import com.terrasystems.emedics.model.dto.UserFormDto;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class PatientMapper {
     private static PatientMapper mapper;
