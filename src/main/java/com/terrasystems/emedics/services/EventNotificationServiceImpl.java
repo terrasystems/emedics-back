@@ -42,6 +42,9 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
         }*/
         Event event = eventRepository.findOne(eventId);
         User recipient = userRepository.findOne(toUser);
+        if (recipient.getDiscriminatorValue().equals("patient") && event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)) {
+            return new StateDto(false, "U can't send this form to patients");
+        }
         User patient = userRepository.findOne(patientId);
         if(event != null && recipient != null){
             event.setStatus(StatusEnum.SENT);
