@@ -42,7 +42,7 @@ public class TaskController {
         response.setState(state);
         return response;
     }
-
+    //TODO refactor this code
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse createTask(@RequestBody EventCreateRequest request) {

@@ -6,6 +6,7 @@ import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.dao.UserTemplateRepository;
 import com.terrasystems.emedics.enums.CommercialEnum;
 import com.terrasystems.emedics.enums.FormEnum;
+import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
@@ -39,7 +40,12 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     @Transactional
     public List<TemplateDto> getAllTemplates() {
         User current = userRepository.findByEmail(getPrincipals());
-        List<Template> templates = (List<Template>) templateRepository.findAll();
+        List<Template> templates;
+        if (current.getDiscriminatorValue().equals("patient")) {
+            templates = templateRepository.findByTypeEnum(TypeEnum.PATIENT);
+        } else {
+            templates = (List<Template>) templateRepository.findAll();
+        }
         List<UserTemplate> userTemplates = userTemplateRepository.findByTypeAndUser_Id("PAID", current.getId());
         List<String> idPaidTemplates = userTemplates.stream()
                 .map(userTemplate -> userTemplate.getTemplate().getId())

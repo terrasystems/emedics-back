@@ -69,6 +69,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     }
 
     @Override
+    @Transactional
     public StateDto acceptNotification(String eventId) {
         Event event = eventRepository.findOne(eventId);
         User current = userRepository.findByEmail(getPrincipals());
@@ -111,7 +112,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
             } else {
                 return null;
             }
-        }else {
+        } else {
             return new StateDto(false, "Event with such id or recipient doesn't exist");
         }
 
