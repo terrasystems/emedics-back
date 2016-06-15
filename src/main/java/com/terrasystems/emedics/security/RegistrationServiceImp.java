@@ -171,14 +171,47 @@ public class RegistrationServiceImp implements RegistrationService {
             state.setValue(false);
             return state;
         }
-        String newpass = RandomStringUtils.randomAscii(7);
-        state = mailService.sendResetPasswordMail(email, newpass);
+        String valueKey = RandomStringUtils.randomAlphabetic(10);
+        state = mailService.sendResetPasswordMail(email, valueKey);
         if (state.isValue()){
-            loadedUser.resetPassword(newpass);
+            loadedUser.setValueKey(valueKey);
             userRepository.save(loadedUser);
             return state;
         }
         return state;
+    }
+
+    @Override
+    public StateDto validationKey(String key) {
+        User current = userRepository.findByValueKey(key);
+        StateDto state = new StateDto();
+        if(current == null) {
+            state.setMessage(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
+            state.setValue(false);
+            return state;
+        } else {
+            state.setMessage("Key is valid");
+            state.setValue(true);
+            return state;
+        }
+    }
+
+    @Override
+    public StateDto changePassword(String key, String newPassword) {
+        User current = userRepository.findByValueKey(key);
+        StateDto state = new StateDto();
+        if (current == null) {
+            state.setMessage(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
+            state.setValue(false);
+            return state;
+        } else {
+            current.setPassword(newPassword);
+            current.setValueKey(null);
+            userRepository.save(current);
+            state.setMessage("Password changed");
+            state.setValue(true);
+            return state;
+        }
     }
 
     @Override

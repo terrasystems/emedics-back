@@ -40,11 +40,30 @@ public class PublicController {
 
 
 
-    @RequestMapping(value = "reset_pass", method = RequestMethod.POST)
+    @RequestMapping(value = "/reset_pass", method = RequestMethod.POST)
     @ResponseBody
-    public RegisterResponseDto resetPass(@RequestBody String email) {
-        RegisterResponseDto response = new RegisterResponseDto();
+    public ObjectResponse resetPass(@RequestBody String email) {
+        ObjectResponse response = new ObjectResponse();
         StateDto state = registrationService.resetPassword(email);
+        response.setState(state);
+        response.setResult(email);
+        return response;
+    }
+
+    @RequestMapping(value = "/validation_key/{validKey}", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse validationKey(@PathVariable String validKey) {
+        ObjectResponse response = new ObjectResponse();
+        StateDto state = registrationService.validationKey(validKey);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse changePassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        ObjectResponse response = new ObjectResponse();
+        StateDto state = registrationService.changePassword(resetPasswordDto.getValidKey(), resetPasswordDto.getNewPassword());
         response.setState(state);
         return response;
     }

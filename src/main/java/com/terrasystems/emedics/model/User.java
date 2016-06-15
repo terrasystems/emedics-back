@@ -43,6 +43,9 @@ public class User implements UserDetails {
     protected String phone;
 
     @Column
+    protected String valueKey;
+
+    @Column
     protected Date registrationDate;
 
     @Column(nullable = false)
@@ -108,6 +111,14 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getValueKey() {
+        return valueKey;
+    }
+
+    public void setValueKey(String valueKey) {
+        this.valueKey = valueKey;
     }
 
     public Set<User> getUsers() {
@@ -245,6 +256,7 @@ public class User implements UserDetails {
                 .append(id, user.id)
                 .append(name, user.name)
                 .append(phone, user.phone)
+                .append(valueKey, user.valueKey)
                 .append(registrationDate, user.registrationDate)
                 .append(password, user.password)
                 .append(email, user.email)
@@ -263,6 +275,7 @@ public class User implements UserDetails {
                 .append(email)
                 .append(expires)
                 .append(enabled)
+                .append(valueKey)
                 .toHashCode();
     }
 

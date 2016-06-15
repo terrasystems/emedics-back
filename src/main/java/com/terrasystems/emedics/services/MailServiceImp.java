@@ -21,6 +21,7 @@ import java.util.Map;
 @Service
 public class MailServiceImp implements MailService {
     private  @Value("${activate.url}") String HOST ;
+    private @Value("${resetPassword.url}") String RESET;
     //private  String ACTIVATE_URL = HOST + "rest/public/activate/";
 
     @Autowired
@@ -52,11 +53,11 @@ public class MailServiceImp implements MailService {
     }
 
     @Override
-    public StateDto sendResetPasswordMail(String address, String newPass) {
+    public StateDto sendResetPasswordMail(String address, String valueKey) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
         message.setSubject(MessageEnums.MSG_RESET_PASS.toString());
-        message.setText("Your new password is:"+" " + newPass);
+        message.setText("Please visit to link"+" " + RESET+valueKey);
         message.setFrom("admin@emedics.org");
         try {
             mailSender.send(message);
