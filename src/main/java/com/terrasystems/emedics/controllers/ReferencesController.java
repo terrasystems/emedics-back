@@ -2,6 +2,7 @@ package com.terrasystems.emedics.controllers;
 
 
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +74,18 @@ public class ReferencesController {
 
     @RequestMapping(value = "/references/create", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardReferenceResponse createReference(@RequestBody String email) {
-        StateDto state = referenceService.createReference(email);
+    public DashboardReferenceResponse createReference(@RequestBody ReferenceCreateRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
-        response.setState(state);
-        return response;
+        String user = referenceService.createReference(request);
+        if (user != null) {
+            response.setResult(user);
+            response.setState(new StateDto(true,"User created"));
+            return response;
+        } else {
+            response.setResult(null);
+            response.setState(new StateDto(false, "Can't create User"));
+            return response;
+        }
     }
 
     @RequestMapping(value = "/references/invite", method = RequestMethod.POST)
@@ -95,7 +103,7 @@ public class ReferencesController {
     public DashboardReferenceResponse getMyRefs(@RequestBody MyRefsRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto status = new StateDto();
-        response.setResult(referenceService.findMyRefs(request.getSearch(),request.getType()));
+        response.setResult(referenceService.findMyReferencesByCriteria(request.getSearch()));
         status.setMessage("Refs");
         status.setValue(true);
         response.setState(status);

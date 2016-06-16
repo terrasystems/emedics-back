@@ -9,7 +9,9 @@ import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.UserTemplate;
 import com.terrasystems.emedics.model.dto.EventDto;
+import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService, CurrentUserService {
@@ -88,6 +91,38 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         events.addAll(eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.ACCEPTED));
 
 
+        return events;
+    }
+
+    @Override
+    public StateDto closeTask(String id) {
+        User current = userRepository.findByEmail(getPrincipals());
+        StateDto stateDto = new StateDto();
+        List<Event> events = new ArrayList<>();
+        events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(), StatusEnum.NEW));
+        List<String> idNewTemplates = new ArrayList<>();
+        for(int i = 0; i < events.size(); i++) {
+            idNewTemplates.add(events.get(i).getId());
+        }
+        if(idNewTemplates.contains(id)) {
+            Event event = eventRepository.findOne(id);
+            event.setStatus(StatusEnum.CLOSED);
+            eventRepository.save(event);
+            stateDto.setValue(true);
+            stateDto.setMessage("Task closed");
+            return stateDto;
+        } else {
+            stateDto.setValue(false);
+            stateDto.setMessage("You can close tasks with only NEW status");
+            return stateDto;
+        }
+    }
+
+    @Override
+    public List<Event> getHistory() {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = new ArrayList<>();
+        events.addAll(eventRepository.findByStatusAndFromUser_IdOrToUser_Id(StatusEnum.CLOSED, current.getId(), current.getId()));
         return events;
     }
 

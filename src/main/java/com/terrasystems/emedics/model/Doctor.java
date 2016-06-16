@@ -13,7 +13,11 @@ import java.util.List;
 @DiscriminatorValue("doctor")
 public class Doctor extends User {
 
-    private String type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DocType type;
+
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patients_doctors",
@@ -22,11 +26,12 @@ public class Doctor extends User {
     )
     private List<Patient> patients;
 
-    public String getType() {
+
+    public DocType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DocType type) {
         this.type = type;
     }
 

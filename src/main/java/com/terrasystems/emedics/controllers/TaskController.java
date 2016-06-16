@@ -42,6 +42,39 @@ public class TaskController {
         response.setState(state);
         return response;
     }
+
+    @RequestMapping(value = "/gethistory", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse getHistory() {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+        List<EventDto> events = taskService.getHistory().stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("History");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "/close/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse closeTask(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(taskService.closeTask(id));
+        return response;
+    }
+
     //TODO refactor this code
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody

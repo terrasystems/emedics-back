@@ -72,6 +72,9 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                     dto.setEvents(dtos);
                     return dto;
                 })
+                .collect(Collectors.toList())
+                .stream()
+                .filter(templateEventDto -> !templateEventDto.getEvents().isEmpty())
                 .collect(Collectors.toList());
 
         return eventsDto;
@@ -82,7 +85,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         List<Patient> currentPats = current.getPatients();
         PatientMapper mapper = PatientMapper.getInstance();
-        List<Patient> patients = patientRepository.findByNameContainingOrEmailContaining(search,search).stream()
+        List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
                 .filter(patient -> !currentPats.contains(patient))
                 .collect(Collectors.toList());
         List<PatientDto> patientDtos = patients.stream()
