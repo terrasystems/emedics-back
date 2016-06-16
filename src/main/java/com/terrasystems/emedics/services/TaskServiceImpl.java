@@ -92,6 +92,14 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     }
 
     @Override
+    public List<Event> getHistory() {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = new ArrayList<>();
+        events.addAll(eventRepository.findByStatusAndFromUser_IdOrToUser_Id(StatusEnum.CLOSED, current.getId(), current.getId()));
+        return events;
+    }
+
+    @Override
     public Event getTask(String id) {
         return eventRepository.findOne(id);
     }

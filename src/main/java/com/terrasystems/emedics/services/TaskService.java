@@ -12,4 +12,5 @@ public interface TaskService {
     List<Event> getAllTasks();
     Event getTask(String id);
     Event editTask(EventDto eventDto);
+    List<Event> getHistory();
 }
