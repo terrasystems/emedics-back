@@ -40,6 +40,8 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
     @Transactional
     public Patient createPatient(ReferenceCreateRequest request) {
         Patient registerUser = new Patient();
+        registerUser.setPassword(RandomStringUtils.random(10, 'a','b','c','A','B','C','1','2','3','4','5'));
+        registerUser.setEmail(request.getEmail());
         registerUser.setFirstName(request.getFirstName());
         registerUser.setLastName(request.getLastName());
         registerUser.setBirth(request.getBirth());
@@ -59,6 +61,8 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
     @Transactional
     public Doctor createDoctor(ReferenceCreateRequest request) {
         Doctor registerUser = new Doctor();
+        registerUser.setPassword(RandomStringUtils.random(10, 'a','b','c','A','B','C','1','2','3','4','5'));
+        registerUser.setEmail(request.getEmail());
         registerUser.setFirstName(request.getFirstName());
         registerUser.setLastName(request.getLastName());
         registerUser.setBirth(request.getBirth());

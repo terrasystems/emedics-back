@@ -105,7 +105,7 @@ public class MainController  {
         doctors =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(name,name,name);
         doctors.stream()
                 .forEach(doctor -> System.out.println(doctor.getUsername()));*/
-        List<Doctor> refs =  doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining("s",search,search,search);
+        List<Doctor> refs =  doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining("s",search,search,search);
         refs.forEach(ref -> System.out.println(ref.getName()));
     }
 

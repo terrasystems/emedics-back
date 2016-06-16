@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface DoctorRepository extends CrudRepository<Doctor,String> {
-    List<Doctor> findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining(String id, String name, String type, String email);
+    List<Doctor> findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(String id, String name, String type, String email);
 
 }

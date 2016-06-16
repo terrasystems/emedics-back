@@ -51,7 +51,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         User current = userRepository.findByEmail(getPrincipals());
         List<ReferenceDto> refs = new ArrayList<>();
         if (current.getDiscriminatorValue().equals("patient")) {
-            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining(current.getId(),search,search,search)));
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search)));
             refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(), search,search)));
 
             return refs;
@@ -216,7 +216,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
-        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining(current.getId(), search,search,search).stream()
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(), search,search,search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
         List<Patient> patientsRefs = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
@@ -236,7 +236,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Patient> patientsRefs = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
                 .filter(patient -> !currentRefs.contains(patient))
                 .collect(Collectors.toList());
-        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining(current.getId(),search,search,search).stream()
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
         List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
@@ -254,7 +254,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         Patient current = (Patient) userRepository.findByEmail(getPrincipals());
         Set<User> currentRefs = current.getUserRef();
         List<ReferenceDto> refs = new ArrayList<>();
-        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining(current.getId(),search,search,search).stream()
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
         List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
