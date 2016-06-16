@@ -1,0 +1,56 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+    <changeSet author="tester (generated)" id="1466083732443-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="doc_type">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="value" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="doctors">
+            <column name="type_id" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="users">
+            <column name="activationtoken" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="users">
+            <column name="birth_date" type="timestamp(29, 6)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="users">
+            <column name="firstname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="users">
+            <column name="lastname" type="varchar(255 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="id" constraintName="doc_type_pkey" tableName="doc_type"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="doctors" constraintName="fksryikroswrgnil7q4etb5a1pg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="doc_type"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-9">
+        <dropColumn columnName="type" tableName="doctors"/>
+    </changeSet>
+    <changeSet author="tester (generated)" id="1466083732443-10">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="name" tableName="users"/>
+    </changeSet>
+</databaseChangeLog>
