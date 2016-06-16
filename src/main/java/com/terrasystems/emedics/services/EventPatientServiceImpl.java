@@ -72,6 +72,9 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                     dto.setEvents(dtos);
                     return dto;
                 })
+                .collect(Collectors.toList())
+                .stream()
+                .filter(templateEventDto -> !templateEventDto.getEvents().isEmpty())
                 .collect(Collectors.toList());
 
         return eventsDto;
