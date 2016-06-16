@@ -107,6 +107,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
+    @Transactional
     public StateDto removeReferences(Set<String> references) throws Exception {
         User current = userRepository.findByEmail(getPrincipals());
         if(current.getDiscriminatorValue().equals("patient")){
@@ -123,9 +124,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         } else {
             List<User> refs = userRepository.findAll(references);
             Set<User> currentRefs = current.getUserRef();
+            User user = refs.get(0);
             currentRefs.removeAll(refs);
             current.setUserRef(currentRefs);
-            userRepository.save(current);
+            user.getUserRef().remove(current);
             return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
         }
     }
