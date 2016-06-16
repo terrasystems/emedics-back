@@ -67,6 +67,14 @@ public class TaskController {
         return response;
     }
 
+    @RequestMapping(value = "/close/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse closeTask(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(taskService.closeTask(id));
+        return response;
+    }
+
     //TODO refactor this code
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
