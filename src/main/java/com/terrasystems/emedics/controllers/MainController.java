@@ -105,11 +105,11 @@ public class MainController  {
         doctors =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(name,name,name);
         doctors.stream()
                 .forEach(doctor -> System.out.println(doctor.getUsername()));*/
-        List<Doctor> refs =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search);
+        List<Doctor> refs =  doctorRepository.findByIdIsNotAndNameContainingOrTypeContainingOrEmailContaining("s",search,search,search);
         refs.forEach(ref -> System.out.println(ref.getName()));
     }
 
-    @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
+  /*  @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
     @ResponseBody
     public String createDoctor() {
         List<Doctor> doctors = new ArrayList<>();
@@ -122,7 +122,7 @@ public class MainController  {
         userRepository.save(doctors);
 
         return "Doctors Created";
-    }
+    }*/
     @RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
     @ResponseBody
     public String createStuff() {

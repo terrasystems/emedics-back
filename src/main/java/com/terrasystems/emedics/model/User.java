@@ -36,11 +36,24 @@ public class User implements UserDetails {
     private String id;
 
 
-    @Column(nullable = false)
+    @Column(name = "name")
     protected String name;
 
     @Column
+    protected String firstName;
+
+    @Column
+    protected String lastName;
+
+    @Column
     protected String phone;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "birth_date")
+    protected Date birth;
+
+    @Column
+    protected String activationToken;
 
     @Column
     protected String valueKey;
@@ -190,6 +203,46 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
+
+    public int getAllowedFormsCount() {
+        return allowedFormsCount;
+    }
+
+    public void setAllowedFormsCount(int allowedFormsCount) {
+        this.allowedFormsCount = allowedFormsCount;
+    }
+
     //TODO add fields for accaunt disabelin(Expirision, Locked etc)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -281,6 +334,7 @@ public class User implements UserDetails {
 
     @PrePersist
     public void preInsert() {
+        name = firstName + " " + lastName;
         allowedFormsCount = 5;
     }
 }

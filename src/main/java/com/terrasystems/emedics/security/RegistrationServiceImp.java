@@ -14,6 +14,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.*;
@@ -53,6 +55,7 @@ public class RegistrationServiceImp implements RegistrationService {
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public StateDto registerUser(RegisterDto registerDto, String type) {
 
         System.out.println("enter registerUser method");
@@ -88,9 +91,11 @@ public class RegistrationServiceImp implements RegistrationService {
                 case TYPE_ORGANISATION:
                     stateDto = registerOrganisation(user,org);
                     break;
-                default:
+                default: {
                     stateDto.setMessage(MessageEnums.MSG_REG_FAILED.toString());
                     stateDto.setValue(false);
+                    break;
+                }
 
         }}
             else return mailState;
@@ -113,8 +118,8 @@ public class RegistrationServiceImp implements RegistrationService {
         stateDto.setValue(true);
         return stateDto;
     }
-
-
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public StateDto registerDoctor(UserDto user) {
 
         System.out.println("entering registerDoctor method");
@@ -125,7 +130,6 @@ public class RegistrationServiceImp implements RegistrationService {
         role.setUser(registerUser);
         roles.add(role);
         registerUser.setRoles(roles);
-        userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
         System.out.println("returning from registerDoctor method");

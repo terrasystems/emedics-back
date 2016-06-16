@@ -5,6 +5,7 @@ import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,7 +16,7 @@ public class ReferenceConverter {
                 .map(doctor -> {
                     ReferenceDto ref = new ReferenceDto();
                     ref.setId(doctor.getId());
-                    ref.setType(doctor.getType());
+                    ref.setType(doctor.getType().getName());
                     ref.setName(doctor.getName());
                     ref.setPhone(doctor.getPhone());
                     ref.setEmail(doctor.getEmail());
@@ -41,7 +42,7 @@ public class ReferenceConverter {
         return references;
     }
 
-    public List<ReferenceDto> convertFromUsers(List<User> users) {
+    public List<ReferenceDto> convertFromUsers(Set<User> users) {
         List<ReferenceDto> references = users.stream()
                 .map(user -> {
                     ReferenceDto ref = new ReferenceDto();
