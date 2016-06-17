@@ -55,7 +55,7 @@ public class RegistrationServiceImp implements RegistrationService {
 
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    //@Transactional(propagation = Propagation.REQUIRED)
     public StateDto registerUser(RegisterDto registerDto, String type) {
 
         System.out.println("enter registerUser method");
@@ -119,7 +119,7 @@ public class RegistrationServiceImp implements RegistrationService {
         return stateDto;
     }
     @Override
-    @Transactional(propagation = Propagation.MANDATORY)
+    //@Transactional(propagation = Propagation.MANDATORY)
     public StateDto registerDoctor(UserDto user) {
 
         System.out.println("entering registerDoctor method");
@@ -132,6 +132,7 @@ public class RegistrationServiceImp implements RegistrationService {
         registerUser.setRoles(roles);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
+        userRepository.save(registerUser);
         System.out.println("returning from registerDoctor method");
         return stateDto;
     }
