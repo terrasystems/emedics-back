@@ -218,7 +218,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
-        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(), search,search,search).stream()
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrIdIsNotAndType_NameContainingOrIdIsNotAndEmailContaining(current.getId(),search, current.getId(), search, current.getId(),search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
         List<Patient> patientsRefs = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()

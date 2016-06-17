@@ -16,7 +16,11 @@ public class ReferenceConverter {
                 .map(doctor -> {
                     ReferenceDto ref = new ReferenceDto();
                     ref.setId(doctor.getId());
-                    ref.setType(doctor.getType().getName());
+                    if (doctor.getType() == null) {
+                        ref.setType(null);
+                    } else {
+                        ref.setType(doctor.getType().getName());
+                    }
                     ref.setName(doctor.getName());
                     ref.setPhone(doctor.getPhone());
                     ref.setEmail(doctor.getEmail());

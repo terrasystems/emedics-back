@@ -101,11 +101,8 @@ public class MainController  {
     @RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
     @ResponseBody
     public void getDoctors(@PathVariable String search) {
-        /*List<User> doctors;
-        doctors =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(name,name,name);
-        doctors.stream()
-                .forEach(doctor -> System.out.println(doctor.getUsername()));*/
-        List<Doctor> refs =  doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining("s",search,search,search);
+
+        List<Doctor> refs =  doctorRepository.findByIdIsNot(search);
         refs.forEach(ref -> System.out.println(ref.getName()));
     }
 
