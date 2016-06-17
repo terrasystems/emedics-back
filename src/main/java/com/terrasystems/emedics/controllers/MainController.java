@@ -120,7 +120,7 @@ public class MainController  {
 
         return "Doctors Created";
     }*/
-    @RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
     @ResponseBody
     public String createStuff() {
         List<Stuff> stuff = new ArrayList<>();
@@ -137,15 +137,15 @@ public class MainController  {
 
 
         return "Stuff Created";
-    }
-    @RequestMapping(value = "/rest/stuff/admin/{search}", method = RequestMethod.GET)
+    }*/
+    /*@RequestMapping(value = "/rest/stuff/admin/{search}", method = RequestMethod.GET)
     @ResponseBody
     public List<Stuff> getAdmins(@PathVariable String search) {
 
 
 
         return stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search);
-    }
+    }*/
     @RequestMapping(value = "/rest/velocity", method = RequestMethod.GET)
     @ResponseBody
     public String testVelocity() {

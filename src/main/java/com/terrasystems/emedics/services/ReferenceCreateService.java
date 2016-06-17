@@ -8,4 +8,5 @@ import com.terrasystems.emedics.model.dto.ReferenceCreateRequest;
 public interface ReferenceCreateService {
     Patient createPatient(ReferenceCreateRequest request);
     Doctor createDoctor(ReferenceCreateRequest request);
+    boolean inviteUser(String id);
 }

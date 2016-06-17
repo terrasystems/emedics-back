@@ -29,7 +29,8 @@ public class RegistrationServiceImp implements RegistrationService {
     private static final String ROLE_PATIENT = "ROLE_PATIENT";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
-    private static final String ROLE_STUFF = "ROLE_STUFF_ADMIN";
+    private static final String ROLE_STUFF_ADMIN = "ROLE_STUFF_ADMIN";
+    private static final String ROLE_STUFF = "ROLE_STUFF";
     private static final String USER_EXIST = MessageEnums.MSG_USER_EXIST.toString();
     public static final String REGISTERED = MessageEnums.MSG_SEND_LETTER.toString();
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
@@ -140,26 +141,31 @@ public class RegistrationServiceImp implements RegistrationService {
     @Override
     public StateDto registerOrganisation(UserDto user, OrganisationDto org) {
         StateDto status = new StateDto();
-        Stuff registeredUser = new Stuff(user.getUsername(), user.getPassword(), user.getEmail());
+        Doctor registeredUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
         registeredUser.setAdmin(true);
-        Organization organization = new Organization();
-        organization.setName(org.getName());
-        organization.setAddress(org.getAddress());
-        organization.setFullName(org.getFullname());
-        organization.setWebsite(org.getWebsite());
-        organization.setType(org.getType());
-        organization.setDescr(org.getDescr());
+        registeredUser.setOrgName(org.getName());
+        registeredUser.setOrgAddress(org.getAddress());
+        registeredUser.setOrgName(org.getFullname());
+        registeredUser.setOrgWebSite(org.getWebsite());
+        registeredUser.setOrgType(org.getType());
+        registeredUser.setOrgDescription(org.getDescr());
         Set<Role> roles = new HashSet<>();
-        Role role = new Role(ROLE_STUFF);
+        Role role = new Role(ROLE_STUFF_ADMIN);
+        Role role2 = new Role(ROLE_DOCTOR);
         role.setUser(registeredUser);
+        role2.setUser(registeredUser);
         roles.add(role);
+        roles.add(role2);
+        registeredUser.setStuff(new ArrayList<>());
+        registeredUser.setRoles(roles);
 
-        List<Stuff> stuffs = new ArrayList<>();
+        /*List<Doctor> stuffs = new ArrayList<>();
         stuffs.add(registeredUser);
         organization.setStuff(stuffs);
         registeredUser.setOrganization(organization);
         registeredUser.setRoles(roles);
-        organizationRepository.save(organization);
+        organizationRepository.save(organization);*/
+        userRepository.save(registeredUser);
 
         status.setMessage(MessageEnums.MSG_USER_REG.toString());
         status.setValue(true);
@@ -223,12 +229,31 @@ public class RegistrationServiceImp implements RegistrationService {
     public RegisterResponseDto activateUser(String link) {
         String email = emailsStore.get(link);
         if (email == null) {
-            return new RegisterResponseDto(null, null, new StateDto(false, MessageEnums.MSG_BAD.toString()));
+            User user = userRepository.findByActivationToken(link);
+            if (user == null) {
+                return new RegisterResponseDto(null, null, new StateDto(false, MessageEnums.MSG_BAD.toString()));
+            } else {
+                user.setEnabled(true);
+                String token = tokenUtil.createTokenForUser(user);
+                user.setRegistrationDate(new Date());
+                user.setEnabled(true);
+                userRepository.save(user);
+                //userFormsDashboardService.generateFormsForUser(email);
+                RegisterResponseDto response = new RegisterResponseDto();
+                StateDto state = new StateDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
+                UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
+                String[] type = token.split(":");
+                userDto.setType(type[2]);
+                response.setState(state);
+                response.setToken(token);
+                response.setUser(userDto);
+                //TODO delete link after activation
+                return response;
+            }
         }
         User user = userRepository.findByEmail(emailsStore.get(link));
         String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
-        user.setEnabled(true);
         user.setEnabled(true);
         userRepository.save(user);
         //userFormsDashboardService.generateFormsForUser(email);

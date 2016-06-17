@@ -4,6 +4,7 @@ package com.terrasystems.emedics.controllers;
 import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.*;
+import com.terrasystems.emedics.services.ReferenceCreateService;
 import com.terrasystems.emedics.services.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,8 @@ public class ReferencesController {
     @Autowired
     @Qualifier("patientReferenceService")
     ReferenceService referenceService;
+    @Autowired
+    ReferenceCreateService createService;
 
     @RequestMapping(value = "/references/search", method = RequestMethod.POST)
     @ResponseBody
@@ -88,7 +91,7 @@ public class ReferencesController {
         }
     }
 
-    @RequestMapping(value = "/references/invite", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/references/invite", method = RequestMethod.POST)
     @ResponseBody
     public DashboardReferenceResponse inviteReference(@RequestBody String email) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
@@ -96,7 +99,7 @@ public class ReferencesController {
         status.setMessage(MessageEnums.MSG_INVITE.toString());
         status.setValue(true);
         return response;
-    }
+    }*/
 
     @RequestMapping(value = "/references/refs", method = RequestMethod.POST)
     @ResponseBody
@@ -107,6 +110,19 @@ public class ReferencesController {
         status.setMessage("Refs");
         status.setValue(true);
         response.setState(status);
+        return response;
+    }
+
+    @RequestMapping(value = "/references/invite/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardReferenceResponse inviteReference(@PathVariable String id) {
+        DashboardReferenceResponse response = new DashboardReferenceResponse();
+        StateDto state = new StateDto();
+        state.setValue(createService.inviteUser(id));
+        if (state.isValue()) {
+            state.setMessage("Invite send");
+        } else state.setMessage("Error sending email");
+        response.setState(state);
         return response;
     }
 

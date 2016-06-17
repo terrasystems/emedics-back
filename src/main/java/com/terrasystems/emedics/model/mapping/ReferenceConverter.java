@@ -36,11 +36,10 @@ public class ReferenceConverter {
                 .map(stuff -> {
                     ReferenceDto ref = new ReferenceDto();
                     ref.setId(stuff.getId());
-                    ref.setName(stuff.getOrganization().getName());
+                    ref.setName(stuff.getDoctor().getOrgName());
                     ref.setEmail(stuff.getEmail());
                     ref.setPhone(stuff.getPhone());
-                    ref.setType(stuff.getOrganization().getType());
-
+                    ref.setType(stuff.getDoctor().getOrgType());
                     return ref;
                 })
                 .collect(Collectors.toList());

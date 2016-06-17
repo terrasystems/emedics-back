@@ -52,7 +52,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<ReferenceDto> refs = new ArrayList<>();
         if (current.getDiscriminatorValue().equals("patient")) {
             refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search)));
-            refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(), search,search)));
+            refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_TypeContainingAndDoctor_AdminIsTrue(current.getId(), search,search)));
 
             return refs;
         } else {
@@ -149,6 +149,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 if (patient != null) {
                     Doctor currentDoctor = (Doctor) userRepository.findByEmail(getPrincipals());
                     currentDoctor.getPatients().add(patient);
+                    currentDoctor.getUserRef().add(patient);
                     patient.getUserRef().add(currentDoctor);
                     patient.getDoctors().add(currentDoctor);
                     userRepository.save(currentDoctor);
@@ -215,7 +216,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Set<User> currentRefs = current.getUserRef();
         List<ReferenceDto> refs = new ArrayList<>();
-        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
+        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_TypeContainingAndDoctor_AdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
         List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrIdIsNotAndType_NameContainingOrIdIsNotAndEmailContaining(current.getId(),search, current.getId(), search, current.getId(),search).stream()
@@ -241,7 +242,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
-        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
+        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_TypeContainingAndDoctor_AdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
 
@@ -259,7 +260,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(),search,search,search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
-        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndOrganization_NameContainingAndAdminIsTrueOrOrganization_TypeContainingAndAdminIsTrue(current.getId(),search, search).stream()
+        List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_TypeContainingAndDoctor_AdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
         refs.addAll(converter.convertFromDoctors(doctorsRefs));

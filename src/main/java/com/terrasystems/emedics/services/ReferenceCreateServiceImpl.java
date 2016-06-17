@@ -32,7 +32,8 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
     UserRepository userRepository;
     @Autowired
     DocTypeRepository docTypeRepository;
-
+    @Autowired
+    MailService mailService;
 
 
 
@@ -53,6 +54,7 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
         registerUser.setDoctors(new ArrayList<>());
         registerUser.setUserRef(new HashSet<>());
         registerUser.setUsers(new HashSet<>());
+        registerUser.setActivationToken(RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f'));
         userRepository.save(registerUser);
         return registerUser;
     }
@@ -75,8 +77,18 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
         registerUser.setPatients(new ArrayList<>());
         registerUser.setUsers(new HashSet<>());
         registerUser.setUserRef(new HashSet<>());
+        registerUser.setActivationToken(RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f'));
         userRepository.save(registerUser);
 
         return registerUser;
     }
+
+    @Override
+    public boolean inviteUser(String id) {
+        User user = userRepository.findOne(id);
+        StateDto result = mailService.sendRegistrationMail(user.getEmail(),user.getActivationToken(),user.getPassword());
+
+        return result.isValue();
+    }
+
 }

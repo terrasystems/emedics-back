@@ -334,7 +334,7 @@ public class User implements UserDetails {
 
     @PrePersist
     public void preInsert() {
-        name = firstName + " " + lastName;
         allowedFormsCount = 5;
+        name = firstName + " " + lastName;
     }
 }

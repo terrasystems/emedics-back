@@ -32,8 +32,13 @@ public class PublicController {
 
         RegisterResponseDto response = new RegisterResponseDto();
         response.setState(status);
-        user.setPassword(null);
-        response.setUser(user);
+        if (!status.isValue()) {
+            response.setUser(null);
+        } else {
+            user.setPassword(null);
+            response.setUser(user);
+        }
+
         System.out.println("Sending response" );
         return response;
     }

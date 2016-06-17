@@ -17,4 +17,5 @@ public interface UserRepository extends CrudRepository<User, String> {
     boolean existsByEmail(@Param("email") String email);
     List<User> findAll(Iterable<String> ids);
     Set<User> findByIdIsNotAndNameContainingOrEmailContaining(String name, String email, String id);
+    User findByActivationToken(String link);
 }
