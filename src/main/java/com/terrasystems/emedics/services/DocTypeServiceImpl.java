@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.DocTypeRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.DocTypeEnum;
 import com.terrasystems.emedics.model.DocType;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.DocTypeDto;
@@ -33,5 +34,17 @@ public class DocTypeServiceImpl implements DocTypeService, CurrentUserService {
         DocTypeMapper mapper = DocTypeMapper.getInstance();
         docTypeRepository.save(mapper.toEntity(docTypeDto));
         return new StateDto(true, "DocType added");
+    }
+
+    @Override
+    public List<DocType> getByValueDoctor() {
+        List<DocType> docTypes = docTypeRepository.findByValue(DocTypeEnum.DOCTOR);
+        return docTypes;
+    }
+
+    @Override
+    public List<DocType> getByValueOrganization() {
+        List<DocType> docTypes = docTypeRepository.findByValue(DocTypeEnum.ORG);
+        return docTypes;
     }
 }
