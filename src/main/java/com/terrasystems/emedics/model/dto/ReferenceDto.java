@@ -14,6 +14,7 @@ public class ReferenceDto implements Serializable {
     private String type;
     private String phone;
     private String email;
+    private boolean enabled;
 
     public ReferenceDto() {
     }
@@ -64,6 +65,14 @@ public class ReferenceDto implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

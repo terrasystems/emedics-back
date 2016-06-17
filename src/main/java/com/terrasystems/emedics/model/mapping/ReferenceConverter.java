@@ -24,6 +24,7 @@ public class ReferenceConverter {
                     ref.setName(doctor.getName());
                     ref.setPhone(doctor.getPhone());
                     ref.setEmail(doctor.getEmail());
+                    ref.setEnabled(doctor.isEnabled());
                     return ref;
                 })
                 .collect(Collectors.toList());
@@ -39,6 +40,7 @@ public class ReferenceConverter {
                     ref.setEmail(stuff.getEmail());
                     ref.setPhone(stuff.getPhone());
                     ref.setType(stuff.getOrganization().getType());
+
                     return ref;
                 })
                 .collect(Collectors.toList());
@@ -55,6 +57,7 @@ public class ReferenceConverter {
                     ref.setPhone(user.getPhone());
                     ref.setName(user.getName());
                     ref.setEmail(user.getEmail());
+                    ref.setEnabled(user.isEnabled());
                     return ref;
                 })
                 .collect(Collectors.toList());
