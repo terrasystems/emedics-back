@@ -9,5 +9,5 @@ import java.util.List;
 public interface StuffRepository extends CrudRepository<Stuff, String> {
     //TODO add search with join Organization for type
     //List<Stuff> findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(String name, String email);
-    List<Stuff> findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_TypeContainingAndDoctor_AdminIsTrue(String id, String fullname, String type);
+    List<Stuff> findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingAndDoctor_AdminIsTrue(String id, String fullname, String type);
 }
