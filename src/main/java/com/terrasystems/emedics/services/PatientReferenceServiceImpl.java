@@ -71,9 +71,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             Set<User> currentRefs = current.getUserRef();
             currentRefs.addAll(refs);
             current.setUserRef(currentRefs);
-            userRepository.save(current);
             Doctor doctor = (Doctor) refs.get(0);
+            doctor.getUserRef().add(current);
             List<Patient> patients = doctor.getPatients();
+            userRepository.save(current);
             if(patients.contains((Patient) current)){
                 return new StateDto(false, "This references exist already");
             } else {
