@@ -36,8 +36,11 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         UserMapper userMapper = new UserMapper();
         UserDto respDto;
         if (user.getEmail().equals(userDto.getEmail())) {
-            user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
+            user.setBirth(userDto.getBirth());
+            user.setLastName(userDto.getLastName());
+            user.setFirstName(userDto.getFirstName());
+            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
             userRepository.save(user);
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
@@ -61,9 +64,12 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             response.setState(state);
             return response;
         } else {
-            user.setName(userDto.getUsername());
             user.setTypeExp(userDto.getTypeExp());
+            user.setBirth(userDto.getBirth());
+            user.setLastName(userDto.getLastName());
+            user.setFirstName(userDto.getFirstName());
             user.setEmail(userDto.getEmail());
+            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
             userRepository.save(user);
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
@@ -103,7 +109,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             return response;
         }
     }
-/*
+
     @Override
     public RegisterResponseDto settingsPage() {
         User user = userRepository.findByEmail(getPrincipals());
@@ -112,7 +118,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         response.setUser(userMapper.toDTO(user));
         response.setState(new StateDto(true, "Settings Page"));
         return response;
-    }*/
+    }
 
 
 }

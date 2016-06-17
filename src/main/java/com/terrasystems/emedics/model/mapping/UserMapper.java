@@ -22,6 +22,9 @@ public final class UserMapper {
         dto.setEmail(entity.getEmail());
         dto.setUsername(entity.getName());
         dto.setTypeExp(entity.getTypeExp());
+        dto.setFirstName(entity.getFirstName());
+        dto.setLastName(entity.getLastName());
+        dto.setBirth(entity.getBirth());
         return dto;
     }
 
