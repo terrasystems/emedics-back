@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.services;
 
 
+import com.terrasystems.emedics.enums.DocTypeEnum;
 import com.terrasystems.emedics.model.DocType;
 import com.terrasystems.emedics.model.dto.DocTypeDto;
 import com.terrasystems.emedics.model.dto.StateDto;
@@ -11,4 +12,6 @@ public interface DocTypeService {
 
     List<DocType> getAll();
     StateDto addDocType(DocTypeDto docTypeDto);
+    List<DocType> getByValueDoctor();
+    List<DocType> getByValueOrganization();
 }

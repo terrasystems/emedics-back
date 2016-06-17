@@ -38,6 +38,39 @@ public class DocTypeController {
         return response;
     }
 
+    @RequestMapping(value = "/doctor", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getByDoctorDocTypes() {
+        ObjectResponse response = new ObjectResponse();
+        List<DocTypeDto> docTypeDtos = docTypeService.getByValueDoctor().stream()
+                .map(item -> {
+                    DocTypeMapper mapper = DocTypeMapper.getInstance();
+                    DocTypeDto docTypeDto = new DocTypeDto();
+                    docTypeDto = mapper.toDto(item);
+                    return docTypeDto;
+                }).collect(Collectors.toList());
+
+        response.setState(new StateDto(true, "DocTypes by doctor"));
+        response.setResult(docTypeDtos);
+        return response;
+    }
+
+    @RequestMapping(value = "/organization", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getByOrganizationDocType() {
+        ObjectResponse response = new ObjectResponse();
+        List<DocTypeDto> docTypeDtos = docTypeService.getByValueOrganization().stream()
+                .map(item -> {
+                    DocTypeMapper mapper = DocTypeMapper.getInstance();
+                    DocTypeDto docTypeDto = new DocTypeDto();
+                    docTypeDto = mapper.toDto(item);
+                    return docTypeDto;
+                }).collect(Collectors.toList());
+        response.setState(new StateDto(true, "DocTypes by "));
+        response.setResult(docTypeDtos);
+        return response;
+    }
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ObjectResponse createDocType(@RequestBody DocTypeDto docTypeDto) {
