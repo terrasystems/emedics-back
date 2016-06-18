@@ -66,7 +66,7 @@ public class DocTypeController {
                     docTypeDto = mapper.toDto(item);
                     return docTypeDto;
                 }).collect(Collectors.toList());
-        response.setState(new StateDto(true, "DocTypes by "));
+        response.setState(new StateDto(true, "DocTypes by organization"));
         response.setResult(docTypeDtos);
         return response;
     }
