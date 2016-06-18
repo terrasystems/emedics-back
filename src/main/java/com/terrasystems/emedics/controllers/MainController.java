@@ -98,13 +98,13 @@ public class MainController  {
         User user = userRepository.findByEmail(email);
         return disc = user.getDiscriminatorValue();
     }
-    @RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
     @ResponseBody
     public void getDoctors(@PathVariable String search) {
 
         List<Doctor> refs =  doctorRepository.findByIdIsNot(search);
         refs.forEach(ref -> System.out.println(ref.getName()));
-    }
+    }*/
 
   /*  @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
     @ResponseBody

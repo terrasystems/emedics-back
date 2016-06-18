@@ -56,7 +56,9 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
             return refs;
         } else {
-            refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search)));
+            /*refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(), search,search,search)))*/;
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNot("%"+search.toLowerCase()+"%",current.getId())));
+            refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search.toLowerCase(),search.toLowerCase())));
             return refs;
         }
     }
@@ -224,9 +226,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingAndDoctor_AdminIsTrue(current.getId(),search, search).stream()
                 .filter((stuff -> !currentRefs.contains(stuff)))
                 .collect(Collectors.toList());
-        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrIdIsNotAndType_NameContainingOrIdIsNotAndEmailContaining(current.getId(),search, current.getId(), search, current.getId(),search).stream()
+        /*List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingOrIdIsNotAndType_NameContainingOrIdIsNotAndEmailContaining(current.getId(),search, current.getId(), search, current.getId(),search).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNot(search.toLowerCase(), current.getId());
         List<Patient> patientsRefs = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
                 .filter(patient -> !currentRefs.contains(patient))
                 .collect(Collectors.toList());
