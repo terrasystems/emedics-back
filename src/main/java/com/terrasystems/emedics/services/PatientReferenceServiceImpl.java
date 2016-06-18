@@ -64,31 +64,34 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     @Transactional
-    public StateDto addReferences(Set<String> references) {
+    public StateDto addReferences(String reference) {
         User current = userRepository.findByEmail(getPrincipals());
         if (current.getDiscriminatorValue().equals("patient")) {
-            List<User> refs = userRepository.findAll(references);
-            Set<User> currentRefs = current.getUserRef();
-            currentRefs.addAll(refs);
-            current.setUserRef(currentRefs);
-            Doctor doctor = (Doctor) refs.get(0);
-            doctor.getUserRef().add(current);
-            List<Patient> patients = doctor.getPatients();
+            Doctor refToAdd = (Doctor) userRepository.findOne(reference);
+            current.getUserRef().add(refToAdd);
+            refToAdd.getPatients().add((Patient) current);
+            refToAdd.getUserRef().add(current);
             userRepository.save(current);
-            if(patients.contains((Patient) current)){
-                return new StateDto(false, "This references exist already");
+            userRepository.save(refToAdd);
+            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+        } else {
+            User refToAdd = userRepository.findOne(reference);
+            if (refToAdd.getDiscriminatorValue().equals("patient")) {
+                current.getUserRef().add(refToAdd);
+                refToAdd.getUserRef().add(current);
+                ((Doctor) current).getPatients().add((Patient) refToAdd);
+                ((Patient) refToAdd).getDoctors().add((Doctor) current);
+                userRepository.save(current);
+                userRepository.save(refToAdd);
+                return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
             } else {
-                patients.add((Patient) current);
-                userRepository.save(doctor);
+                current.getUserRef().add(refToAdd);
+                refToAdd.getUserRef().add(current);
+                userRepository.save(current);
+                userRepository.save(refToAdd);
                 return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
             }
-        } else {
-            List<User> refs = userRepository.findAll(references);
-            Set<User> currentRefs = current.getUserRef();
-            currentRefs.addAll(refs);
-            current.setUserRef(currentRefs);
-            userRepository.save(current);
-            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+
         }
 
     }
@@ -109,27 +112,28 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     @Transactional
-    public StateDto removeReferences(Set<String> references) throws Exception {
+    public StateDto removeReferences(String reference) throws Exception {
         User current = userRepository.findByEmail(getPrincipals());
+        User refToRemove = userRepository.findOne(reference);
         if(current.getDiscriminatorValue().equals("patient")){
-            List<User> refs = userRepository.findAll(references);
-            Set<User> currentRefs = current.getUserRef();
-            currentRefs.removeAll(refs);
-            current.setUserRef(currentRefs);
-            userRepository.save(current);
-            Doctor doctor = (Doctor) refs.get(0);
-            List<Patient> patients = doctor.getPatients();
-            patients.remove(current);
-            userRepository.save(doctor);
+            current.getUserRef().remove(refToRemove);
+            refToRemove.getUserRef().remove(current);
+            ((Doctor) refToRemove).getPatients().remove(current);
+
             return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
         } else {
-            List<User> refs = userRepository.findAll(references);
-            Set<User> currentRefs = current.getUserRef();
-            User user = refs.get(0);
-            currentRefs.removeAll(refs);
-            current.setUserRef(currentRefs);
-            user.getUserRef().remove(current);
-            return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+            if (refToRemove.getDiscriminatorValue().equals("patient")) {
+                ((Doctor) current).getPatients().remove(refToRemove);
+                current.getUserRef().remove(refToRemove);
+                refToRemove.getUserRef().remove(current);
+                ((Patient) refToRemove).getDoctors().remove(current);
+                return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+
+            } else {
+                current.getUserRef().remove(refToRemove);
+                refToRemove.getUserRef().remove(current);
+                return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
+            }
         }
     }
 

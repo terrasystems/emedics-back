@@ -32,11 +32,11 @@ public class ReferencesController {
         response.setState(new StateDto(true, MessageEnums.MSG_SEARCH.toString()));
         return response;
     }
-    @RequestMapping(value = "/references/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/references/add/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public DashboardReferenceResponse addReferences(@RequestBody DashboardReferenceRequest request) {
+    public DashboardReferenceResponse addReferences(@PathVariable String id) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
-        StateDto state = referenceService.addReferences(request.getCriteria().getList());
+        StateDto state = referenceService.addReferences(id);
         response.setState(state);
         return response;
     }
@@ -57,13 +57,13 @@ public class ReferencesController {
         response.setState(state);
         return response;
     }
-    @RequestMapping(value = "/references/remove", method = RequestMethod.POST)
+    @RequestMapping(value = "/references/remove/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public DashboardReferenceResponse removeReferences(@RequestBody DashboardReferenceRequest request) {
+    public DashboardReferenceResponse removeReferences(@PathVariable String id) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto state = new StateDto();
         try {
-            referenceService.removeReferences(request.getCriteria().getList());
+            referenceService.removeReferences(id);
             state.setMessage(MessageEnums.MSG_REMOVE_REF.toString());
             state.setValue(true);
         } catch (Exception e) {
