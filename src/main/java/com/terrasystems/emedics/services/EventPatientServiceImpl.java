@@ -106,6 +106,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Patient patient = (Patient) userRepository.findOne(id);
         current.getPatients().remove(patient);
+        current.getUserRef().remove(patient);
         userRepository.save(current);
         patient.getUserRef().remove(current);
         userRepository.save(patient);
@@ -132,6 +133,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return state;
         } else {
             current.getPatients().add(patient);
+            current.getUserRef().add(patient);
             userRepository.save(current);
             patient.getUserRef().add(current);
             userRepository.save(patient);

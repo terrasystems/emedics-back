@@ -148,6 +148,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             if (doctor != null) {
                 current.getUserRef().add(doctor);
                 doctor.getPatients().add((Patient) current);
+                doctor.getUserRef().add(current);
                 return current.getId();
             } else return null;
         } else if (current.getDiscriminatorValue().equals("doctor")) {
