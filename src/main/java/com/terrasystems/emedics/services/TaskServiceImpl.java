@@ -47,36 +47,36 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
     @Override
-    public Event createTask(UserTemplateDto userTemplate, String patientId) {
-        User current = userRepository.findByEmail(getPrincipals());
+    public Event createTask(UserTemplateDto userTemplate, String patientId, String fromId) {
         Template template = templateRepository.findOne(userTemplate.getId());
         User patient = null;
         if (patientId != null) {
             patient = userRepository.findOne(patientId);
         }
-        if (current.getDiscriminatorValue().equals("doctor")) {
-            if(template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
-                Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
-                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
+        User fromUser = userRepository.findOne(fromId);
+        if (fromUser.getDiscriminatorValue().equals("doctor")) {
+            if (template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
+                Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
+                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
                 if (countNew > 0 || countAccepted > 0) {
                     return null;
                 } else {
-                    Event event = createTaskLogic(patient, current, template);
+                    Event event = createTaskLogic(patient, fromUser, template);
                     return event;
                 }
 
             } else {
-                Event event = createTaskLogic(patient, current, template);
+                Event event = createTaskLogic(patient, fromUser, template);
                 return event;
             }
-        } else if (current.getDiscriminatorValue().equals("patient")){
-            Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.NEW);
-            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),template.getId(),StatusEnum.ACCEPTED);
+        } else if (fromUser.getDiscriminatorValue().equals("patient")) {
+            Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
+            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
             if (countNew > 0 || countAccepted > 0) {
                 return null;
             }
 
-            Event event = createTaskLogic(patient, current, template);
+            Event event = createTaskLogic(patient, fromUser, template);
             return event;
         } else {
             return null;
