@@ -335,6 +335,10 @@ public class User implements UserDetails {
     @PrePersist
     public void preInsert() {
         allowedFormsCount = 5;
-        name = firstName + " " + lastName;
+        if ((firstName == null) && (lastName == null)) {
+            name = email;
+        } else {
+            name = firstName == null ? lastName : firstName;
+        }
     }
 }
