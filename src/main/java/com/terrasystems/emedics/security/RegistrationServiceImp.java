@@ -108,12 +108,21 @@ public class RegistrationServiceImp implements RegistrationService {
 
     public StateDto registerPatient(UserDto user) {
         StateDto stateDto = new StateDto();
-        Patient registerUser = new Patient(user.getUsername(), user.getPassword(), user.getEmail());
+        Patient registerUser = new Patient();
         Set<Role> roles = new HashSet<>();
         Role role = new Role(ROLE_PATIENT);
         role.setUser(registerUser);
         roles.add(role);
         registerUser.setRoles(roles);
+        registerUser.setDoctors(new ArrayList<>());
+        registerUser.setUsers(new HashSet<>());
+        registerUser.setUserRef(new HashSet<>());
+        registerUser.setFirstName(user.getFirstName());
+        registerUser.setLastName(user.getLastName());
+        registerUser.setBirth(user.getBirth());
+        registerUser.setEmail(user.getEmail());
+        registerUser.setPassword(user.getPassword());
+        registerUser.setPhone(user.getPhone());
         userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
@@ -125,15 +134,25 @@ public class RegistrationServiceImp implements RegistrationService {
 
         System.out.println("entering registerDoctor method");
         StateDto stateDto = new StateDto();
-        Doctor registerUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
+        Doctor registerUser = new Doctor();
         Set<Role> roles = new HashSet<>();
         Role role = new Role(ROLE_DOCTOR);
         role.setUser(registerUser);
         roles.add(role);
         registerUser.setRoles(roles);
+        registerUser.setPatients(new ArrayList<>());
+        registerUser.setStuff(new ArrayList<>());
+        registerUser.setUsers(new HashSet<>());
+        registerUser.setUserRef(new HashSet<>());
+        registerUser.setFirstName(user.getFirstName());
+        registerUser.setLastName(user.getLastName());
+        registerUser.setBirth(user.getBirth());
+        registerUser.setEmail(user.getEmail());
+        registerUser.setPassword(user.getPassword());
+        registerUser.setPhone(user.getPhone());
+        userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
-        userRepository.save(registerUser);
         System.out.println("returning from registerDoctor method");
         return stateDto;
     }
@@ -141,8 +160,8 @@ public class RegistrationServiceImp implements RegistrationService {
     @Override
     public StateDto registerOrganisation(UserDto user, OrganisationDto org) {
         StateDto status = new StateDto();
-        Doctor registeredUser = new Doctor(user.getUsername(), user.getPassword(), user.getEmail());
-        registeredUser.setAdmin(true);
+        Doctor registeredUser = new Doctor();
+        registeredUser.setOrg(true);
         registeredUser.setOrgName(org.getName());
         registeredUser.setOrgAddress(org.getAddress());
         registeredUser.setOrgName(org.getFullname());
@@ -158,13 +177,17 @@ public class RegistrationServiceImp implements RegistrationService {
         roles.add(role2);
         registeredUser.setStuff(new ArrayList<>());
         registeredUser.setRoles(roles);
+        registeredUser.setPatients(new ArrayList<>());
+        registeredUser.setStuff(new ArrayList<>());
+        registeredUser.setUsers(new HashSet<>());
+        registeredUser.setUserRef(new HashSet<>());
+        registeredUser.setFirstName(user.getFirstName());
+        registeredUser.setLastName(user.getLastName());
+        registeredUser.setBirth(user.getBirth());
+        registeredUser.setEmail(user.getEmail());
+        registeredUser.setPassword(user.getPassword());
+        registeredUser.setPhone(user.getPhone());
 
-        /*List<Doctor> stuffs = new ArrayList<>();
-        stuffs.add(registeredUser);
-        organization.setStuff(stuffs);
-        registeredUser.setOrganization(organization);
-        registeredUser.setRoles(roles);
-        organizationRepository.save(organization);*/
         userRepository.save(registeredUser);
 
         status.setMessage(MessageEnums.MSG_USER_REG.toString());

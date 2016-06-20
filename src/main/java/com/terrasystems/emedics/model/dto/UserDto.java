@@ -17,6 +17,7 @@ public class UserDto implements Serializable {
     private String firstName;
     private String lastName;
     private Date birth;
+    private String phone;
 
     private String password;
     private String username;
@@ -99,6 +100,14 @@ public class UserDto implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override
