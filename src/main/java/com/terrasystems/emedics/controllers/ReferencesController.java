@@ -28,7 +28,7 @@ public class ReferencesController {
     @ResponseBody
     public DashboardReferenceResponse searchReferences(@RequestBody DashboardReferenceRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
-        response.setResult(referenceService.findAllReferencesByCriteria(request.getCriteria().getSearch()));
+        response.setResult(referenceService.findMyReferencesByCriteria(request.getCriteria().getSearch()));
         response.setState(new StateDto(true, MessageEnums.MSG_SEARCH.toString()));
         return response;
     }
@@ -91,22 +91,12 @@ public class ReferencesController {
         }
     }
 
-    /*@RequestMapping(value = "/references/invite", method = RequestMethod.POST)
-    @ResponseBody
-    public DashboardReferenceResponse inviteReference(@RequestBody String email) {
-        DashboardReferenceResponse response = new DashboardReferenceResponse();
-        StateDto status = new StateDto();
-        status.setMessage(MessageEnums.MSG_INVITE.toString());
-        status.setValue(true);
-        return response;
-    }*/
-
     @RequestMapping(value = "/references/refs", method = RequestMethod.POST)
     @ResponseBody
     public DashboardReferenceResponse getMyRefs(@RequestBody MyRefsRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto status = new StateDto();
-        response.setResult(referenceService.findMyReferencesByCriteria(request.getSearch()));
+        response.setResult(referenceService.findAllReferencesByCriteria(request.getSearch()));
         status.setMessage("Refs");
         status.setValue(true);
         response.setState(status);
