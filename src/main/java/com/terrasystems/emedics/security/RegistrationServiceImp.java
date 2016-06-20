@@ -7,6 +7,7 @@ import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
+import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.security.token.TokenAuthService;
 import com.terrasystems.emedics.security.token.TokenUtil;
 import com.terrasystems.emedics.services.MailService;
@@ -250,6 +251,7 @@ public class RegistrationServiceImp implements RegistrationService {
 
     @Override
     public RegisterResponseDto activateUser(String link) {
+        UserMapper mapper = UserMapper.getInstance();
         String email = emailsStore.get(link);
         if (email == null) {
             User user = userRepository.findByActivationToken(link);
@@ -264,7 +266,7 @@ public class RegistrationServiceImp implements RegistrationService {
                 //userFormsDashboardService.generateFormsForUser(email);
                 RegisterResponseDto response = new RegisterResponseDto();
                 StateDto state = new StateDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
-                UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
+                UserDto userDto = mapper.toDTO(user);
                 String[] type = token.split(":");
                 userDto.setType(type[2]);
                 response.setState(state);
