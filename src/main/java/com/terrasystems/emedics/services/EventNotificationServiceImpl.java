@@ -1,11 +1,15 @@
 package com.terrasystems.emedics.services;
 
 
+import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.EventRepository;
+import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
+import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Event;
+import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +34,10 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     UserRepository userRepository;
     @Autowired
     TaskService taskService;
+    @Autowired
+    DoctorRepository doctorRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
     @Override
     @Transactional
@@ -45,6 +54,33 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
         if (recipient.getDiscriminatorValue().equals("patient") && event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)) {
             return new StateDto(false, "U can't send this form to patients");
         }
+        if(!current.getUserRef().contains(recipient)) {
+            if(current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("patient")){
+                Doctor currentDoctor = doctorRepository.findOne(current.getId());
+                Patient currentPatient = patientRepository.findOne(recipient.getId());
+                currentDoctor.getUserRef().add(currentPatient);
+                currentDoctor.getPatients().add(currentPatient);
+                currentPatient.getUserRef().add(currentDoctor);
+                userRepository.save(currentDoctor);
+                userRepository.save(currentPatient);
+            } else if (current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("doctor")) {
+                Doctor currentDoctor = doctorRepository.findOne(current.getId());
+                Doctor toDoctor = doctorRepository.findOne(recipient.getId());
+                current.getUserRef().add(recipient);
+                recipient.getUserRef().add(current);
+                userRepository.save(currentDoctor);
+                userRepository.save(toDoctor);
+            } else if (current.getDiscriminatorValue().equals("patient")&&recipient.getDiscriminatorValue().equals("doctor")) {
+                Doctor doctor = doctorRepository.findOne(recipient.getId());
+                Patient patient = patientRepository.findOne(current.getId());
+                doctor.getPatients().add(patient);
+                doctor.getUserRef().add(patient);
+                patient.getUserRef().add(doctor);
+                userRepository.save(doctor);
+                userRepository.save(patient);
+            }
+        }
+
         User patient = userRepository.findOne(patientId);
         if(event != null && recipient != null){
             event.setStatus(StatusEnum.SENT);
