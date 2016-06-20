@@ -57,7 +57,7 @@ public class MailServiceImp implements MailService {
     public StateDto sendResetPasswordMail(String address, String valueKey) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
-        message.setSubject(MessageEnums.MSG_RESET_PASS.toString());
+        message.setSubject("Reset password for emedics");
         message.setText("Please visit to link"+" " + RESET+valueKey);
         message.setFrom("admin@emedics.org");
         try {
