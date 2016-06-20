@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = {"/rest/private/dashboard/patient","/rest/private/dashboard/doctor"})
+@RequestMapping(value = {"/rest/private/dashboard/patient","/rest/private/dashboard/doctor", "/rest/private/dashboard/stuff"})
 
 public class ReferencesController {
 
