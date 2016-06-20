@@ -11,10 +11,7 @@ import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.model.dto.PatientDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.TemplateEventDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,8 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     EventRepository eventRepository;
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    ReferenceCreateService referenceCreateService;
     @Override
     public List<PatientDto> getAllPatients() {
         PatientMapper mapper = PatientMapper.getInstance();
@@ -142,6 +141,8 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return state;
         }
     }
+
+
 
 
 }

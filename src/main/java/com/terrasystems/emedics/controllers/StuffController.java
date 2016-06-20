@@ -72,5 +72,24 @@ public class StuffController {
         response.setState(status);
         return response;
     }
+    @RequestMapping(value = "/stuff/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse editStuff(@RequestBody StuffDto request) {
+        ObjectResponse response = new ObjectResponse();
+        StuffMapper mapper = StuffMapper.getInstance();
+        StateDto state = new StateDto();
+        Stuff stuff = stuffService.updateStuff(request);
+        if (stuff == null) {
+            state.setValue(false);
+            state.setMessage("Error while updating user");
+            response.setState(state);
+            return response;
+        }
+        state.setValue(true);
+        state.setMessage("User updated");
+        response.setState(state);
+        response.setResult(mapper.toDto(stuff));
+        return response;
+    }
 
 }

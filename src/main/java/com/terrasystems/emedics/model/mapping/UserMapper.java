@@ -26,6 +26,7 @@ public final class UserMapper {
         dto.setLastName(entity.getLastName());
         dto.setBirth(entity.getBirth());
         dto.setType(entity.getDiscriminatorValue());
+        dto.setOrg(entity.getOrg());
         return dto;
     }
 

@@ -80,4 +80,16 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     public void deleteStuff(String id) {
         stuffRepository.delete(id);
     }
+
+    @Override
+    public Stuff updateStuff(StuffDto dto) {
+        Stuff stuff = stuffRepository.findOne(dto.getId());
+        stuff.setPhone(dto.getPhone());
+        stuff.setEmail(dto.getEmail());
+        stuff.setFirstName(dto.getFirstName());
+        stuff.setLastName(dto.getLastName());
+        stuff.setBirth(dto.getBirth());
+
+        return stuffRepository.save(stuff);
+    }
 }

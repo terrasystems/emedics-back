@@ -14,6 +14,7 @@ public class DoctorDto implements Serializable {
     private String username;
     private String password;
     private String clinic;
+    private String org;
 
     public DoctorDto() {
     }
@@ -71,6 +72,14 @@ public class DoctorDto implements Serializable {
         this.clinic = clinic;
     }
 
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -91,12 +100,13 @@ public class DoctorDto implements Serializable {
         return  Objects.equal(email, doctorDto.email) &&
                 Objects.equal(password, doctorDto.password) &&
                 Objects.equal(username, doctorDto.username)&&
-                Objects.equal(clinic, doctorDto.clinic);
+                Objects.equal(clinic, doctorDto.clinic) &&
+                Objects.equal(org, doctorDto.org);
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(email, password, username, clinic);
+        return Objects.hashCode(email, password, username, clinic, org);
     }
 }

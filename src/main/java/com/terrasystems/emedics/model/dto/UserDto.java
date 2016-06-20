@@ -18,6 +18,7 @@ public class UserDto implements Serializable {
     private String lastName;
     private Date birth;
     private String phone;
+    private Boolean org;
 
     private String password;
     private String username;
@@ -104,6 +105,14 @@ public class UserDto implements Serializable {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Boolean getOrg() {
+        return org;
+    }
+
+    public void setOrg(Boolean org) {
+        this.org = org;
     }
 
     public void setPhone(String phone) {

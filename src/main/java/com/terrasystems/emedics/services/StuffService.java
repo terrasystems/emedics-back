@@ -11,5 +11,6 @@ public interface StuffService {
     Stuff getById(String id);
     Stuff createStuff(StuffDto dto);
     void deleteStuff(String id);
+    Stuff updateStuff(StuffDto dto);
 
 }

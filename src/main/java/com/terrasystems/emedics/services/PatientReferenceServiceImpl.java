@@ -146,13 +146,16 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     @Transactional
     public String createReference(ReferenceCreateRequest request) {
         User current = userRepository.findByEmail(getPrincipals());
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return userRepository.findByEmail(request.getEmail()).getId();
+        }
         if (current.getDiscriminatorValue().equals("patient")) {
             Doctor doctor = referenceCreateService.createDoctor(request);
             if (doctor != null) {
                 current.getUserRef().add(doctor);
                 doctor.getPatients().add((Patient) current);
                 doctor.getUserRef().add(current);
-                return current.getId();
+                return doctor.getId();
             } else return null;
         } else if (current.getDiscriminatorValue().equals("doctor")) {
             if (request.getType().equals("pat")) {
@@ -165,7 +168,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                     patient.getDoctors().add(currentDoctor);
                     userRepository.save(currentDoctor);
                     userRepository.save(patient);
-                    return currentDoctor.getId();
+                    return patient.getId();
                 } else return null;
             } else {
                 Doctor doctor = referenceCreateService.createDoctor(request);
