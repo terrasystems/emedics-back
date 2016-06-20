@@ -28,6 +28,11 @@ public class PatientController {
     @ResponseBody
     public DashboardPatientsResponse getPatients() {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
+        List<PatientDto> patients = eventPatientService.getAllPatients();
+        if (patients == null) {
+            response.setState(new StateDto(false,"Not supported yet"));
+            return response;
+        }
         response.setResult(eventPatientService.getAllPatients());
         response.setState(new StateDto(true, "All patients"));
         return response;

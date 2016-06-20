@@ -7,10 +7,7 @@ import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.enums.StatusEnum;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Event;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.Template;
+import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
@@ -38,11 +35,12 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     @Override
     public List<PatientDto> getAllPatients() {
         PatientMapper mapper = PatientMapper.getInstance();
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-
-        return current.getPatients().stream()
-                .map(patient -> mapper.toDto(patient))
-                .collect(Collectors.toList());
+        User current =  userRepository.findByEmail(getPrincipals());
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            return ((Doctor)current).getPatients().stream()
+                    .map(patient -> mapper.toDto(patient))
+                    .collect(Collectors.toList());
+        } else return null;
     }
 
     @Override
