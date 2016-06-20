@@ -33,6 +33,7 @@ public class StuffController {
     }
 
     @RequestMapping (value = "stuff/create", method = RequestMethod.POST)
+    @ResponseBody
     public ObjectResponse createStuff(@RequestBody StuffDto stuffDto) {
         StuffMapper mapper = StuffMapper.getInstance();
         ObjectResponse response = new ObjectResponse();
@@ -51,5 +52,7 @@ public class StuffController {
         response.setState(status);
         return response;
     }
+
+    /*@RequestMapping(value = "/stuff/{id}", Reqq)*/
 
 }
