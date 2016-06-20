@@ -7,9 +7,13 @@ import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.Stuff;
 import com.terrasystems.emedics.model.dto.StuffDto;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.ManyToOne;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +25,8 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     StuffRepository stuffRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    MailService mailService;
 
 
     @Override
@@ -35,21 +41,38 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     }
 
     @Override
-    public Stuff addNewStuff(StuffDto dto) {
+    @Transactional
+    public Stuff createStuff(StuffDto dto) {
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Stuff stuff = new Stuff();
         stuff.setUsers(new HashSet<>());
         stuff.setUserRef(new HashSet<>());
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role("ROLE_STUFF"));
+        Role role1 = new Role("ROLE_STUFF");
+        role1.setUser(stuff);
+        roles.add(role1);
+
         stuff.setRoles(roles);
         stuff.setDoctor(current);
+        if (dto.getPassword() == null) {
+            stuff.setPassword(RandomStringUtils.random(10, 'a','b','c','A','B','C','1','2','3','4','5'));
+        } else {
+            stuff.setPassword(dto.getPassword());
+        }
         stuff.setFirstName(dto.getFirstName());
         stuff.setLastName(dto.getLastName());
         stuff.setEmail(dto.getEmail());
         stuff.setPhone(dto.getPhone());
         stuff.setBirth(dto.getBirth());
-        stuffRepository.save(stuff);
+        stuff.setEnabled(true);
+        stuff.setRegistrationDate(new Date());
+        if (stuffRepository.save(stuff) == null) {
+            return null;
+        }
+
+        if (!mailService.sendStuffMail(stuff.getEmail(), stuff.getPassword()).isValue()) {
+            return null;
+        }
         return stuff;
     }
 

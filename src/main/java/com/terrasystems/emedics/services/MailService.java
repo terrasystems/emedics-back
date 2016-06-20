@@ -7,5 +7,6 @@ import com.terrasystems.emedics.model.dto.StateDto;
 public interface MailService {
     StateDto sendRegistrationMail(String address, String activateToken, String password);
     StateDto sendResetPasswordMail(String address, String newPass);
+    StateDto sendStuffMail(String address, String password);
     void velocityTest(User user);
 }

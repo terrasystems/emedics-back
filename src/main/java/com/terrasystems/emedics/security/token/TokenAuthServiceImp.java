@@ -48,10 +48,11 @@ public class TokenAuthServiceImp implements TokenAuthService {
                     "    \"email\": \"%s\",\n" +
                     "    \"password\": null,\n" +
                     "    \"username\": \"%s\",\n" +
-                    "     \"id\": \"%s\"\n" +
+                    "     \"id\": \"%s\",\n" +
+                    "      \"org\": \"%b\"\n" +
                     "  },\n" +
                     "  \"token\": \"%s\"\n" +
-                    "}", true, type, user.getEmail(), user.getName(), user.getId(), token));
+                    "}", true, type, user.getEmail(), user.getName(), user.getId(),user.getOrg(),token));
             //response.getWriter().write();
             response.getWriter().flush();
             response.getWriter().close();
