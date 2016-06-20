@@ -35,6 +35,8 @@ public class User implements UserDetails {
     @Column(name = "id", unique = true)
     private String id;
 
+    @Column(name = "is_org")
+    protected Boolean org;
 
     @Column(name = "name")
     protected String name;
@@ -241,6 +243,14 @@ public class User implements UserDetails {
 
     public void setAllowedFormsCount(int allowedFormsCount) {
         this.allowedFormsCount = allowedFormsCount;
+    }
+
+    public Boolean getOrg() {
+        return org;
+    }
+
+    public void setOrg(Boolean org) {
+        this.org = org;
     }
 
     //TODO add fields for accaunt disabelin(Expirision, Locked etc)

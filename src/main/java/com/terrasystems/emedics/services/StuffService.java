@@ -9,7 +9,7 @@ import java.util.List;
 public interface StuffService {
     List<Stuff> getAllStuff();
     Stuff getById(String id);
-    Stuff addNewStuff(StuffDto dto);
+    Stuff createStuff(StuffDto dto);
     void deleteStuff(String id);
 
 }
