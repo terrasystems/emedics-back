@@ -75,7 +75,7 @@ public class MailServiceImp implements MailService {
         message.setTo(address);
         message.setSubject("Welcome to eMedics");
 
-        message.setText(LOGIN + "Your password is" + " " + password );
+        message.setText(LOGIN +  " Your password is" + " " + password );
         message.setFrom("admin@emedics.org");
         System.out.println("message "+ message.toString());
         try {
