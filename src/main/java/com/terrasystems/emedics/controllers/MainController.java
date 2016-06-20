@@ -98,18 +98,15 @@ public class MainController  {
         User user = userRepository.findByEmail(email);
         return disc = user.getDiscriminatorValue();
     }
-    @RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/rest/doctors/{search}", method = RequestMethod.GET)
     @ResponseBody
     public void getDoctors(@PathVariable String search) {
-        /*List<User> doctors;
-        doctors =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(name,name,name);
-        doctors.stream()
-                .forEach(doctor -> System.out.println(doctor.getUsername()));*/
-        List<Doctor> refs =  doctorRepository.findByNameContainingOrTypeContainingOrEmailContaining(search,search,search);
-        refs.forEach(ref -> System.out.println(ref.getName()));
-    }
 
-    @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
+        List<Doctor> refs =  doctorRepository.findByIdIsNot(search);
+        refs.forEach(ref -> System.out.println(ref.getName()));
+    }*/
+
+  /*  @RequestMapping(value = "/rest/doctors/", method = RequestMethod.GET)
     @ResponseBody
     public String createDoctor() {
         List<Doctor> doctors = new ArrayList<>();
@@ -122,8 +119,8 @@ public class MainController  {
         userRepository.save(doctors);
 
         return "Doctors Created";
-    }
-    @RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
+    }*/
+    /*@RequestMapping(value = "/rest/stuff", method = RequestMethod.GET)
     @ResponseBody
     public String createStuff() {
         List<Stuff> stuff = new ArrayList<>();
@@ -140,15 +137,15 @@ public class MainController  {
 
 
         return "Stuff Created";
-    }
-    @RequestMapping(value = "/rest/stuff/admin/{search}", method = RequestMethod.GET)
+    }*/
+    /*@RequestMapping(value = "/rest/stuff/admin/{search}", method = RequestMethod.GET)
     @ResponseBody
     public List<Stuff> getAdmins(@PathVariable String search) {
 
 
 
         return stuffRepository.findByNameContainingAndAdminIsTrueOrEmailContainingAndAdminIsTrue(search,search);
-    }
+    }*/
     @RequestMapping(value = "/rest/velocity", method = RequestMethod.GET)
     @ResponseBody
     public String testVelocity() {

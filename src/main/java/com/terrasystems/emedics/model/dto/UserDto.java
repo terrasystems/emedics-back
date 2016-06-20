@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = 1509556509931292216L;
@@ -13,6 +14,11 @@ public class UserDto implements Serializable {
     private String type;
     private String email;
     private String typeExp;
+    private String firstName;
+    private String lastName;
+    private Date birth;
+    private String phone;
+    private Boolean org;
 
     private String password;
     private String username;
@@ -57,6 +63,30 @@ public class UserDto implements Serializable {
         this.username = username;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -73,6 +103,22 @@ public class UserDto implements Serializable {
         this.password = password;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public Boolean getOrg() {
+        return org;
+    }
+
+    public void setOrg(Boolean org) {
+        this.org = org;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -81,6 +127,8 @@ public class UserDto implements Serializable {
                 .add("email", email)
                 .add("password", password)
                 .add("username", username)
+                .add("firstName", firstName)
+                .add("lastName", lastName)
                 .toString();
     }
 
@@ -98,6 +146,8 @@ public class UserDto implements Serializable {
                 .append(email, userDto.email)
                 .append(password, userDto.password)
                 .append(username, userDto.username)
+                .append(firstName, userDto.firstName)
+                .append(lastName, userDto.lastName)
                 .isEquals();
     }
 
@@ -109,6 +159,8 @@ public class UserDto implements Serializable {
                 .append(email)
                 .append(password)
                 .append(username)
+                .append(firstName)
+                .append(lastName)
                 .toHashCode();
     }
 }

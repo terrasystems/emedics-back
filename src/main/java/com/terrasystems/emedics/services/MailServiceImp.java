@@ -21,6 +21,8 @@ import java.util.Map;
 @Service
 public class MailServiceImp implements MailService {
     private  @Value("${activate.url}") String HOST ;
+    private @Value("${resetPassword.url}") String RESET;
+    private @Value("${login.url}") String LOGIN;
     //private  String ACTIVATE_URL = HOST + "rest/public/activate/";
 
     @Autowired
@@ -52,11 +54,11 @@ public class MailServiceImp implements MailService {
     }
 
     @Override
-    public StateDto sendResetPasswordMail(String address, String newPass) {
+    public StateDto sendResetPasswordMail(String address, String valueKey) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
-        message.setSubject(MessageEnums.MSG_RESET_PASS.toString());
-        message.setText("Your new password is:"+" " + newPass);
+        message.setSubject("Reset password for emedics");
+        message.setText("Please visit to link"+" " + RESET+valueKey);
         message.setFrom("admin@emedics.org");
         try {
             mailSender.send(message);
@@ -66,6 +68,28 @@ public class MailServiceImp implements MailService {
         return new StateDto(true,MessageEnums.MSG_SEND_MAIL.toString());
 
     }
+
+    @Override
+    public StateDto sendStuffMail(String address, String password) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Welcome to eMedics");
+
+        message.setText(LOGIN +  " Your password is" + " " + password );
+        message.setFrom("admin@emedics.org");
+        System.out.println("message "+ message.toString());
+        try {
+            System.out.println("try to send mail");
+            mailSender.send(message);
+        } catch (MailException ex) {
+            System.out.println("Email Exception - "+ ex.getMessage());
+            return new StateDto(false, MessageEnums.MSG_ERROR_SEND_MAIL.toString());
+        }
+        System.out.println("After catch");
+        return new StateDto(true,MessageEnums.MSG_SEND_MAIL.toString());
+
+    }
+
     @Override
     public void velocityTest(User user ) {
         /*MimeMessagePreparator preparator = new MimeMessagePreparator() {

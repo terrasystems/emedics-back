@@ -1,10 +1,13 @@
 package com.terrasystems.emedics.controllers;
 
+import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Event;
+import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 public class TaskController {
     @Autowired
     TaskService taskService;
+    @Autowired
+    UserRepository userRepository;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
@@ -42,14 +47,64 @@ public class TaskController {
         response.setState(state);
         return response;
     }
+
+    @RequestMapping(value = "/gethistory", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse getHistory() {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+        List<EventDto> events = taskService.getHistory().stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("History");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "/close/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse closeTask(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(taskService.closeTask(id));
+        return response;
+    }
+
     //TODO refactor this code
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse createTask(@RequestBody EventCreateRequest request) {
+        if(request.getFromId() != null) {
+            User current = userRepository.findOne(request.getFromId());
+            if (current == null) {
+                DashboardEventResponse response = new DashboardEventResponse();
+                response.setState(new StateDto(false, "User with such id doesn't exist"));
+                return response;
+            } else {
+                Event event = taskService.createTask(request.getTemplate(), request.getPatient(), request.getFromId());
+                return createTaskLogic(event);
+            }
+        } else {
+            User current = userRepository.findByEmail((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            Event event = taskService.createTask(request.getTemplate(), request.getPatient(), current.getId());
+            return createTaskLogic(event);
+        }
+    }
+
+    DashboardEventResponse createTaskLogic(Event event) {
         DashboardEventResponse response = new DashboardEventResponse();
         EventMapper mapper = EventMapper.getInstance();
         StateDto state = new StateDto();
-        Event event = taskService.createTask(request.getTemplate(), request.getPatient());
         if (event == null) {
             state.setValue(false);
             state.setMessage("You already have task with this template");

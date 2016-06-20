@@ -14,42 +14,33 @@ public class Stuff extends User {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Organization organization;
-
-    private boolean admin;
+    private Doctor doctor;
 
     public Stuff() {}
     public Stuff(String username, String password, String email) {
         super(username, password, email);
     }
-    @JsonIgnore
-    public Organization getOrganization() {
-        return organization;
+
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof Stuff)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Stuff stuff = (Stuff) o;
 
         return new EqualsBuilder()
                 .appendSuper(super.equals(o))
-                .append(admin, stuff.admin)
+                .append(doctor, stuff.doctor)
                 .isEquals();
     }
 
@@ -57,7 +48,7 @@ public class Stuff extends User {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .appendSuper(super.hashCode())
-                .append(admin)
+                .append(doctor)
                 .toHashCode();
     }
 }

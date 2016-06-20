@@ -15,6 +15,7 @@ public interface EventRepository extends CrudRepository<Event, String> {
     /*boolean existsByPatient_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateI);
     boolean existsByToUser_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateId);*/
     List<Event> findByFromUser_IdAndStatus(String id, StatusEnum status);
+    List<Event> findByStatusAndFromUser_IdOrToUser_Id(StatusEnum status, String fromUserId, String toUserId);
     Long countByFromUser_IdAndTemplate_IdAndStatus (String userId, String templateId, StatusEnum status);
     Long countByToUser_IdAndTemplate_IdAndStatus(String userId, String templateId, StatusEnum status);
     List<Event> findByFromUser_Id(String userId);

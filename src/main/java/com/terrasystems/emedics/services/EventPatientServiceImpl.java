@@ -7,14 +7,8 @@ import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.enums.StatusEnum;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Event;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.Template;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.model.dto.PatientDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.TemplateEventDto;
+import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +30,17 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     EventRepository eventRepository;
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    ReferenceCreateService referenceCreateService;
     @Override
     public List<PatientDto> getAllPatients() {
         PatientMapper mapper = PatientMapper.getInstance();
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-
-        return current.getPatients().stream()
-                .map(patient -> mapper.toDto(patient))
-                .collect(Collectors.toList());
+        User current =  userRepository.findByEmail(getPrincipals());
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            return ((Doctor)current).getPatients().stream()
+                    .map(patient -> mapper.toDto(patient))
+                    .collect(Collectors.toList());
+        } else return null;
     }
 
     @Override
@@ -72,6 +69,9 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                     dto.setEvents(dtos);
                     return dto;
                 })
+                .collect(Collectors.toList())
+                .stream()
+                .filter(templateEventDto -> !templateEventDto.getEvents().isEmpty())
                 .collect(Collectors.toList());
 
         return eventsDto;
@@ -82,7 +82,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         List<Patient> currentPats = current.getPatients();
         PatientMapper mapper = PatientMapper.getInstance();
-        List<Patient> patients = patientRepository.findByNameContainingOrEmailContaining(search,search).stream()
+        List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
                 .filter(patient -> !currentPats.contains(patient))
                 .collect(Collectors.toList());
         List<PatientDto> patientDtos = patients.stream()
@@ -103,6 +103,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Patient patient = (Patient) userRepository.findOne(id);
         current.getPatients().remove(patient);
+        current.getUserRef().remove(patient);
         userRepository.save(current);
         patient.getUserRef().remove(current);
         userRepository.save(patient);
@@ -129,6 +130,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return state;
         } else {
             current.getPatients().add(patient);
+            current.getUserRef().add(patient);
             userRepository.save(current);
             patient.getUserRef().add(current);
             userRepository.save(patient);
@@ -137,6 +139,8 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return state;
         }
     }
+
+
 
 
 }

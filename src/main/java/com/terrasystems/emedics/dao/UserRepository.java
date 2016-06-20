@@ -12,8 +12,16 @@ import java.util.Set;
 public interface UserRepository extends CrudRepository<User, String> {
     User findByName(String name);
     User findByEmail(String email);
+    User findByValueKey(String valueKey);
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM User c WHERE c.email = :email")
     boolean existsByEmail(@Param("email") String email);
     List<User> findAll(Iterable<String> ids);
-    //Iterable<User> findByNameContainingOrTypeContainingOrEmailContaining(String name, String type, String email);
+    Set<User> findByIdIsNotAndNameContainingOrEmailContaining(String name, String email, String id);
+    User findByActivationToken(String link);
+
+    @Query("select d from User d "+//" left join DocType dt " +
+            "where (d.id != :id)")/* and ((lower(d.email) like :search) or (lower(d.name) " +
+            "like :search) or (lower(d.orgName) like :search) or (lower(dt.name) like :search) ) ")*/
+        //TODO search in lower case
+    Set<User> findByIdIsNot(/*@Param("search") String search,*/ @Param("id") String id);
 }

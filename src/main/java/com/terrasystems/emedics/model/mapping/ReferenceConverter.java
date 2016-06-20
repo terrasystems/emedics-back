@@ -5,6 +5,7 @@ import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,10 +16,15 @@ public class ReferenceConverter {
                 .map(doctor -> {
                     ReferenceDto ref = new ReferenceDto();
                     ref.setId(doctor.getId());
-                    ref.setType(doctor.getType());
+                    if (doctor.getType() == null) {
+                        ref.setType(null);
+                    } else {
+                        ref.setType(doctor.getType().getName());
+                    }
                     ref.setName(doctor.getName());
                     ref.setPhone(doctor.getPhone());
                     ref.setEmail(doctor.getEmail());
+                    ref.setEnabled(doctor.isEnabled());
                     return ref;
                 })
                 .collect(Collectors.toList());
@@ -30,10 +36,10 @@ public class ReferenceConverter {
                 .map(stuff -> {
                     ReferenceDto ref = new ReferenceDto();
                     ref.setId(stuff.getId());
-                    ref.setName(stuff.getOrganization().getName());
+                    ref.setName(stuff.getDoctor().getOrgName());
                     ref.setEmail(stuff.getEmail());
                     ref.setPhone(stuff.getPhone());
-                    ref.setType(stuff.getOrganization().getType());
+                    ref.setType(stuff.getDoctor().getOrgType());
                     return ref;
                 })
                 .collect(Collectors.toList());
@@ -41,7 +47,7 @@ public class ReferenceConverter {
         return references;
     }
 
-    public List<ReferenceDto> convertFromUsers(List<User> users) {
+    public List<ReferenceDto> convertFromUsers(Set<User> users) {
         List<ReferenceDto> references = users.stream()
                 .map(user -> {
                     ReferenceDto ref = new ReferenceDto();
@@ -50,6 +56,7 @@ public class ReferenceConverter {
                     ref.setPhone(user.getPhone());
                     ref.setName(user.getName());
                     ref.setEmail(user.getEmail());
+                    ref.setEnabled(user.isEnabled());
                     return ref;
                 })
                 .collect(Collectors.toList());

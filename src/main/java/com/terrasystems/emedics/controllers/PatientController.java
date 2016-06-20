@@ -1,8 +1,13 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.model.Patient;
+import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.services.EventPatientService;
+import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
+import com.terrasystems.emedics.services.ReferenceCreateService;
+import com.terrasystems.emedics.services.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +18,21 @@ import java.util.List;
 public class PatientController {
     @Autowired
     EventPatientService eventPatientService;
+    @Autowired
+    ReferenceCreateService referenceCreateService;
+    @Autowired
+    ReferenceService referenceService;
 
 
     @RequestMapping(value = "/patients", method = RequestMethod.GET)
     @ResponseBody
     public DashboardPatientsResponse getPatients() {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
+        List<PatientDto> patients = eventPatientService.getAllPatients();
+        if (patients == null) {
+            response.setState(new StateDto(false,"Not supported yet"));
+            return response;
+        }
         response.setResult(eventPatientService.getAllPatients());
         response.setState(new StateDto(true, "All patients"));
         return response;
@@ -57,5 +71,21 @@ public class PatientController {
         StateDto state = eventPatientService.removePatient(request.getCriteria().getList().get(0).getId());
         response.setState(state);
         return response;
+    }
+
+    @RequestMapping(value = "/patients/create", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardPatientsResponse createPatients(@RequestBody ReferenceCreateRequest request) {
+        DashboardPatientsResponse response = new DashboardPatientsResponse();
+        String user = referenceService.createReference(request);
+        if (user != null) {
+            response.setResult(user);
+            response.setState(new StateDto(true,"User created"));
+            return response;
+        } else {
+            response.setResult(null);
+            response.setState(new StateDto(false, "Email incorrect or user with such email is already exists"));
+            return response;
+        }
     }
 }

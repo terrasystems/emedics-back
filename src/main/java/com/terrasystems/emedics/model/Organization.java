@@ -27,8 +27,8 @@ public class Organization {
     private String descr;
     @Column
     String type;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organization", fetch = FetchType.LAZY)
-    private List<Stuff> stuff;
+    /*@OneToMany(cascade = CascadeType.ALL, mappedBy = "organization", fetch = FetchType.LAZY)
+    private List<Stuff> stuff;*/
 
 
     public Organization(String name, String fullName, String website, String address, String descr, String type) {
@@ -98,11 +98,11 @@ public class Organization {
         this.descr = descr;
     }
 
-    public List<Stuff> getStuff() {
+    /*public List<Stuff> getStuff() {
         return stuff;
     }
 
     public void setStuff(List<Stuff> stuff) {
         this.stuff = stuff;
-    }
+    }*/
 }

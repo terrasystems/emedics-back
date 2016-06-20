@@ -1,7 +1,9 @@
 package com.terrasystems.emedics.services;
 
 
+import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.dto.PatientDto;
+import com.terrasystems.emedics.model.dto.ReferenceCreateRequest;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 

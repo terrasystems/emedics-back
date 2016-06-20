@@ -35,12 +35,30 @@ public class User implements UserDetails {
     @Column(name = "id", unique = true)
     private String id;
 
+    @Column(name = "is_org")
+    protected Boolean org;
 
-    @Column(nullable = false)
+    @Column(name = "name")
     protected String name;
 
     @Column
+    protected String firstName;
+
+    @Column
+    protected String lastName;
+
+    @Column
     protected String phone;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "birth_date")
+    protected Date birth;
+
+    @Column
+    protected String activationToken;
+
+    @Column
+    protected String valueKey;
 
     @Column
     protected Date registrationDate;
@@ -108,6 +126,14 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getValueKey() {
+        return valueKey;
+    }
+
+    public void setValueKey(String valueKey) {
+        this.valueKey = valueKey;
     }
 
     public Set<User> getUsers() {
@@ -179,6 +205,54 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
+
+    public int getAllowedFormsCount() {
+        return allowedFormsCount;
+    }
+
+    public void setAllowedFormsCount(int allowedFormsCount) {
+        this.allowedFormsCount = allowedFormsCount;
+    }
+
+    public Boolean getOrg() {
+        return org;
+    }
+
+    public void setOrg(Boolean org) {
+        this.org = org;
+    }
+
     //TODO add fields for accaunt disabelin(Expirision, Locked etc)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -245,6 +319,7 @@ public class User implements UserDetails {
                 .append(id, user.id)
                 .append(name, user.name)
                 .append(phone, user.phone)
+                .append(valueKey, user.valueKey)
                 .append(registrationDate, user.registrationDate)
                 .append(password, user.password)
                 .append(email, user.email)
@@ -263,11 +338,17 @@ public class User implements UserDetails {
                 .append(email)
                 .append(expires)
                 .append(enabled)
+                .append(valueKey)
                 .toHashCode();
     }
 
     @PrePersist
     public void preInsert() {
         allowedFormsCount = 5;
+        if ((firstName == null) && (lastName == null)) {
+            name = email;
+        } else {
+            name = firstName == null ? lastName : firstName;
+        }
     }
 }
