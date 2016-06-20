@@ -280,13 +280,13 @@ public class RegistrationServiceImp implements RegistrationService {
         String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
         user.setEnabled(true);
-        userRepository.save(user);
         //userFormsDashboardService.generateFormsForUser(email);
         RegisterResponseDto response = new RegisterResponseDto();
         StateDto state = new StateDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
-        UserDto userDto = new UserDto(user.getEmail(), user.getUsername());
+        UserDto userDto = mapper.toDTO(user);
         String[] type = token.split(":");
         userDto.setType(type[2]);
+        userRepository.save(user);
         response.setState(state);
         response.setToken(token);
         response.setUser(userDto);

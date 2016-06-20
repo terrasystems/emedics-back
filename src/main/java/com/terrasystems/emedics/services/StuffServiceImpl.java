@@ -44,6 +44,9 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     @Transactional
     public Stuff createStuff(StuffDto dto) {
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            return null;
+        }
         Stuff stuff = new Stuff();
         stuff.setUsers(new HashSet<>());
         stuff.setUserRef(new HashSet<>());
@@ -82,6 +85,7 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     }
 
     @Override
+    @Transactional
     public Stuff updateStuff(StuffDto dto) {
         Stuff stuff = stuffRepository.findOne(dto.getId());
         stuff.setPhone(dto.getPhone());
@@ -89,6 +93,8 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         stuff.setFirstName(dto.getFirstName());
         stuff.setLastName(dto.getLastName());
         stuff.setBirth(dto.getBirth());
+        stuff.setPassword(dto.getPassword());
+
 
         return stuffRepository.save(stuff);
     }

@@ -48,7 +48,7 @@ public class StuffController {
             return response;
         }
         status.setValue(false);
-        status.setMessage("Error creating stuff. Check email is correct");
+        status.setMessage("Email incorrect or user with such email is already exist");
         response.setState(status);
         return response;
     }

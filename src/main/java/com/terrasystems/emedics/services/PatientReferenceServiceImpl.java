@@ -147,7 +147,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     public String createReference(ReferenceCreateRequest request) {
         User current = userRepository.findByEmail(getPrincipals());
         if (userRepository.existsByEmail(request.getEmail())) {
-            return userRepository.findByEmail(request.getEmail()).getId();
+            return null;
         }
         if (current.getDiscriminatorValue().equals("patient")) {
             Doctor doctor = referenceCreateService.createDoctor(request);

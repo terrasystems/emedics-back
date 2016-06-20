@@ -79,7 +79,7 @@ public class PatientController {
             return response;
         } else {
             response.setResult(null);
-            response.setState(new StateDto(false, "Can't create User"));
+            response.setState(new StateDto(false, "Email incorrect or user with such email is already exists"));
             return response;
         }
     }
