@@ -46,7 +46,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
-    public List<ReferenceDto> findAllReferencesByCriteria(String search) {
+    public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
         ReferenceConverter converter = new ReferenceConverter();
         User current = userRepository.findByEmail(getPrincipals());
         List<ReferenceDto> refs = new ArrayList<>();
@@ -56,7 +56,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
             return refs;
         } else {
-            /*refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(current.getId(), search,search,search)))*/;
+            if (type.equals("pat")) {
+                refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search.toLowerCase(),search.toLowerCase())));
+                return refs;
+            }
             refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNot("%"+search.toLowerCase()+"%",current.getId())));
             refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search.toLowerCase(),search.toLowerCase())));
             return refs;
