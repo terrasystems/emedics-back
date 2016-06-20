@@ -53,6 +53,24 @@ public class StuffController {
         return response;
     }
 
-    /*@RequestMapping(value = "/stuff/{id}", Reqq)*/
+    @RequestMapping(value = "/stuff/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getById(@PathVariable String id) {
+        StuffMapper mapper = StuffMapper.getInstance();
+        ObjectResponse response = new ObjectResponse();
+        StateDto status = new StateDto();
+        Stuff stuff = stuffService.getById(id);
+        if (stuff == null) {
+            status.setMessage("No user with such id");
+            status.setValue(false);
+            response.setState(status);
+            return response;
+        }
+        status.setMessage("User by id");
+        status.setValue(true);
+        response.setResult(mapper.toDto(stuff));
+        response.setState(status);
+        return response;
+    }
 
 }
