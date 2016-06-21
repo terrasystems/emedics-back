@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PatientRepository extends CrudRepository<Patient, String> {
-    List<Patient> findByIdIsNotAndNameContainingOrEmailContaining(String id, String name, String email);
+    List<Patient> findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String email);
 
    /* @Query(value = "select p, h.date, uf.id, uf.blank.name from Patient p left join UserForm uf on p.id = uf.user.id inner join History h on uf.id = h.userForm.id where p.id = :id")
     @Query(value = "select p from Patient p ")

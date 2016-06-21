@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface DoctorRepository extends CrudRepository<Doctor,String> {
-    List<Doctor> findByIdIsNotAndNameContainingOrType_NameContainingOrEmailContaining(String id, String name, String type, String email);
+    List<Doctor> findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String type, String email);
     @Query("select d from Doctor d left join d.type dt " +
             "where (d.id != :id) and ((lower(d.email) like :search) or (lower(d.name) " +
             "like :search) or (lower(d.orgName) like :search) or (lower(dt.name) like :search) ) ")
