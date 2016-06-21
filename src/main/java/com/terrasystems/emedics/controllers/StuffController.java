@@ -91,5 +91,11 @@ public class StuffController {
         response.setResult(mapper.toDto(stuff));
         return response;
     }
-
+    @RequestMapping(value = "/stuff/{id}/events")
+    public ObjectResponse getStuffEvents(@PathVariable String id) {
+        ObjectResponse response = new ObjectResponse();
+        response.setResult(stuffService.getStuffEvents(id));
+        response.setState(new StateDto(true,"Stuff's Forms"));
+        return response;
+    }
 }

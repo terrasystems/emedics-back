@@ -78,6 +78,15 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
             Event event = createTaskLogic(patient, fromUser, template);
             return event;
+        } else if (fromUser.getDiscriminatorValue().equals("stuff")) {
+            Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
+            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
+            if (countNew > 0 || countAccepted > 0) {
+                return null;
+            }
+
+            Event event = createTaskLogic(patient, fromUser, template);
+            return event;
         } else {
             return null;
         }
