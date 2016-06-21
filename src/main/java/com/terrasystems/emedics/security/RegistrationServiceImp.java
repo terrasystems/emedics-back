@@ -191,7 +191,7 @@ public class RegistrationServiceImp implements RegistrationService {
 
         userRepository.save(registeredUser);
 
-        status.setMessage(MessageEnums.MSG_USER_REG.toString());
+        status.setMessage(REGISTERED);
         status.setValue(true);
         return status;
     }

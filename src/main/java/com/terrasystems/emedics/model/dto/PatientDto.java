@@ -18,6 +18,7 @@ public class PatientDto implements Serializable {
     //private List<UserFormDto> forms;
     private List<HistoryDto> history;
     private int allowedFormsCount;
+    private Boolean enabled;
 
     public PatientDto() {
     }
@@ -80,6 +81,14 @@ public class PatientDto implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
