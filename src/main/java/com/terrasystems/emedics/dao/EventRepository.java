@@ -23,4 +23,9 @@ public interface EventRepository extends CrudRepository<Event, String> {
 
     @Query("SELECT DISTINCT e.template.id from Event as e where e.patient.id=:patientId")
     List<String> findTemplate_IdByPatient_Id(@Param("patientId") String patientId);
+
+    List<Event> findByFromUser_IdAndTemplate_IdAndStatus(String patientId, String templateId, StatusEnum status);
+    @Query("SELECT DISTINCT e.template.id from Event as e where e.fromUser.id=:stuffId")
+    List<String> findTemplate_IdByStuff_Id(@Param("stuffId") String stuffId);
+
 }

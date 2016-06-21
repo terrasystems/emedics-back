@@ -1,22 +1,25 @@
 package com.terrasystems.emedics.services;
 
 
+import com.terrasystems.emedics.dao.EventRepository;
 import com.terrasystems.emedics.dao.StuffRepository;
+import com.terrasystems.emedics.dao.TemplateRepository;
 import com.terrasystems.emedics.dao.UserRepository;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Role;
-import com.terrasystems.emedics.model.Stuff;
+import com.terrasystems.emedics.enums.StatusEnum;
+import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StuffDto;
+import com.terrasystems.emedics.model.dto.TemplateEventDto;
+import com.terrasystems.emedics.model.mapping.EventMapper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.ManyToOne;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StuffServiceImpl implements StuffService, CurrentUserService {
@@ -27,6 +30,10 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     UserRepository userRepository;
     @Autowired
     MailService mailService;
+    @Autowired
+    EventRepository eventRepository;
+    @Autowired
+    TemplateRepository templateRepository;
 
 
     @Override
@@ -97,5 +104,39 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
 
 
         return stuffRepository.save(stuff);
+    }
+
+    @Override
+    public List<TemplateEventDto> getStuffEvents(String stuffId) {
+        Stuff stuff = (Stuff) userRepository.findOne(stuffId);
+        if (stuff == null) {
+            return null;
+        }
+        List<String> templates = eventRepository.findTemplate_IdByStuff_Id(stuff.getId());
+        EventMapper mapper = EventMapper.getInstance();
+        List<TemplateEventDto> eventsDto = templates.stream()
+                .map(s -> {
+                    TemplateEventDto dto = new TemplateEventDto();
+                    Template template = templateRepository.findOne(s);
+                    List<Event> events = eventRepository.findByFromUser_IdAndTemplate_IdAndStatus(stuff.getId(),template.getId(), StatusEnum.NEW);
+                    dto.setName(template.getName());
+                    dto.setId(template.getId());
+                    List<EventDto> dtos = new ArrayList<>();
+                    for (Event event : events) {
+                        try {
+                            dtos.add(mapper.toDto(event));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    dto.setEvents(dtos);
+                    return dto;
+                })
+                .collect(Collectors.toList())
+                .stream()
+                .filter(templateEventDto -> !templateEventDto.getEvents().isEmpty())
+                .collect(Collectors.toList());
+
+        return eventsDto;
     }
 }
