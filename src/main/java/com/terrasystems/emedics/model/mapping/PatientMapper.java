@@ -22,6 +22,7 @@ public class PatientMapper {
         dto.setPhone(entity.getPhone());
         dto.setEmail(entity.getEmail());
         dto.setAllowedFormsCount(entity.getAllowedFormsCount());
+        dto.setEnabled(entity.isEnabled());
         return dto;
     }
 
