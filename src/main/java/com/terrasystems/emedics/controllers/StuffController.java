@@ -1,10 +1,9 @@
 package com.terrasystems.emedics.controllers;
 
 
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.Stuff;
-import com.terrasystems.emedics.model.dto.ObjectResponse;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.StuffDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.StuffMapper;
 import com.terrasystems.emedics.services.StuffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,4 +97,42 @@ public class StuffController {
         response.setState(new StateDto(true,"Stuff's Forms"));
         return response;
     }
+
+    @RequestMapping(value = "/stuff/ref", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getRefs() {
+        ObjectResponse response = new ObjectResponse();
+        List<ReferenceDto> referenceDtos = stuffService.getAllReferences();
+        StateDto state = new StateDto();
+        if(referenceDtos == null) {
+            state.setValue(false);
+            state.setMessage("References is empty");
+        } else {
+            state.setValue(true);
+            state.setMessage("References");
+        }
+
+        response.setResult(referenceDtos);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "/stuff/addRef/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse addRefs(@PathVariable String id) {
+        ObjectResponse response = new ObjectResponse();
+        StateDto stateDto = stuffService.addReferences(id);
+        response.setState(stateDto);
+        return response;
+    }
+
+    @RequestMapping(value = "/stuff/search", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse searchRefs(@RequestBody DashboardReferenceRequest request) {
+        ObjectResponse response = new ObjectResponse();
+        response.setResult(stuffService.findOrgReferencesByCriteria(request.getCriteria().getSearch()));
+        response.setState(new StateDto(true, MessageEnums.MSG_SEARCH.toString()));
+        return response;
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.terrasystems.emedics.services;
 
 
+import com.terrasystems.emedics.dao.DoctorRepository;
+import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.EventRepository;
 import com.terrasystems.emedics.dao.StuffRepository;
 import com.terrasystems.emedics.dao.TemplateRepository;
@@ -8,9 +10,14 @@ import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.EventDto;
+import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.ReferenceDto;
+import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.StuffDto;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.model.mapping.EventMapper;
+import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.ManyToOne;
 import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +43,10 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     EventRepository eventRepository;
     @Autowired
     TemplateRepository templateRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
 
     @Override
@@ -138,5 +151,55 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
                 .collect(Collectors.toList());
 
         return eventsDto;
+    }
+
+    @Override
+    public List<ReferenceDto> getAllReferences() {
+        Stuff stuff = (Stuff) userRepository.findByEmail(getPrincipals());
+        Doctor doctor = stuff.getDoctor();
+        ReferenceConverter converter = new ReferenceConverter();
+
+        return converter.convertFromUsers(doctor.getUserRef());
+    }
+
+    @Override
+    @Transactional
+    public StateDto addReferences(String reference) {
+        Stuff stuff = (Stuff) userRepository.findByEmail(getPrincipals());
+        Doctor doctor = stuff.getDoctor();
+        User refToAdd = userRepository.findOne(reference);
+        if (refToAdd.getDiscriminatorValue().equals("patient")) {
+            doctor.getUserRef().add(refToAdd);
+            refToAdd.getUserRef().add(doctor);
+            doctor.getPatients().add((Patient) refToAdd);
+            ((Patient) refToAdd).getDoctors().add(doctor);
+            doctorRepository.save(doctor);
+            userRepository.save(refToAdd);
+            return new StateDto(true, "Reference saved");
+        } else {
+            doctor.getUserRef().add(refToAdd);
+            refToAdd.getUserRef().add(doctor);
+            doctorRepository.save(doctor);
+            userRepository.save(refToAdd);
+            return new StateDto(true, "Reference saved");
+        }
+
+    }
+
+    @Override
+    public List<ReferenceDto> findOrgReferencesByCriteria(String search) {
+        ReferenceConverter converter = new ReferenceConverter();
+        Stuff stuff = (Stuff) userRepository.findByEmail(getPrincipals());
+        Doctor doctor = stuff.getDoctor();
+        String docId = doctor.getId();
+        Set<User> currentRefs = doctor.getUserRef();
+        List<ReferenceDto> refs = new ArrayList<>();
+        List<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrIdIsNotAndEmailContainingIgnoreCaseOrIdIsNotAndType_NameContainingIgnoreCase(docId, search, docId, search, docId, search);
+        List<Patient> patientsRefs = patientRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(search,search).stream()
+                .filter(patient -> !currentRefs.contains(patient))
+                .collect(Collectors.toList());
+        refs.addAll(converter.convertFromDoctors(doctorsRefs));
+        refs.addAll(converter.convertFromPatients(patientsRefs));
+        return refs;
     }
 }

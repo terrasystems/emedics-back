@@ -4,6 +4,8 @@ package com.terrasystems.emedics.services;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Stuff;
 import com.terrasystems.emedics.model.dto.EventDto;
+import com.terrasystems.emedics.model.dto.ReferenceDto;
+import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.StuffDto;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 
@@ -16,5 +18,8 @@ public interface StuffService {
     void deleteStuff(String id);
     Stuff updateStuff(StuffDto dto);
     List<TemplateEventDto> getStuffEvents(String stuffId);
+    List<ReferenceDto> getAllReferences();
+    StateDto addReferences(String reference);
+    List<ReferenceDto> findOrgReferencesByCriteria(String search);
 
 }
