@@ -7,7 +7,6 @@ import com.terrasystems.emedics.dao.UserTemplateRepository;
 import com.terrasystems.emedics.enums.CommercialEnum;
 import com.terrasystems.emedics.enums.FormEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
-import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.UserTemplate;
@@ -15,15 +14,12 @@ import com.terrasystems.emedics.model.dto.DashboardTemplateResponse;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TemplateDto;
 import com.terrasystems.emedics.model.mapping.TemplateMapper;
-import com.terrasystems.emedics.model.mapping.UserTemplateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +36,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
     @Transactional
     public List<TemplateDto> getAllTemplates() {
         User current = userRepository.findByEmail(getPrincipals());
+        TemplateMapper mapper = TemplateMapper.getInstance();
         List<Template> templates;
         if (current.getDiscriminatorValue().equals("patient")) {
             templates = templateRepository.findByTypeEnum(TypeEnum.PATIENT);
@@ -54,24 +51,15 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
 
         return templates.stream()
                .map(template -> {
-                   ObjectMapper objectMapper = new ObjectMapper();
-                    TemplateDto dto = new TemplateDto();
+                   TemplateDto dto = new TemplateDto();
                     if (idPaidTemplates.contains(template.getId())) {
                         dto.setExistPaid(true);
-
                     }
-                   dto.setName(template.getName());
-                   dto.setNumber(template.getNumber());
-                   dto.setCategory(template.getCategory());
-                   dto.setDescr(template.getDescr());
-                   dto.setId(template.getId());
                    try {
-                       dto.setBody(objectMapper.readTree(template.getBody()));
+                       dto = mapper.toDto(template);
                    } catch (IOException e) {
                        e.printStackTrace();
                    }
-                   dto.setCommercialEnum(template.getCommercialEnum());
-                   dto.setTypeEnum(template.getTypeEnum());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -143,7 +131,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
             return payTemplateLogic(currentUser, template);
         }
     }
-
+    //TODO rewrite this
     private DashboardTemplateResponse loadTemplateLogic(User currentUser, Template template) {
         DashboardTemplateResponse response = new DashboardTemplateResponse();
         if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()) > 0) {

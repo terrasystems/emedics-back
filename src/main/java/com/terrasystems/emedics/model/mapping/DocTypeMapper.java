@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.model.DocType;
 import com.terrasystems.emedics.model.dto.DocTypeDto;
 
+
 public class DocTypeMapper {
 
     private ObjectMapper objectMapper;

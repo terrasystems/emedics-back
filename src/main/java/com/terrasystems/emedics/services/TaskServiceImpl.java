@@ -9,7 +9,6 @@ import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.UserTemplate;
 import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService, CurrentUserService {
@@ -145,8 +143,6 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         Event event = eventRepository.findOne(eventDto.getId());
         event.setDate(new Date());
         event.setData(eventDto.getData().toString());
-        //event.setStatus(StatusEnum.valueOf(eventDto.getStatus()));
-
         return eventRepository.save(event);
     }
 }

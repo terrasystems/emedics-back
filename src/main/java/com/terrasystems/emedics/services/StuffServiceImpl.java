@@ -1,21 +1,10 @@
 package com.terrasystems.emedics.services;
 
 
-import com.terrasystems.emedics.dao.DoctorRepository;
-import com.terrasystems.emedics.dao.PatientRepository;
-import com.terrasystems.emedics.dao.EventRepository;
-import com.terrasystems.emedics.dao.StuffRepository;
-import com.terrasystems.emedics.dao.TemplateRepository;
-import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.*;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.enums.MessageEnums;
-import com.terrasystems.emedics.model.*;
-import com.terrasystems.emedics.model.dto.ReferenceDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.StuffDto;
-import com.terrasystems.emedics.model.dto.TemplateEventDto;
+import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.ManyToOne;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 import java.util.*;
 import java.util.stream.Collectors;
 

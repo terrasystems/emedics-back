@@ -13,6 +13,7 @@ public class StuffDto implements Serializable {
     private Date birth;
     private String password;
     private String phone;
+    private String typeExp;
 
     public StuffDto() {}
 
@@ -70,5 +71,13 @@ public class StuffDto implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getTypeExp() {
+        return typeExp;
+    }
+
+    public void setTypeExp(String typeExp) {
+        this.typeExp = typeExp;
     }
 }
