@@ -208,4 +208,17 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         refs.addAll(converter.convertFromPatients(patientsRefs));
         return refs;
     }
+
+    @Override
+    public StateDto inactiveStuff(String id) {
+        Stuff stuff = stuffRepository.findOne(id);
+        if(stuff == null) {
+            return new StateDto(false, "User with such id doesn't exist");
+        }
+        stuff.setEnabled(false);
+        stuffRepository.save(stuff);
+        return new StateDto(true, "User disabled");
+    }
+
+
 }

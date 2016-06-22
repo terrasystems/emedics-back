@@ -21,5 +21,6 @@ public interface StuffService {
     List<ReferenceDto> getAllReferences();
     StateDto addReferences(String reference);
     List<ReferenceDto> findOrgReferencesByCriteria(String search);
+    StateDto inactiveStuff(String id);
 
 }
