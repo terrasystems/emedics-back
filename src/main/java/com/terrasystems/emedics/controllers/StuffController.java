@@ -135,4 +135,12 @@ public class StuffController {
         return response;
     }
 
+    @RequestMapping(value = "stuff/inactiveStuff/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse inactiveStuff(@PathVariable String id) {
+        ObjectResponse response = new ObjectResponse();
+        response.setState(stuffService.inactiveStuff(id));
+        return response;
+    }
+
 }

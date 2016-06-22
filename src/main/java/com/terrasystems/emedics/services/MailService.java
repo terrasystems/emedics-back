@@ -9,4 +9,6 @@ public interface MailService {
     StateDto sendResetPasswordMail(String address, String newPass);
     StateDto sendStuffMail(String address, String password);
     void velocityTest(User user);
+    StateDto sendMailToStuffIfAdminChangedPassword(String address, String newPassword);
+    /*StateDto sendMailToStuffIfAdminChangedEmail(String address, String newEmail);*/
 }
