@@ -51,8 +51,10 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
 
     @Override
     public List<Stuff> getAllStuff() {
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-        return current.getStuff();
+        User current = userRepository.findByEmail(getPrincipals());
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            return ((Doctor)current).getStuff();
+        } else return  ((Stuff) current).getDoctor().getStuff();
     }
 
     @Override
