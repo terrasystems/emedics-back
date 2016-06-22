@@ -106,6 +106,7 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         stuff.setFirstName(dto.getFirstName());
         stuff.setLastName(dto.getLastName());
         stuff.setBirth(dto.getBirth());
+        stuff.setTypeExp(dto.getTypeExp());
 
 
         return stuffRepository.save(stuff);
