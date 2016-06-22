@@ -66,8 +66,31 @@ public class MailServiceImp implements MailService {
             return new StateDto(false, MessageEnums.MSG_ERROR_SEND_MAIL.toString());
         }
         return new StateDto(true,MessageEnums.MSG_SEND_MAIL.toString());
-
     }
+
+
+
+    @Override
+    public StateDto sendMailToStuffIfAdminChangedPassword(String address, String newPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Your new password for emedics");
+        message.setText("Admin of your organization changed your password and now your password is: " + newPassword);
+        message.setFrom("admin@emedics.org");
+        mailSender.send(message);
+        return new StateDto(true, "Message sent");
+    }
+
+    /*@Override
+    public StateDto sendMailToStuffIfAdminChangedEmail(String address, String newEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Your new email for emedics");
+        message.setText("Admin of your organization changed your email and now your email is: " + newEmail);
+        message.setFrom("admin@emedics.org");
+        mailSender.send(message);
+        return new StateDto(true, "Message sent");
+    }*/
 
     @Override
     public StateDto sendStuffMail(String address, String password) {

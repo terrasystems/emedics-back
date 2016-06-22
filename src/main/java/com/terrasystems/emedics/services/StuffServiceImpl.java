@@ -111,11 +111,15 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
     public Stuff updateStuff(StuffDto dto) {
         Stuff stuff = stuffRepository.findOne(dto.getId());
         stuff.setPhone(dto.getPhone());
+        if(!stuff.getPassword().equals(dto.getPassword())){
+            mailService.sendMailToStuffIfAdminChangedPassword(stuff.getEmail(), dto.getPassword());
+        }
+        stuff.setPassword(dto.getPassword());
+        stuff.setEmail(dto.getEmail());
         stuff.setEmail(dto.getEmail());
         stuff.setFirstName(dto.getFirstName());
         stuff.setLastName(dto.getLastName());
         stuff.setBirth(dto.getBirth());
-        stuff.setPassword(dto.getPassword());
 
 
         return stuffRepository.save(stuff);
