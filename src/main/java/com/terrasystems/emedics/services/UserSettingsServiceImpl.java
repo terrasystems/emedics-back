@@ -40,7 +40,11 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setBirth(userDto.getBirth());
             user.setLastName(userDto.getLastName());
             user.setFirstName(userDto.getFirstName());
-            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+            if ((userDto.getFirstName() == null) && (userDto.getLastName() == null)) {
+                user.setName(userDto.getEmail());
+            } else {
+                user.setName(userDto.getFirstName() == null ? userDto.getLastName() : userDto.getFirstName());
+            }
             userRepository.save(user);
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
@@ -69,7 +73,11 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setLastName(userDto.getLastName());
             user.setFirstName(userDto.getFirstName());
             user.setEmail(userDto.getEmail());
-            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+            if ((userDto.getFirstName() == null) && (userDto.getLastName() == null)) {
+                user.setName(userDto.getEmail());
+            } else {
+                user.setName(userDto.getFirstName() == null ? userDto.getLastName() : userDto.getFirstName());
+            }
             userRepository.save(user);
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
