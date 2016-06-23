@@ -211,5 +211,14 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         return new StateDto(true, "User disabled");
     }
 
+    @Override
+    @Transactional
+    public Event assignTask(String stuffId, String eventId) {
+        Stuff stuff = stuffRepository.findOne(stuffId);
+        Event event = eventRepository.findOne(eventId);
+        event.setFromUser(stuff);
+        return eventRepository.save(event);
+    }
+
 
 }

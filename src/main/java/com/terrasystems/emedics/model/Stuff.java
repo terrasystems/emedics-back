@@ -16,7 +16,7 @@ public class Stuff extends User {
     @ManyToOne(fetch = FetchType.LAZY)
     private Doctor doctor;
 
-    public Stuff() {}
+    public Stuff() {super();}
     public Stuff(String username, String password, String email) {
         super(username, password, email);
     }

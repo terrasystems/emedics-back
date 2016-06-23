@@ -2,13 +2,16 @@ package com.terrasystems.emedics.controllers;
 
 
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Stuff;
 import com.terrasystems.emedics.model.dto.*;
+import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.StuffMapper;
 import com.terrasystems.emedics.services.StuffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,10 @@ public class StuffController {
         StuffMapper mapper = StuffMapper.getInstance();
         ObjectResponse response = new ObjectResponse();
         List<StuffDto> stuffDtos = stuffService.getAllStuff().stream()
-                .map(stuff -> mapper.toDto(stuff))
+                .map(stuff -> {
+                    StuffDto dto = mapper.toDto(stuff);
+                    return dto;
+                })
                 .collect(Collectors.toList());
         response.setResult(stuffDtos);
         response.setState(new StateDto(true, "All stuff"));
@@ -142,5 +148,31 @@ public class StuffController {
         response.setState(stuffService.inactiveStuff(id));
         return response;
     }
+
+
+    @RequestMapping(value = "stuff/assignTask", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse assigntask(@RequestBody AssignStuffTaskRequest request) {
+        EventMapper mapper = EventMapper.getInstance();
+        ObjectResponse response = new ObjectResponse();
+        StateDto state = new StateDto();
+        Event event = stuffService.assignTask(request.getStuffId(), request.getEventId());
+        if (event == null) {
+            state.setMessage("Error! Task didn't assigned");
+            state.setValue(false);
+            response.setState(state);
+            return response;
+        }
+        state.setValue(true);
+        state.setMessage("Task Assigned");
+        response.setState(state);
+        try {
+            response.setResult(mapper.toDto(event));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 
 }

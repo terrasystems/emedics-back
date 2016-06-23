@@ -22,5 +22,6 @@ public interface StuffService {
     StateDto addReferences(String reference);
     List<ReferenceDto> findOrgReferencesByCriteria(String search);
     StateDto inactiveStuff(String id);
+    Event assignTask(String stuffId, String eventId);
 
 }

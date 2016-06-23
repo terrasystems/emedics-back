@@ -9,11 +9,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "user_templates")
-public class UserTemplate {
+public class UserTemplate implements Serializable{
 
+    private static final long serialVersionUID = -6401117131659013366L;
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
