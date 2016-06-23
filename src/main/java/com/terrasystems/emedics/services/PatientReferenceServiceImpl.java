@@ -32,6 +32,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     PatientRepository patientRepository;
     @Autowired
     ReferenceCreateService referenceCreateService;
+    @Autowired
+    StuffService stuffService;
 
 
 
@@ -79,7 +81,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             userRepository.save(current);
             userRepository.save(refToAdd);
             return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
-        } else {
+        } else if (current.getDiscriminatorValue().equals("doctor")) {
             User refToAdd = userRepository.findOne(reference);
             if (refToAdd.getDiscriminatorValue().equals("patient")) {
                 current.getUserRef().add(refToAdd);
@@ -97,6 +99,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
             }
 
+        } else {
+            return stuffService.addReferences(reference);
         }
 
     }
@@ -105,6 +109,11 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     public Iterable<ReferenceDto> getAllReferences() {
         ReferenceConverter converter = new ReferenceConverter();
         User current = userRepository.findByEmail(getPrincipals());
+        if(current.getDiscriminatorValue().equals("stuff")) {
+            return stuffService.getAllReferences();
+        } else {
+            return converter.convertFromUsers(current.getUserRef());
+        }
         /*Set<User> userRefs = current.getUserRef();
         List<String> refs = userRefs.stream()
                 .map(user -> {
@@ -112,7 +121,6 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 }).collect(Collectors.toList());
         List<User> refsList = (List<User>) userRepository.findAll(refs);*/
 
-        return converter.convertFromUsers(current.getUserRef());
     }
 
     @Override
@@ -206,7 +214,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             myRefs.addAll((Collection<? extends ReferenceDto>) getAllReferences());
             return myRefs;
         } else {
-            return null;
+            return stuffService.findOrgReferencesByCriteria(search);
         }
     }
 

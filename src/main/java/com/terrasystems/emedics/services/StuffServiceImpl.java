@@ -162,12 +162,16 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         Doctor doctor = stuff.getDoctor();
         User refToAdd = userRepository.findOne(reference);
         if (refToAdd.getDiscriminatorValue().equals("patient")) {
-            doctor.getUserRef().add(refToAdd);
-            refToAdd.getUserRef().add(doctor);
-            doctor.getPatients().add((Patient) refToAdd);
-            ((Patient) refToAdd).getDoctors().add(doctor);
-            doctorRepository.save(doctor);
-            userRepository.save(refToAdd);
+            List<Patient> patients = doctor.getPatients();
+            if(!patients.contains(refToAdd)) {
+                doctor.getUserRef().add(refToAdd);
+                refToAdd.getUserRef().add(doctor);
+                doctor.getPatients().add((Patient) refToAdd);
+                ((Patient) refToAdd).getDoctors().add(doctor);
+                doctorRepository.save(doctor);
+                userRepository.save(refToAdd);
+                return new StateDto(true, "Reference saved");
+            }
             return new StateDto(true, "Reference saved");
         } else {
             doctor.getUserRef().add(refToAdd);
