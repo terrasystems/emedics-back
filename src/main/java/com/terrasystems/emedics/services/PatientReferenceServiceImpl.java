@@ -134,7 +134,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             ((Doctor) refToRemove).getPatients().remove(current);
 
             return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
-        } else {
+        } else if(current.getDiscriminatorValue().equals("doctor")){
             if (refToRemove.getDiscriminatorValue().equals("patient")) {
                 ((Doctor) current).getPatients().remove(refToRemove);
                 current.getUserRef().remove(refToRemove);
@@ -147,6 +147,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 refToRemove.getUserRef().remove(current);
                 return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
             }
+        } else {
+            return null;
         }
     }
 
