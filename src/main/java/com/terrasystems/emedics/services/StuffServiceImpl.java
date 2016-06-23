@@ -220,5 +220,60 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         return eventRepository.save(event);
     }
 
+    @Override
+    @Transactional
+    public ObjectResponse editTask(EventDto eventDto) {
+        EventMapper mapper = EventMapper.getInstance();
+        ObjectResponse response = new ObjectResponse();
+        User current = userRepository.findByEmail(getPrincipals());
+        if(current.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(current.getId());
+            List<Stuff> stuffs = doctor.getStuff();
+            Stuff stuff = (Stuff) userRepository.findOne(eventDto.getFromUser().getId());
+            if(current.getOrg()&&stuffs.contains(stuff)){
+                Event event = eventRepository.findOne(eventDto.getId());
+                event.setDate(new Date());
+                event.setData(eventDto.getData().toString());
+                try {
+                    response.setResult(mapper.toDto(eventRepository.save(event)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                response.setState(new StateDto(true, "Task Edited"));
+                return response;
+            } else {
+                response.setState(new StateDto(false, "You aren't Admin or this task don't belong your stuff"));
+                return response;
+            }
+        } else {
+            response.setState(new StateDto(false, "You aren't Admin"));
+            return response;
+        }
+    }
+
+    @Override
+    public StateDto closeTask(String id) {
+        User current = userRepository.findByEmail(getPrincipals());
+        Event event = eventRepository.findOne(id);
+        if(current.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(current.getId());
+            List<Stuff> stuffs = doctor.getStuff();
+            Stuff stuff = (Stuff) userRepository.findOne(event.getFromUser().getId());
+            if(event.getStatus().equals(StatusEnum.NEW)){
+                if(current.getOrg()&&stuffs.contains(stuff)){
+                    event.setStatus(StatusEnum.CLOSED);
+                    eventRepository.save(event);
+                    return new StateDto(true, "Task closed");
+                } else {
+                    return new StateDto(false, "You aren't Admin or this task don't belong your stuff");
+                }
+            } else {
+                return new StateDto(false, "You can close tasks with only NEW status");
+            }
+        } else {
+            return new StateDto(false, "You aren't Admin");
+        }
+    }
+
 
 }

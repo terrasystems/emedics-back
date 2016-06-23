@@ -30,25 +30,4 @@ public class Stuff extends User {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Stuff stuff = (Stuff) o;
-
-        return new EqualsBuilder()
-                .appendSuper(super.equals(o))
-                .append(doctor, stuff.doctor)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .appendSuper(super.hashCode())
-                .append(doctor)
-                .toHashCode();
-    }
 }
