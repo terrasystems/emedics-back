@@ -44,7 +44,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             return findPatientReferencesByCriteria(search);
         } else if (currentUser.getDiscriminatorValue().equals("doctor")) {
             return findDoctorsReferencesByCriteria(search);
-        } else return findStuffReferencesByCriteria(search);
+        } else return stuffService.findOrgReferencesByCriteria(search);
     }
 
     @Override
