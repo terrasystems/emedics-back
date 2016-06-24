@@ -1,7 +1,9 @@
 package com.terrasystems.emedics.services;
 
+import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.ChangePasswordDto;
 import com.terrasystems.emedics.model.dto.RegisterResponseDto;
@@ -12,6 +14,7 @@ import com.terrasystems.emedics.security.token.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -26,9 +29,12 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
 
 
     @Override
+    @Transactional
     public RegisterResponseDto editUser(UserDto userDto) {
         User user = userRepository.findByEmail(getPrincipals());
         RegisterResponseDto response = new RegisterResponseDto();
@@ -79,6 +85,12 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
                 user.setName(userDto.getFirstName() == null ? userDto.getLastName() : userDto.getFirstName());
             }
             userRepository.save(user);
+            if(user.getDiscriminatorValue().equals("doctor")) {
+                Doctor doctor = doctorRepository.findOne(user.getId());
+                doctor.getType().setName(userDto.getDoctorType());
+                doctor.setOrgType(userDto.getOrgType());
+                doctorRepository.save(doctor);
+            }
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
             String token = tokenUtil.createTokenForUser(user);
@@ -123,7 +135,15 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         User user = userRepository.findByEmail(getPrincipals());
         RegisterResponseDto response = new RegisterResponseDto();
         UserMapper userMapper = new UserMapper();
-        response.setUser(userMapper.toDTO(user));
+        UserDto userDto = userMapper.toDTO(user);
+        if(user.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(user.getId());
+            userDto.setDoctorType(doctor.getType().getName());
+            userDto.setOrgType(doctor.getOrgType());
+
+        }
+
+        response.setUser(userDto);
         response.setState(new StateDto(true, "Settings Page"));
         return response;
     }

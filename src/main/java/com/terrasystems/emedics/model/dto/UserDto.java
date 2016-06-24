@@ -1,7 +1,6 @@
 package com.terrasystems.emedics.model.dto;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -19,6 +18,8 @@ public class UserDto implements Serializable {
     private Date birth;
     private String phone;
     private Boolean org;
+    private String doctorType;
+    private String orgType;
 
     private String password;
     private String username;
@@ -119,6 +120,22 @@ public class UserDto implements Serializable {
         this.phone = phone;
     }
 
+    public String getDoctorType() {
+        return doctorType;
+    }
+
+    public void setDoctorType(String doctorType) {
+        this.doctorType = doctorType;
+    }
+
+    public String getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -129,6 +146,8 @@ public class UserDto implements Serializable {
                 .add("username", username)
                 .add("firstName", firstName)
                 .add("lastName", lastName)
+                .add("doctorType", doctorType)
+                .add("orgType", orgType)
                 .toString();
     }
 
@@ -148,6 +167,8 @@ public class UserDto implements Serializable {
                 .append(username, userDto.username)
                 .append(firstName, userDto.firstName)
                 .append(lastName, userDto.lastName)
+                .append(doctorType, userDto.doctorType)
+                .append(orgType, userDto.orgType)
                 .isEquals();
     }
 
@@ -161,6 +182,8 @@ public class UserDto implements Serializable {
                 .append(username)
                 .append(firstName)
                 .append(lastName)
+                .append(doctorType)
+                .append(orgType)
                 .toHashCode();
     }
 }
