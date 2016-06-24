@@ -84,7 +84,7 @@ public class TaskController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse createTask(@RequestBody EventCreateRequest request) {
-        if(request.getFromId() != null) {
+        if (request.getFromId() != null) {
             User current = userRepository.findOne(request.getFromId());
             if (current == null) {
                 DashboardEventResponse response = new DashboardEventResponse();
@@ -116,7 +116,7 @@ public class TaskController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (response.getResult()==null) {
+        if (response.getResult() == null) {
             state.setValue(false);
             state.setMessage("Task didnt created");
             response.setState(state);
@@ -144,6 +144,7 @@ public class TaskController {
         response.setState(state);
         return response;
     }
+
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse editTask(@RequestBody EventEditRequest request) {
@@ -165,6 +166,121 @@ public class TaskController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return response;
+    }
+/*
+
+    @RequestMapping(value = "/byTemplate/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse getTasksByTemplate(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+        List<EventDto> events = taskService.getTasksByTemplate(id).stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //dto.setTemplate(null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("Tasks by template");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "byFromUser/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse getTasksByFromUser(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+        List<EventDto> events = taskService.getTasksByFromUserId(id).stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //dto.setTemplate(null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("Tasks by from user");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "byPatient/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardEventResponse getTasksByPatient(@PathVariable String id) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+        List<EventDto> events = taskService.getTasksByPatient(id).stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //dto.setTemplate(null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("Tasks by patient");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+*/
+
+    @RequestMapping(value = "/byTime", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardEventResponse getTasksByCriteria(@RequestBody TaskSearchCriteria criteria) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        EventMapper mapper = EventMapper.getInstance();
+
+        List<EventDto> events = taskService.getByCriteria(criteria).stream()
+                .map(event -> {
+                    EventDto dto = new EventDto();
+                    try {
+                        dto = mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //dto.setTemplate(null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        response.setResult(events);
+        state.setMessage("Tasks by time");
+        state.setValue(true);
+        response.setState(state);
+        return response;
+    }
+
+    @RequestMapping(value = "/multipleSend", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardEventResponse multipleSend(@RequestBody EventSendMultiRequest request) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        response.setState(taskService.multiSendTask(request.getEvent(), request.getToUsers(), request.getMessage(), request.getPatient()));
         return response;
     }
 }

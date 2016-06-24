@@ -21,4 +21,5 @@ public interface StuffService {
     Event assignTask(String stuffId, String eventId);
     ObjectResponse editTask(EventDto eventDto);
     StateDto closeTask(String id);
+    List<PatientDto> getAllPatients();
 }

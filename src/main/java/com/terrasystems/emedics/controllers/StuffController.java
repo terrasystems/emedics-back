@@ -159,4 +159,14 @@ public class StuffController {
         return response;
     }
 
+    @RequestMapping(value = "stuff/getOrgPatients", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getOrgPatients(){
+        ObjectResponse response = new ObjectResponse();
+
+        response.setResult(stuffService.getAllPatients());
+        response.setState(new StateDto(true, "All patients"));
+        return response;
+    }
+
 }

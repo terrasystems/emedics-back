@@ -6,6 +6,7 @@ import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
+import com.terrasystems.emedics.model.mapping.PatientMapper;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,6 +274,17 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         } else {
             return new StateDto(false, "You aren't Admin");
         }
+    }
+
+    @Override
+    public List<PatientDto> getAllPatients(){
+        PatientMapper mapper = PatientMapper.getInstance();
+        User current =  userRepository.findByEmail(getPrincipals());
+        Stuff stuff = stuffRepository.findOne(current.getId());
+        Doctor doctor = stuff.getDoctor();
+        return doctor.getPatients().stream()
+                .map(patient -> mapper.toDto(patient))
+                .collect(Collectors.toList());
     }
 
 
