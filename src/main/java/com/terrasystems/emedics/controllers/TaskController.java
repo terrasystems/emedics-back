@@ -280,7 +280,7 @@ public class TaskController {
     @ResponseBody
     public DashboardEventResponse multipleSend(@RequestBody EventSendMultiRequest request) {
         DashboardEventResponse response = new DashboardEventResponse();
-        response.setState(taskService.multiSendTask(request.getEvent(), request.getToUsers(), request.getMessage(), request.getPatient()));
+        response.setState(taskService.multiSendTask(request.getTemplate(), request.getPatients(), request.getMessage()));
         return response;
     }
 }

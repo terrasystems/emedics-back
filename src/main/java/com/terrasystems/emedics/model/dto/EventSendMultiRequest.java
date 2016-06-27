@@ -6,25 +6,16 @@ import java.util.List;
 
 public class EventSendMultiRequest implements Serializable{
     private static final long serialVersionUID = 1047652792721299215L;
-    private List<String> toUsers;
-    private String event;
+    private String template;
     private String message;
-    private String patient;
+    private List<String> patients;
 
-    public List<String> getToUsers() {
-        return toUsers;
+    public String getTemplate() {
+        return template;
     }
 
-    public void setToUsers(List<String> toUsers) {
-        this.toUsers = toUsers;
-    }
-
-    public String getEvent() {
-        return event;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
+    public void setTemplate(String template) {
+        this.template = template;
     }
 
     public String getMessage() {
@@ -35,11 +26,11 @@ public class EventSendMultiRequest implements Serializable{
         this.message = message;
     }
 
-    public String getPatient() {
-        return patient;
+    public List<String> getPatients() {
+        return patients;
     }
 
-    public void setPatient(String patient) {
-        this.patient = patient;
+    public void setPatients(List<String> patients) {
+        this.patients = patients;
     }
 }
