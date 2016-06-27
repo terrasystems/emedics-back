@@ -40,7 +40,12 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return ((Doctor)current).getPatients().stream()
                     .map(patient -> mapper.toDto(patient))
                     .collect(Collectors.toList());
-        } else return null;
+        } else if (current.getDiscriminatorValue().equals("stuff")) {
+            return ((Stuff) current).getDoctor().getPatients().stream()
+                    .map(patient -> mapper.toDto(patient))
+                    .collect(Collectors.toList());
+        }
+            return null;
     }
 
     @Override
@@ -79,22 +84,36 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
 
     @Override
     public List<PatientDto> findPatientByCriteria(String search) {
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-        List<Patient> currentPats = current.getPatients();
+        User current = userRepository.findByEmail(getPrincipals());
         PatientMapper mapper = PatientMapper.getInstance();
-        List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search).stream()
-                .filter(patient -> !currentPats.contains(patient))
-                .collect(Collectors.toList());
-        List<PatientDto> patientDtos = patients.stream()
-                .map(patient -> {
-                    PatientDto dto = new PatientDto();
-                    dto = mapper.toDto(patient);
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            List<Patient> currentPats = ((Doctor)current).getPatients();
+            List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search).stream()
+                    .filter(patient -> !currentPats.contains(patient))
+                    .collect(Collectors.toList());
+            List<PatientDto> patientDtos = patients.stream()
+                    .map(patient -> {
+                        PatientDto dto = new PatientDto();
+                        dto = mapper.toDto(patient);
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            return patientDtos;
+        } else {
+            List<Patient> currentPats = ((Stuff) current).getDoctor().getPatients();
+            List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(((Stuff) current).getDoctor().getId(),search,search).stream()
+                    .filter(patient -> !currentPats.contains(patient))
+                    .collect(Collectors.toList());
+            List<PatientDto> patientDtos = patients.stream()
+                    .map(patient -> {
+                        PatientDto dto = new PatientDto();
+                        dto = mapper.toDto(patient);
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            return patientDtos;
+        }
 
-
-        return patientDtos;
     }
 
     @Override
