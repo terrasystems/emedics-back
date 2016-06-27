@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.services;
 
+import com.terrasystems.emedics.dao.DocTypeRepository;
 import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
@@ -31,6 +32,8 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
     UserRepository userRepository;
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    DocTypeRepository docTypeRepository;
 
 
     @Override
@@ -87,7 +90,9 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             userRepository.save(user);
             if(user.getDiscriminatorValue().equals("doctor")) {
                 Doctor doctor = doctorRepository.findOne(user.getId());
-                doctor.getType().setName(userDto.getDoctorType());
+
+                //doctor.getType().setName(userDto.getDoctorType()); <- This is dich
+                doctor.setType(docTypeRepository.findOne(userDto.getDoctorType()));
                 doctor.setOrgType(userDto.getOrgType());
                 doctorRepository.save(doctor);
             }
