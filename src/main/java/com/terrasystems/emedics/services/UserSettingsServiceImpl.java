@@ -45,6 +45,9 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         UserMapper userMapper = new UserMapper();
         UserDto respDto;
         if (user.getEmail().equals(userDto.getEmail())) {
+            if (user.getDiscriminatorValue().equals("doctor")) {
+                ((Doctor) user).setType(docTypeRepository.findOne(userDto.getDoctorType()));
+            }
             user.setTypeExp(userDto.getTypeExp());
             user.setBirth(userDto.getBirth());
             user.setLastName(userDto.getLastName());
