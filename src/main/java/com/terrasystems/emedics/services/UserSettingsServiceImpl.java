@@ -143,7 +143,7 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         UserDto userDto = userMapper.toDTO(user);
         if(user.getDiscriminatorValue().equals("doctor")){
             Doctor doctor = doctorRepository.findOne(user.getId());
-            userDto.setDoctorType(doctor.getType().getName());
+            userDto.setDoctorType(doctor.getType().getId());
             userDto.setOrgType(doctor.getOrgType());
 
         }
