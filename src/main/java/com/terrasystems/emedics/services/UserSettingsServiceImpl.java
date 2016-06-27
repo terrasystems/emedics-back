@@ -1,7 +1,10 @@
 package com.terrasystems.emedics.services;
 
+import com.terrasystems.emedics.dao.DocTypeRepository;
+import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.ChangePasswordDto;
 import com.terrasystems.emedics.model.dto.RegisterResponseDto;
@@ -12,6 +15,7 @@ import com.terrasystems.emedics.security.token.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -26,9 +30,14 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
+    @Autowired
+    DocTypeRepository docTypeRepository;
 
 
     @Override
+    @Transactional
     public RegisterResponseDto editUser(UserDto userDto) {
         User user = userRepository.findByEmail(getPrincipals());
         RegisterResponseDto response = new RegisterResponseDto();
@@ -36,11 +45,18 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         UserMapper userMapper = new UserMapper();
         UserDto respDto;
         if (user.getEmail().equals(userDto.getEmail())) {
+            if (user.getDiscriminatorValue().equals("doctor")) {
+                ((Doctor) user).setType(docTypeRepository.findOne(userDto.getDoctorType()));
+            }
             user.setTypeExp(userDto.getTypeExp());
             user.setBirth(userDto.getBirth());
             user.setLastName(userDto.getLastName());
             user.setFirstName(userDto.getFirstName());
-            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+            if ((userDto.getFirstName() == null) && (userDto.getLastName() == null)) {
+                user.setName(userDto.getEmail());
+            } else {
+                user.setName(userDto.getFirstName() == null ? userDto.getLastName() : userDto.getFirstName());
+            }
             userRepository.save(user);
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
@@ -69,8 +85,20 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
             user.setLastName(userDto.getLastName());
             user.setFirstName(userDto.getFirstName());
             user.setEmail(userDto.getEmail());
-            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+            if ((userDto.getFirstName() == null) && (userDto.getLastName() == null)) {
+                user.setName(userDto.getEmail());
+            } else {
+                user.setName(userDto.getFirstName() == null ? userDto.getLastName() : userDto.getFirstName());
+            }
             userRepository.save(user);
+            if(user.getDiscriminatorValue().equals("doctor")) {
+                Doctor doctor = doctorRepository.findOne(user.getId());
+
+                //doctor.getType().setName(userDto.getDoctorType()); <- This is dich
+                doctor.setType(docTypeRepository.findOne(userDto.getDoctorType()));
+                doctor.setOrgType(userDto.getOrgType());
+                doctorRepository.save(doctor);
+            }
             state.setValue(true);
             state.setMessage(MessageEnums.MSG_UPDATE.toString());
             String token = tokenUtil.createTokenForUser(user);
@@ -115,7 +143,15 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         User user = userRepository.findByEmail(getPrincipals());
         RegisterResponseDto response = new RegisterResponseDto();
         UserMapper userMapper = new UserMapper();
-        response.setUser(userMapper.toDTO(user));
+        UserDto userDto = userMapper.toDTO(user);
+        if(user.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(user.getId());
+            userDto.setDoctorType(doctor.getType().getId());
+            userDto.setOrgType(doctor.getOrgType());
+
+        }
+
+        response.setUser(userDto);
         response.setState(new StateDto(true, "Settings Page"));
         return response;
     }

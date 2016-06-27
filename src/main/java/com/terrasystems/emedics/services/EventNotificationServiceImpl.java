@@ -46,50 +46,47 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
             return new StateDto(false, "U mast choose patient");
         }
         User current = userRepository.findByEmail(getPrincipals());
-        /*if (current.getDiscriminatorValue().equals("doctor")) {
-
-        }*/
         Event event = eventRepository.findOne(eventId);
         User recipient = userRepository.findOne(toUser);
-        if (recipient.getDiscriminatorValue().equals("patient") && event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)) {
-            return new StateDto(false, "U can't send this form to patients");
-        }
-        if(!current.getUserRef().contains(recipient)) {
-            if(current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("patient")){
-                Doctor currentDoctor = doctorRepository.findOne(current.getId());
-                Patient currentPatient = patientRepository.findOne(recipient.getId());
-                currentDoctor.getUserRef().add(currentPatient);
-                currentDoctor.getPatients().add(currentPatient);
-                currentPatient.getUserRef().add(currentDoctor);
-                userRepository.save(currentDoctor);
-                userRepository.save(currentPatient);
-            } else if (current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("doctor")) {
-                Doctor currentDoctor = doctorRepository.findOne(current.getId());
-                Doctor toDoctor = doctorRepository.findOne(recipient.getId());
-                current.getUserRef().add(recipient);
-                recipient.getUserRef().add(current);
-                userRepository.save(currentDoctor);
-                userRepository.save(toDoctor);
-            } else if (current.getDiscriminatorValue().equals("patient")&&recipient.getDiscriminatorValue().equals("doctor")) {
-                Doctor doctor = doctorRepository.findOne(recipient.getId());
-                Patient patient = patientRepository.findOne(current.getId());
-                doctor.getPatients().add(patient);
-                doctor.getUserRef().add(patient);
-                patient.getUserRef().add(doctor);
-                userRepository.save(doctor);
-                userRepository.save(patient);
-            }
-        }
-
-        User patient = userRepository.findOne(patientId);
         if(event != null && recipient != null){
+            if (recipient.getDiscriminatorValue().equals("patient") && event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)) {
+                return new StateDto(false, "U can't send this form to patients");
+            }
+            if(!current.getUserRef().contains(recipient)) {
+                if(current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("patient")){
+                    Doctor currentDoctor = doctorRepository.findOne(current.getId());
+                    Patient currentPatient = patientRepository.findOne(recipient.getId());
+                    currentDoctor.getUserRef().add(currentPatient);
+                    currentDoctor.getPatients().add(currentPatient);
+                    currentPatient.getUserRef().add(currentDoctor);
+                    userRepository.save(currentDoctor);
+                    userRepository.save(currentPatient);
+                } else if (current.getDiscriminatorValue().equals("doctor")&&recipient.getDiscriminatorValue().equals("doctor")) {
+                    Doctor currentDoctor = doctorRepository.findOne(current.getId());
+                    Doctor toDoctor = doctorRepository.findOne(recipient.getId());
+                    current.getUserRef().add(recipient);
+                    recipient.getUserRef().add(current);
+                    userRepository.save(currentDoctor);
+                    userRepository.save(toDoctor);
+                } else if (current.getDiscriminatorValue().equals("patient")&&recipient.getDiscriminatorValue().equals("doctor")) {
+                    Doctor doctor = doctorRepository.findOne(recipient.getId());
+                    Patient patient = patientRepository.findOne(current.getId());
+                    doctor.getPatients().add(patient);
+                    doctor.getUserRef().add(patient);
+                    patient.getUserRef().add(doctor);
+                    userRepository.save(doctor);
+                    userRepository.save(patient);
+                }
+            }
+
+            User patient = userRepository.findOne(patientId);
             event.setStatus(StatusEnum.SENT);
             event.setFromUser(current);
             event.setToUser(recipient);
             event.setDescr(message);
             event.setPatient(patient);
             eventRepository.save(event);
-            return new StateDto(true, "Notification Send");
+            return new StateDto(true, "Notification send to " + recipient.getName());
         } else {
             return new StateDto(false,"Event with such id or recipient doesn't exist");
         }

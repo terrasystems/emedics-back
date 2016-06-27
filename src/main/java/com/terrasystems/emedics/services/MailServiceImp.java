@@ -20,10 +20,15 @@ import java.util.Map;
 
 @Service
 public class MailServiceImp implements MailService {
-    private  @Value("${activate.url}") String HOST ;
-    private @Value("${resetPassword.url}") String RESET;
-    private @Value("${login.url}") String LOGIN;
-    //private  String ACTIVATE_URL = HOST + "rest/public/activate/";
+    @Value("${activate.url}")
+    private String URL_HOST ;
+    @Value("${resetPassword.url}")
+    private String URL_RESET;
+    @Value("${login.url}")
+    private String URL_LOGIN;
+    @Value("${email.from}")
+    private String EMAIL_FROM;
+
 
     @Autowired
     JavaMailSender mailSender;
@@ -39,8 +44,8 @@ public class MailServiceImp implements MailService {
         message.setTo(address);
         message.setSubject("Welcome to eMedics");
 
-        message.setText(HOST+activateToken+"  "+"Your password is" + " " + password );
-        message.setFrom("admin@emedics.org");
+        message.setText(URL_HOST+activateToken+"  "+"Your password is" + " " + password );
+        message.setFrom(EMAIL_FROM);
         System.out.println("message "+ message.toString());
         try {
             System.out.println("try to send mail");
@@ -58,7 +63,7 @@ public class MailServiceImp implements MailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
         message.setSubject("Reset password for emedics");
-        message.setText("Please visit to link"+" " + RESET+valueKey);
+        message.setText("Please visit to link"+" " + URL_RESET+valueKey);
         message.setFrom("admin@emedics.org");
         try {
             mailSender.send(message);
@@ -66,8 +71,31 @@ public class MailServiceImp implements MailService {
             return new StateDto(false, MessageEnums.MSG_ERROR_SEND_MAIL.toString());
         }
         return new StateDto(true,MessageEnums.MSG_SEND_MAIL.toString());
-
     }
+
+
+
+    @Override
+    public StateDto sendMailToStuffIfAdminChangedPassword(String address, String newPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Your new password for emedics");
+        message.setText("Admin of your organization changed your password and now your password is: " + newPassword);
+        message.setFrom("admin@emedics.org");
+        mailSender.send(message);
+        return new StateDto(true, "Message sent");
+    }
+
+    /*@Override
+    public StateDto sendMailToStuffIfAdminChangedEmail(String address, String newEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Your new email for emedics");
+        message.setText("Admin of your organization changed your email and now your email is: " + newEmail);
+        message.setFrom("admin@emedics.org");
+        mailSender.send(message);
+        return new StateDto(true, "Message sent");
+    }*/
 
     @Override
     public StateDto sendStuffMail(String address, String password) {
@@ -75,8 +103,8 @@ public class MailServiceImp implements MailService {
         message.setTo(address);
         message.setSubject("Welcome to eMedics");
 
-        message.setText(LOGIN +  " Your password is" + " " + password );
-        message.setFrom("admin@emedics.org");
+        message.setText(URL_LOGIN +  " Your password is" + " " + password );
+        message.setFrom(EMAIL_FROM);
         System.out.println("message "+ message.toString());
         try {
             System.out.println("try to send mail");
@@ -115,7 +143,7 @@ public class MailServiceImp implements MailService {
             message.setTo("serhiimorunov@gmail.com");
             message.setSubject("test");
             message.setText(text);
-            message.setFrom("admin@emedics.org");
+            message.setFrom(EMAIL_FROM);
         });
     }
 

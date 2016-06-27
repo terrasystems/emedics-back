@@ -22,6 +22,7 @@ public class StuffMapper {
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setId(entity.getId());
+        dto.setTypeExp(entity.getTypeExp());
         return dto;
     }
 }

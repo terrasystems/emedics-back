@@ -13,6 +13,9 @@
 		<spring-version>4.2.5.RELEASE</spring-version>
 		<spring-security.version>4.0.4.RELEASE</spring-security.version>
 		<spring-test.version>4.2.5.RELEASE</spring-test.version>
+		<sonar.language>java</sonar.language>
+		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+		<sonar.host.url>http://192.168.20.199</sonar.host.url>
     </properties>
 	<build>
 		<plugins>
@@ -35,6 +38,7 @@
 				</configuration>
 				</plugin>
 			</plugins>
+
 	</build>
 
 	<dependencies>
@@ -189,6 +193,18 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
+		</dependency>
+
+		<!--sonar-->
+		<dependency>
+			<groupId>org.codehaus.sonar</groupId>
+			<artifactId>sonar-maven-plugin</artifactId>
+			<version>5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sonarsource.scanner.maven</groupId>
+			<artifactId>sonar-maven-plugin</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 
 	</dependencies>

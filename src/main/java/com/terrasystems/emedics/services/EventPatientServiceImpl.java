@@ -40,7 +40,12 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return ((Doctor)current).getPatients().stream()
                     .map(patient -> mapper.toDto(patient))
                     .collect(Collectors.toList());
-        } else return null;
+        } else if (current.getDiscriminatorValue().equals("stuff")) {
+            return ((Stuff) current).getDoctor().getPatients().stream()
+                    .map(patient -> mapper.toDto(patient))
+                    .collect(Collectors.toList());
+        }
+            return null;
     }
 
     @Override
@@ -79,64 +84,116 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
 
     @Override
     public List<PatientDto> findPatientByCriteria(String search) {
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
-        List<Patient> currentPats = current.getPatients();
+        User current = userRepository.findByEmail(getPrincipals());
         PatientMapper mapper = PatientMapper.getInstance();
-        List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingOrEmailContaining(current.getId(),search,search).stream()
-                .filter(patient -> !currentPats.contains(patient))
-                .collect(Collectors.toList());
-        List<PatientDto> patientDtos = patients.stream()
-                .map(patient -> {
-                    PatientDto dto = new PatientDto();
-                    dto = mapper.toDto(patient);
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            List<Patient> currentPats = ((Doctor)current).getPatients();
+            List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search).stream()
+                    .filter(patient -> !currentPats.contains(patient))
+                    .collect(Collectors.toList());
+            List<PatientDto> patientDtos = patients.stream()
+                    .map(patient -> {
+                        PatientDto dto = new PatientDto();
+                        dto = mapper.toDto(patient);
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            return patientDtos;
+        } else {
+            List<Patient> currentPats = ((Stuff) current).getDoctor().getPatients();
+            List<Patient> patients = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(((Stuff) current).getDoctor().getId(),search,search).stream()
+                    .filter(patient -> !currentPats.contains(patient))
+                    .collect(Collectors.toList());
+            List<PatientDto> patientDtos = patients.stream()
+                    .map(patient -> {
+                        PatientDto dto = new PatientDto();
+                        dto = mapper.toDto(patient);
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            return patientDtos;
+        }
 
-
-        return patientDtos;
     }
 
     @Override
     @Transactional
     public StateDto removePatient(String id) {
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        User current = userRepository.findByEmail(getPrincipals());
         Patient patient = (Patient) userRepository.findOne(id);
-        current.getPatients().remove(patient);
-        current.getUserRef().remove(patient);
-        userRepository.save(current);
-        patient.getUserRef().remove(current);
-        userRepository.save(patient);
-        StateDto state = new StateDto();
-        state.setMessage(MessageEnums.MSG_PAT_REMOVE.toString());
-        state.setValue(true);
-        return state;
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            ((Doctor)current).getPatients().remove(patient);
+            current.getUserRef().remove(patient);
+            userRepository.save(current);
+            patient.getUserRef().remove(current);
+            userRepository.save(patient);
+            StateDto state = new StateDto();
+            state.setMessage(MessageEnums.MSG_PAT_REMOVE.toString());
+            state.setValue(true);
+            return state;
+        }
+        else {
+            ((Stuff)current).getDoctor().getPatients().remove(patient);
+            ((Stuff) current).getDoctor().getUserRef().remove(patient);
+            userRepository.save(((Stuff) current).getDoctor());
+            patient.getUserRef().remove(((Stuff) current).getDoctor());
+            userRepository.save(patient);
+            StateDto state = new StateDto();
+            state.setMessage(MessageEnums.MSG_PAT_REMOVE.toString());
+            state.setValue(true);
+            return state;
+        }
+
     }
 
     @Override
     @Transactional
     public StateDto addPatient(String id) {
-        Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
+        User current = userRepository.findByEmail(getPrincipals());
         Patient patient = patientRepository.findOne(id);
         StateDto state = new StateDto();
-        List<Patient> patients = current.getPatients();
-        if (patient == null) {
-            state.setValue(false);
-            state.setMessage(MessageEnums.MSG_PATS_NOT_EXIST.toString());
-            return state;
-        } if(patients.contains(patient)) {
-            state.setValue(false);
-            state.setMessage("This patient exist already");
-            return state;
+        if (current.getDiscriminatorValue().equals("doctor")) {
+            List<Patient> patients = ((Doctor)current).getPatients();
+            if (patient == null) {
+                state.setValue(false);
+                state.setMessage(MessageEnums.MSG_PATS_NOT_EXIST.toString());
+                return state;
+            } if(patients.contains(patient)) {
+                state.setValue(false);
+                state.setMessage("This patient exist already");
+                return state;
+            } else {
+                ((Doctor)current).getPatients().add(patient);
+                current.getUserRef().add(patient);
+                userRepository.save(current);
+                patient.getUserRef().add(current);
+                userRepository.save(patient);
+                state.setValue(true);
+                state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
+                return state;
+            }
+
         } else {
-            current.getPatients().add(patient);
-            current.getUserRef().add(patient);
-            userRepository.save(current);
-            patient.getUserRef().add(current);
-            userRepository.save(patient);
-            state.setValue(true);
-            state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
-            return state;
+            List<Patient> patients = ((Stuff)current).getDoctor().getPatients();
+            if (patient == null) {
+                state.setValue(false);
+                state.setMessage(MessageEnums.MSG_PATS_NOT_EXIST.toString());
+                return state;
+            }
+            if (patients.contains(patient)) {
+                state.setValue(false);
+                state.setMessage("This patient exist already");
+                return state;
+            } else {
+                ((Stuff) current).getDoctor().getPatients().add(patient);
+                ((Stuff) current).getDoctor().getUserRef().add(patient);
+                userRepository.save(((Stuff) current).getDoctor());
+                patient.getUserRef().add(((Stuff) current).getDoctor());
+                userRepository.save(patient);
+                state.setValue(true);
+                state.setMessage(MessageEnums.MSG_PAT_ADD.toString());
+                return state;
+            }
         }
     }
 

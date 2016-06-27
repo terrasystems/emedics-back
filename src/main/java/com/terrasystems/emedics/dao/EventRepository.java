@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EventRepository extends CrudRepository<Event, String> {
@@ -23,4 +24,16 @@ public interface EventRepository extends CrudRepository<Event, String> {
 
     @Query("SELECT DISTINCT e.template.id from Event as e where e.patient.id=:patientId")
     List<String> findTemplate_IdByPatient_Id(@Param("patientId") String patientId);
+
+    List<Event> findByFromUser_IdAndTemplate_IdAndStatus(String patientId, String templateId, StatusEnum status);
+    @Query("SELECT DISTINCT e.template.id from Event as e where e.fromUser.id=:stuffId")
+    List<String> findTemplate_IdByStuff_Id(@Param("stuffId") String stuffId);
+
+
+   /* List<Event> findByTemplate_IdAndStatusAndFromUser_Id(String templateId, StatusEnum statusEnum, String fromUserId);
+    List<Event> findByTemplate_IdAndStatusAndToUser_Id(String templateId, StatusEnum statusEnum, String toUserId);
+    List<Event> findByFromUser_IdAndToUser_IdAndStatus(String fromId, String toId, StatusEnum statusEnum);
+    List<Event> findByPatient_IdAndToUser_IdAndStatus(String patientId, String toId, StatusEnum statusEnum);*/
+    List<Event> findByDateBetween(Date date, Date date2);
+    List<Event> findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(String templateId, String fromUserId, String userId, Date dateFrom, Date dateTo );
 }

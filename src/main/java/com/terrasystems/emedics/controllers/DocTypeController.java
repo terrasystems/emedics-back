@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/rest/private/dashboard/doc_type")
+@RequestMapping(value = "/rest/public/dashboard/doc_type")
 public class DocTypeController {
 
     @Autowired
