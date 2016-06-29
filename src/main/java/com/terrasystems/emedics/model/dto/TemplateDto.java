@@ -22,12 +22,13 @@ public class TemplateDto implements Serializable {
     private CommercialEnum commercialEnum;
     private TypeEnum typeEnum;
     private boolean existPaid;
+    private boolean load;
 
     public TemplateDto() {
     }
 
     public TemplateDto(String id, String type, String category, String name, JsonNode body, String descr, String number,
-                       CommercialEnum commercialEnum, TypeEnum typeEnum, boolean existPaid) {
+                       CommercialEnum commercialEnum, TypeEnum typeEnum, boolean existPaid, boolean load) {
         this.id = id;
         this.type = type;
         this.category = category;
@@ -38,6 +39,7 @@ public class TemplateDto implements Serializable {
         this.commercialEnum = commercialEnum;
         this.typeEnum = typeEnum;
         this.existPaid = existPaid;
+        this.load = load;
     }
 
     public boolean isExistPaid() {
@@ -120,6 +122,14 @@ public class TemplateDto implements Serializable {
         this.typeEnum = typeEnum;
     }
 
+    public boolean isLoad() {
+        return load;
+    }
+
+    public void setLoad(boolean load) {
+        this.load = load;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -133,6 +143,7 @@ public class TemplateDto implements Serializable {
                 .add("commercialEnum", commercialEnum)
                 .add("typeEnum", typeEnum)
                 .add("existPaid", existPaid)
+                .add("load", load)
                 .toString();
     }
 
@@ -155,6 +166,7 @@ public class TemplateDto implements Serializable {
                 .append(commercialEnum, that.commercialEnum)
                 .append(typeEnum, that.typeEnum)
                 .append(existPaid, that.existPaid)
+                .append(load, that.load)
                 .isEquals();
     }
 
@@ -171,6 +183,7 @@ public class TemplateDto implements Serializable {
                 .append(commercialEnum)
                 .append(typeEnum)
                 .append(existPaid)
+                .append(load)
                 .toHashCode();
     }
 }
