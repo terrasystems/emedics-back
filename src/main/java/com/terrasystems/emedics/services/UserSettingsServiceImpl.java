@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserSettingsServiceImpl implements UserSettingsService, CurrentUserService {
@@ -154,6 +156,23 @@ public class UserSettingsServiceImpl implements UserSettingsService, CurrentUser
         response.setUser(userDto);
         response.setState(new StateDto(true, "Settings Page"));
         return response;
+    }
+
+    @Override
+    public StateDto checkEmail(String email) {
+        StateDto state = new StateDto();
+        List<User> users = (List<User>) userRepository.findAll();
+        List<String> usersEmail = users.stream()
+                .map(user -> user.getEmail())
+                .collect(Collectors.toList());
+        if(usersEmail.contains(email)) {
+            state.setMessage("This email address exist already");
+            state.setValue(false);
+            return state;
+        }
+        state.setMessage("Email correct");
+        state.setValue(true);
+        return state;
     }
 
 

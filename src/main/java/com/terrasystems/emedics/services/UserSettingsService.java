@@ -10,4 +10,5 @@ public interface UserSettingsService {
     RegisterResponseDto editUser(UserDto userDto);
     RegisterResponseDto changePassword(ChangePasswordDto changePasswordDto);
     RegisterResponseDto settingsPage();
+    StateDto checkEmail(String email);
 }
