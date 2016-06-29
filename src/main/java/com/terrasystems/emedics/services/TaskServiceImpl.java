@@ -108,33 +108,6 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         return events;
     }
 
-    /*@Override
-    public List<Event> getTasksByTemplate(String id) {
-        User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByTemplate_IdAndStatusAndFromUser_Id(id, StatusEnum.NEW, current.getId()));
-        events.addAll(eventRepository.findByTemplate_IdAndStatusAndToUser_Id(id, StatusEnum.ACCEPTED, current.getId()));
-
-        return events;
-    }
-
-    @Override
-    public List<Event> getTasksByFromUserId(String id) {
-        User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByFromUser_IdAndToUser_IdAndStatus(id, current.getId(), StatusEnum.ACCEPTED));
-
-        return events;
-    }
-
-    @Override
-    public List<Event> getTasksByPatient(String id) {
-        User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByPatient_IdAndToUser_IdAndStatus(id, current.getId(), StatusEnum.ACCEPTED));
-
-        return events;
-    }*/
 
     @Override
     public StateDto closeTask(String id) {
@@ -193,28 +166,30 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     @Transactional
-    public StateDto multiSendTask(String eventId, List<String> toUsers, String message, String patientId) {
-        if (patientId == null) {
+    public StateDto multiSendTask(String templateId, List<String> patients, String message) {
+        if (patients == null) {
             return new StateDto(false, "U mast choose patient");
         }
         String stateMessage = "";
         User current = userRepository.findByEmail(getPrincipals());
-        Event event = eventRepository.findOne(eventId);
-        for (String toUser: toUsers) {
-            User recipient = userRepository.findOne(toUser);
-            if(current.getDiscriminatorValue().equals("doctor")){
-                StateDto stateDto =  eventNotificationService.sentAction(eventId, toUser, message, patientId);
-                stateMessage = stateMessage + stateDto.getMessage() + " \n";
+
+            if(current.getDiscriminatorValue().equals("doctor")) {
+                for (String patientId: patients) {
+                    UserTemplateDto userTemplateDto = new UserTemplateDto();
+                    userTemplateDto.setId(templateId);
+                    Event event = createTask(userTemplateDto, patientId, current.getId());
+                    StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
+                    stateMessage = stateMessage + stateDto.getMessage() + " ";
+                }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                StateDto stateDto = StuffMultiSend(current, recipient, patientId, eventId, message);
-                stateMessage = stateMessage + stateDto.getMessage() + " \n";
+                stateMessage = "not supporterd yet";
             }
-        }
+
         return new StateDto(true, stateMessage);
     }
 
     @Transactional
-    StateDto StuffMultiSend(User current, User recipient, String patientId, String eventId, String message) {
+    public StateDto StuffMultiSend(User current, User recipient, String patientId, String eventId, String message) {
         Stuff stuff = stuffRepository.findOne(current.getId());
         Doctor doctor = stuff.getDoctor();
         Event event = eventRepository.findOne(eventId);
