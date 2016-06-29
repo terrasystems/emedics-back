@@ -38,4 +38,5 @@ public interface EventRepository extends CrudRepository<Event, String>, JpaSpeci
     List<Event> findByDateBetween(Date date, Date date2);
     List<Event> findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(String templateId, String fromUserId, String userId, Date dateFrom, Date dateTo);
 
+
 }

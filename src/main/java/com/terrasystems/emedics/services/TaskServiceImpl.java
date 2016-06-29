@@ -9,9 +9,12 @@ import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.time.*;
 
 import java.util.ArrayList;
@@ -37,6 +40,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     StuffRepository stuffRepository;
     @Autowired
     EventNotificationService eventNotificationService;
+
+
 
     private Event createTaskLogic(User patient, User current, Template template) {
         Event event = new Event();
@@ -135,32 +140,36 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     public List<Event> getByCriteria(TaskSearchCriteria criteria) {
-        List<Event> events = new ArrayList<>();
-        Date date = new Date();
-        Date date1 = new Date();
-        switch (criteria.getPeriod()) {
-            case 1:
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 2:
-                date.setHours(0);
-                date.setMinutes(0);
-                date.setSeconds(0);
-                date1.setDate(date1.getDate() - 1);
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 3:
-                date1.setDate(date1.getDate() - 7);
-                break;
-            case 4:
-                date1.setMonth(date1.getMonth() - 1);
-                break;
-        }
-        events.addAll(eventRepository.findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(criteria.getTemplateId(), criteria.getFromId(), criteria.getPatientId(), date1, date));
+        User current = userRepository.findByEmail(getPrincipals());
+        Specification<Event> s = (r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate fromto = b.or(from,to);
+            Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
+            return b.and(fromto, close);
+        };
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where(s)
+        .and((r, q, b) -> {
+            if (criteria.getTemplateName() != null) {
+                return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+            }
+            return null;
+        })
+        .and((r, q, b) -> {
+            if (criteria.getPatientName() != null) {
+                return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+            }
+            return null;
+        })
+        .and((r, q, b) -> {
+            if (criteria.getPeriod() == 1) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime before = now.minusDays(2);
+                return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            return null;
+        }));
+
         return events;
     }
 
@@ -243,3 +252,31 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         return eventRepository.save(event);
     }
 }
+ /*List<Event> events = new ArrayList<>();
+        Date date = new Date();
+        Date date1 = new Date();
+        switch (criteria.getPeriod()) {
+            case 1:
+                date1.setHours(0);
+                date1.setMinutes(0);
+                date1.setSeconds(0);
+                break;
+            case 2:
+                date.setHours(0);
+                date.setMinutes(0);
+                date.setSeconds(0);
+                date1.setDate(date1.getDate() - 1);
+                date1.setHours(0);
+                date1.setMinutes(0);
+                date1.setSeconds(0);
+                break;
+            case 3:
+                date1.setDate(date1.getDate() - 7);
+                break;
+            case 4:
+                date1.setMonth(date1.getMonth() - 1);
+                break;
+        }
+        events.addAll(eventRepository.findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(criteria.getTemplateId(), criteria.getFromId(), criteria.getPatientId(), date1, date));
+        */
+

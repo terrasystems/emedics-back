@@ -10,6 +10,14 @@ public class TaskSearchCriteria implements Serializable{
     private String patientName;
     private String fromName;
 
+    public TaskSearchCriteria(int period, String templateName, String patientName, String fromName) {
+        this.period = period;
+        this.templateName = templateName;
+        this.patientName = patientName;
+        this.fromName = fromName;
+    }
+     public TaskSearchCriteria() {}
+
     public int getPeriod() {
         return period;
     }

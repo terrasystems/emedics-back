@@ -168,88 +168,9 @@ public class TaskController {
         }
         return response;
     }
-/*
 
-    @RequestMapping(value = "/byTemplate/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public DashboardEventResponse getTasksByTemplate(@PathVariable String id) {
-        DashboardEventResponse response = new DashboardEventResponse();
-        StateDto state = new StateDto();
-        EventMapper mapper = EventMapper.getInstance();
-        List<EventDto> events = taskService.getTasksByTemplate(id).stream()
-                .map(event -> {
-                    EventDto dto = new EventDto();
-                    try {
-                        dto = mapper.toDto(event);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //dto.setTemplate(null);
-                    return dto;
-                })
-                .collect(Collectors.toList());
 
-        response.setResult(events);
-        state.setMessage("Tasks by template");
-        state.setValue(true);
-        response.setState(state);
-        return response;
-    }
-
-    @RequestMapping(value = "byFromUser/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public DashboardEventResponse getTasksByFromUser(@PathVariable String id) {
-        DashboardEventResponse response = new DashboardEventResponse();
-        StateDto state = new StateDto();
-        EventMapper mapper = EventMapper.getInstance();
-        List<EventDto> events = taskService.getTasksByFromUserId(id).stream()
-                .map(event -> {
-                    EventDto dto = new EventDto();
-                    try {
-                        dto = mapper.toDto(event);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //dto.setTemplate(null);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        response.setResult(events);
-        state.setMessage("Tasks by from user");
-        state.setValue(true);
-        response.setState(state);
-        return response;
-    }
-
-    @RequestMapping(value = "byPatient/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public DashboardEventResponse getTasksByPatient(@PathVariable String id) {
-        DashboardEventResponse response = new DashboardEventResponse();
-        StateDto state = new StateDto();
-        EventMapper mapper = EventMapper.getInstance();
-        List<EventDto> events = taskService.getTasksByPatient(id).stream()
-                .map(event -> {
-                    EventDto dto = new EventDto();
-                    try {
-                        dto = mapper.toDto(event);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //dto.setTemplate(null);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        response.setResult(events);
-        state.setMessage("Tasks by patient");
-        state.setValue(true);
-        response.setState(state);
-        return response;
-    }
-*/
-
-    @RequestMapping(value = "/byTime", method = RequestMethod.POST)
+    @RequestMapping(value = "/filter", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse getTasksByCriteria(@RequestBody TaskSearchCriteria criteria) {
         DashboardEventResponse response = new DashboardEventResponse();
@@ -264,13 +185,13 @@ public class TaskController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    //dto.setTemplate(null);
+                    dto.setTemplate(null);
                     return dto;
                 })
                 .collect(Collectors.toList());
 
         response.setResult(events);
-        state.setMessage("Tasks by time");
+        state.setMessage("Tasks by filters");
         state.setValue(true);
         response.setState(state);
         return response;
