@@ -4,6 +4,7 @@ package com.terrasystems.emedics.dao;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.List;
 
-public interface EventRepository extends CrudRepository<Event, String>, JpaSpecificationExecutor<Event> {
+public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRepository<Event, String> {
     List<Event> findByToUser_IdAndStatus(String id, StatusEnum status);
     /*boolean existsByPatient_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateI);
     boolean existsByToUser_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateId);*/
