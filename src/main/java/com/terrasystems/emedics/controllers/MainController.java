@@ -182,20 +182,13 @@ public class MainController  {
         return "Initializtion";
     }
 
-    @RequestMapping(value = "/rest/spec" , method = RequestMethod.POST)
+    @RequestMapping(value = "/rest/spec" , method = RequestMethod.GET)
     @ResponseBody
-    public String spec(@RequestBody TaskSearchCriteria criteria) {
-       /* EventSpecification specification = new EventSpecification(new TaskSearchCriteria(12,"a","a","a"));
-        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r,q,b) -> {
-            return null b.like(r.<User>get("fromUser").<String>get("name"), "%a%");
-        })
-        .and((r,q,b) -> {
-            return nullb.like(r.<Template>get("template").<String>get("name"), "%"+ null +"%");
-
-        }));
-        EventSpecification specification = new EventSpecification(criteria);
-        List<Event> events = eventRepository.findAll(specification);
-        events.forEach(event -> {System.out.println(event.getFromUser().getName());});*/
+    public String spec() {
+      List<User> users = userRepository.findAll(Specifications.where((r, q, b) -> {
+          return b.equal(r.<String>get(""), "doctor");
+      }));
+      users.forEach(user -> System.out.println(user.getDiscriminatorValue()));
         return "spec";
     }
 
