@@ -55,11 +55,7 @@ public class MobileReferenceServiceImpl implements MobileReferenceService, Curre
         Iterable<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(), search, search, search, pageable).stream()
                 .filter(doctor -> !currentRefs.contains(doctor))
                 .collect(Collectors.toList());
-        Iterable<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingIgnoreCaseAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingIgnoreCaseAndDoctor_AdminIsTrue(current.getId(),search, search, pageable).stream()
-                .filter((stuff -> !currentRefs.contains(stuff)))
-                .collect(Collectors.toList());
         refs.addAll((Collection<? extends ReferenceDto>) converter.convertFromDoctorsIterator(doctorsRefs));
-        refs.addAll((Collection<? extends ReferenceDto>) converter.convertFromStuffsIterator(stuffRef));
         return refs;
     }
 
@@ -69,14 +65,11 @@ public class MobileReferenceServiceImpl implements MobileReferenceService, Curre
         Doctor current = (Doctor) userRepository.findByEmail(getPrincipals());
         Set<User> currentRefs = current.getUserRef();
         List<ReferenceDto> refs = new ArrayList<>();
-        Iterable<Stuff> stuffRef = stuffRepository.findByIdIsNotAndDoctor_NameContainingIgnoreCaseAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingIgnoreCaseAndDoctor_AdminIsTrue(current.getId(),search, search, pageable).stream()
-                .filter((stuff -> !currentRefs.contains(stuff)))
-                .collect(Collectors.toList());
+
         Iterable<Doctor> doctorsRefs = doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrIdIsNotAndEmailContainingIgnoreCaseOrIdIsNotAndType_NameContainingIgnoreCase(current.getId(), search, current.getId(), search, current.getId(), search, pageable);
         Iterable<Patient> patientsRefs = patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search, pageable).stream()
                 .filter(patient -> !currentRefs.contains(patient))
                 .collect(Collectors.toList());
-        refs.addAll((Collection<? extends ReferenceDto>) converter.convertFromStuffsIterator(stuffRef));
         refs.addAll((Collection<? extends ReferenceDto>) converter.convertFromDoctorsIterator(doctorsRefs));
         refs.addAll((Collection<? extends ReferenceDto>) converter.convertFromPatientsIterator(patientsRefs));
         return refs;

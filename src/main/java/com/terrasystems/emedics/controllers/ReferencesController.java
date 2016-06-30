@@ -96,7 +96,7 @@ public class ReferencesController {
     public DashboardReferenceResponse getMyRefs(@RequestBody MyRefsRequest request) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
         StateDto status = new StateDto();
-        response.setResult(referenceService.findAllReferencesByCriteria(request.getSearch(),request.getType()));
+        response.setResult(referenceService.findAllReferencesByCriteria(request.getSearch(),request.getType(), request.getPage().getStart(), request.getPage().getCount()));
         status.setMessage("Refs");
         status.setValue(true);
         response.setState(status);

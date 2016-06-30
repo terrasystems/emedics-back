@@ -5,40 +5,31 @@ import java.io.Serializable;
 
 public class PageDto implements Serializable {
     private static final long serialVersionUID = 5357295997249009120L;
-    private Long start;
-    private Long count;
-    private Long size;
+    private Integer start;
+    private Integer count;
+    private Integer size;
 
-    public PageDto(Long start, Long count, Long size) {
-        this.start = start;
-        this.count = count;
-        this.size = size;
-    }
-
-    public PageDto() {
-    }
-
-    public Long getStart() {
+    public Integer getStart() {
         return start;
     }
 
-    public void setStart(Long start) {
+    public void setStart(Integer start) {
         this.start = start;
     }
 
-    public Long getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 }

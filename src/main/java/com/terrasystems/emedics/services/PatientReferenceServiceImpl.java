@@ -11,6 +11,9 @@ import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,25 +51,50 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     }
 
     @Override
-    public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
+    public List<ReferenceDto> findAllReferencesByCriteria(String search, String type, Integer start, Integer count) {
         ReferenceConverter converter = new ReferenceConverter();
         User current = userRepository.findByEmail(getPrincipals());
         List<ReferenceDto> refs = new ArrayList<>();
+        Pageable pageable = new PageRequest(start,count, Sort.Direction.DESC, "name");
         if (current.getDiscriminatorValue().equals("patient")) {
-            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search,search)));
-            refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndDoctor_NameContainingIgnoreCaseAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingIgnoreCaseAndDoctor_AdminIsTrue(current.getId(), search,search)));
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search,search, pageable)));
+            //refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndDoctor_NameContainingIgnoreCaseAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingIgnoreCaseAndDoctor_AdminIsTrue(current.getId(), search,search)));
 
             return refs;
         } else {
             if (type.equals("pat")) {
-                refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase())));
+                refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase(),pageable)));
                 return refs;
             }
-            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNot("%"+search.toLowerCase()+"%",current.getId())));
-            refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase())));
+            //refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNot("%"+search.toLowerCase()+"%",current.getId())));
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrIdIsNotAndEmailContainingIgnoreCaseOrIdIsNotAndType_NameContainingIgnoreCase(current.getId(), search, current.getId(), search, current.getId(), search, pageable)));
+            refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase(),pageable)));
             return refs;
         }
     }
+    @Override
+    public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
+        ReferenceConverter converter = new ReferenceConverter();
+        User current = userRepository.findByEmail(getPrincipals());
+        List<ReferenceDto> refs = new ArrayList<>();
+        Pageable pageable = new PageRequest(start,count, Sort.Direction.DESC, "name");
+        if (current.getDiscriminatorValue().equals("patient")) {
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search,search,search, pageable)));
+            //refs.addAll(converter.convertFromStuff(stuffRepository.findByIdIsNotAndDoctor_NameContainingIgnoreCaseAndDoctor_AdminIsTrueOrDoctor_Type_NameContainingIgnoreCaseAndDoctor_AdminIsTrue(current.getId(), search,search)));
+
+            return refs;
+        } else {
+            if (type.equals("pat")) {
+                refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase(),pageable)));
+                return refs;
+            }
+            //refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNot("%"+search.toLowerCase()+"%",current.getId())));
+            refs.addAll(converter.convertFromDoctors(doctorRepository.findByIdIsNotAndNameContainingIgnoreCaseOrIdIsNotAndEmailContainingIgnoreCaseOrIdIsNotAndType_NameContainingIgnoreCase(current.getId(), search, current.getId(), search, current.getId(), search, pageable)));
+            refs.addAll(converter.convertFromPatients(patientRepository.findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(current.getId(),search.toLowerCase(),search.toLowerCase(),pageable)));
+            return refs;
+        }
+    }
+
 
 
     @Override
