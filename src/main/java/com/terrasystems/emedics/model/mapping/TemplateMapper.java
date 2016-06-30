@@ -32,7 +32,6 @@ public class TemplateMapper {
         dto.setBody(objectMapper.readTree(entity.getBody()));
         dto.setCommercialEnum(entity.getCommercialEnum());
         dto.setTypeEnum(entity.getTypeEnum());
-
         return dto;
     }
 
