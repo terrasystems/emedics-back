@@ -119,7 +119,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         })
         .and((r, q, b) -> {
             if (criteria.getTemplateName() != null) {
-                return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+                return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
             }
             return null;
         })
@@ -298,7 +298,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         })
         .and((r, q, b) -> {
                     if (criteria.getTemplateName() != null) {
-                        return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+                        return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
                     }
                     return null;
                 })
