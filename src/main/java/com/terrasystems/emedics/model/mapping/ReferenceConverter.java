@@ -5,6 +5,7 @@ import com.terrasystems.emedics.dao.DoctorRepository;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,28 @@ public class ReferenceConverter {
         return references;
     }
 
+    public Iterable<ReferenceDto> convertFromDoctorsIterator(Iterable<Doctor> doctors) {
+        List<Doctor> doctorsList = (List<Doctor>) doctors;
+        Iterable<ReferenceDto> referenceDtos = doctorsList.stream()
+                .map(doctor -> {
+                    ReferenceDto ref = new ReferenceDto();
+                    ref.setId(doctor.getId());
+                    if (doctor.getType() == null) {
+                        ref.setType(null);
+                    } else {
+                        ref.setType(doctor.getType().getName());
+                    }
+                    ref.setName(doctor.getName());
+                    ref.setPhone(doctor.getPhone());
+                    ref.setEmail(doctor.getEmail());
+                    ref.setEnabled(doctor.isEnabled());
+                    return ref;
+                })
+                .collect(Collectors.toList());
+        return referenceDtos;
+
+    }
+
     public List<ReferenceDto> convertFromStuff(List<Stuff> stuffList){
         List<ReferenceDto> references = stuffList.stream()
                 .map(stuff -> {
@@ -47,6 +70,23 @@ public class ReferenceConverter {
                 .collect(Collectors.toList());
 
         return references;
+    }
+
+    public Iterable<ReferenceDto> convertFromStuffsIterator(Iterable<Stuff> stuffs) {
+        List<Stuff> stuffList = (List<Stuff>) stuffs;
+        Iterable<ReferenceDto> referenceDtos = stuffList.stream()
+                .map(stuff -> {
+                    ReferenceDto ref = new ReferenceDto();
+                    ref.setId(stuff.getId());
+                    ref.setName(stuff.getName());
+                    ref.setPhone(stuff.getPhone());
+                    ref.setEmail(stuff.getEmail());
+                    ref.setEnabled(stuff.isEnabled());
+                    return ref;
+                })
+                .collect(Collectors.toList());
+        return referenceDtos;
+
     }
 
     public List<ReferenceDto> convertFromUsers(Set<User> users) {
@@ -86,4 +126,23 @@ public class ReferenceConverter {
                 .collect(Collectors.toList());
         return refs;
     }
+
+    public Iterable<ReferenceDto> convertFromPatientsIterator(Iterable<Patient> patients) {
+        List<Patient> patientsList = (List<Patient>) patients;
+        Iterable<ReferenceDto> referenceDtos = patientsList.stream()
+                .map(patient -> {
+                    ReferenceDto ref = new ReferenceDto();
+                    ref.setId(patient.getId());
+                    ref.setName(patient.getName());
+                    ref.setPhone(patient.getPhone());
+                    ref.setEmail(patient.getEmail());
+                    ref.setEnabled(patient.isEnabled());
+                    return ref;
+                })
+                .collect(Collectors.toList());
+        return referenceDtos;
+
+    }
+
+
 }
