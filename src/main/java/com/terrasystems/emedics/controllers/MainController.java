@@ -3,14 +3,18 @@ package com.terrasystems.emedics.controllers;
 
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.LoaderService;
 import com.terrasystems.emedics.services.MailService;
+import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -176,6 +180,23 @@ public class MainController  {
         loaderService.init();
 
         return "Initializtion";
+    }
+
+    @RequestMapping(value = "/rest/spec" , method = RequestMethod.POST)
+    @ResponseBody
+    public String spec(@RequestBody TaskSearchCriteria criteria) {
+       /* EventSpecification specification = new EventSpecification(new TaskSearchCriteria(12,"a","a","a"));
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r,q,b) -> {
+            return null b.like(r.<User>get("fromUser").<String>get("name"), "%a%");
+        })
+        .and((r,q,b) -> {
+            return nullb.like(r.<Template>get("template").<String>get("name"), "%"+ null +"%");
+
+        }));
+        EventSpecification specification = new EventSpecification(criteria);
+        List<Event> events = eventRepository.findAll(specification);
+        events.forEach(event -> {System.out.println(event.getFromUser().getName());});*/
+        return "spec";
     }
 
 }

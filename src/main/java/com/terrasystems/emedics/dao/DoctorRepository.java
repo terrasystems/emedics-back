@@ -3,6 +3,7 @@ package com.terrasystems.emedics.dao;
 
 import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Set;
 
-public interface DoctorRepository extends CrudRepository<Doctor,String> {
+public interface DoctorRepository extends JpaRepository<Doctor,String> {
     List<Doctor> findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String type, String email);
     List<Doctor> findByIdIsNotAndNameContainingIgnoreCaseOrType_NameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String type, String email, Pageable pageable);
     @Query("select d from Doctor d left join d.type dt " +

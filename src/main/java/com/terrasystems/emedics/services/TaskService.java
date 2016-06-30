@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface TaskService {
     Event createTask(UserTemplateDto userTemplate, String patientId, String fromId);
-    List<Event> getAllTasks();
+    List<Event> getAllTasks(TaskSearchCriteria criteria);
     Event getTask(String id);
     Event editTask(EventDto eventDto);
-    List<Event> getHistory();
+    List<Event> getHistory(TaskSearchCriteria criteria);
     StateDto closeTask(String id);
     /*List<Event> getTasksByTemplate(String id);
     List<Event> getTasksByFromUserId(String id);

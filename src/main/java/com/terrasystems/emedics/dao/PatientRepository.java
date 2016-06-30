@@ -2,6 +2,7 @@ package com.terrasystems.emedics.dao;
 
 import com.terrasystems.emedics.model.Patient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PatientRepository extends CrudRepository<Patient, String> {
+public interface PatientRepository extends JpaRepository<Patient, String> {
     List<Patient> findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String email);
     List<Patient> findByIdIsNotAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, String name, String email, Pageable pageable);
 
