@@ -22,13 +22,13 @@ public class TaskController {
     @Autowired
     UserRepository userRepository;
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse getAllTasks() {
+    public DashboardEventResponse getAllTasks(@RequestBody TaskSearchCriteria criteria) {
         DashboardEventResponse response = new DashboardEventResponse();
         StateDto state = new StateDto();
         EventMapper mapper = EventMapper.getInstance();
-        List<EventDto> events = taskService.getAllTasks().stream()
+        List<EventDto> events = taskService.getAllTasks(criteria).stream()
                 .map(event -> {
                     EventDto dto = new EventDto();
                     try {
@@ -48,13 +48,13 @@ public class TaskController {
         return response;
     }
 
-    @RequestMapping(value = "/gethistory", method = RequestMethod.GET)
+    @RequestMapping(value = "/gethistory", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse getHistory() {
+    public DashboardEventResponse getHistory(@RequestBody TaskSearchCriteria criteria) {
         DashboardEventResponse response = new DashboardEventResponse();
         StateDto state = new StateDto();
         EventMapper mapper = EventMapper.getInstance();
-        List<EventDto> events = taskService.getHistory().stream()
+        List<EventDto> events = taskService.getHistory(criteria).stream()
                 .map(event -> {
                     EventDto dto = new EventDto();
                     try {

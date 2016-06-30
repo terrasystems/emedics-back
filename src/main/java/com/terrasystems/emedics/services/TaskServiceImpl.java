@@ -9,7 +9,6 @@ import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,11 +102,68 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     }
 
     @Override
-    public List<Event> getAllTasks() {
+    public List<Event> getAllTasks(TaskSearchCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(),StatusEnum.NEW));
+        List<Event> events;
+        /*events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(),StatusEnum.NEW));
         events.addAll(eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.ACCEPTED));
+        */
+        events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate statusNew = b.equal(r.<StatusEnum>get("status"), StatusEnum.NEW);
+            Predicate statusAccepted = b.equal(r.<StatusEnum>get("status"), StatusEnum.ACCEPTED);
+            Predicate fromNew = b.and(from, statusNew);
+            Predicate toAccepted = b.and(to, statusAccepted);
+            return b.or(fromNew, toAccepted);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getTemplateName() != null) {
+                return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+            }
+            return null;
+        })
+        .and((r, q, b) -> {
+                    if (criteria.getPatientName() != null) {
+                        return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+                    }
+                    return null;
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPeriod() == 1) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime before = now.minusHours(hours);
+                        return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 2) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 3) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(7);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 4) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusMonths(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+                    }
+                    return null;
+                }));
 
 
         return events;
@@ -141,14 +197,13 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     @Override
     public List<Event> getByCriteria(TaskSearchCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
-        Specification<Event> s = (r, p, b) -> {
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
             Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
             Predicate fromto = b.or(from,to);
             Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
             return b.and(fromto, close);
-        };
-        List<Event> events = eventRepository.findAll(Specifications.<Event>where(s)
+        })
         .and((r, q, b) -> {
             if (criteria.getTemplateName() != null) {
                 return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
@@ -232,10 +287,63 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     }
 
     @Override
-    public List<Event> getHistory() {
+    public List<Event> getHistory(TaskSearchCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByStatusAndFromUser_IdOrToUser_Id(StatusEnum.CLOSED, current.getId(), current.getId()));
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate fromto = b.or(from,to);
+            Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
+            return b.and(fromto, close);
+        })
+        .and((r, q, b) -> {
+                    if (criteria.getTemplateName() != null) {
+                        return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+                    }
+                    return null;
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPatientName() != null) {
+                        return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+                    }
+                    return null;
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPeriod() == 1) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime before = now.minusHours(hours);
+                        return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 2) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 3) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(7);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 4) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusMonths(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+                    }
+                    return null;
+                }));
+
         return events;
     }
 
