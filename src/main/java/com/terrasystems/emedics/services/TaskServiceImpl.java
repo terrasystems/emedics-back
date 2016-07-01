@@ -246,10 +246,21 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                     stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                stateMessage = "not supporterd yet";
+                stateMessage = "not supported yet";
             }
 
         return new StateDto(true, stateMessage);
+    }
+
+    @Override
+    public Event findUserTask(String templateId) {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = eventRepository.findByFromUser_IdAndTemplate_IdAndStatus(current.getId(), templateId, StatusEnum.NEW);
+        if(events.isEmpty()) {
+            return null;
+        }
+        Event event = events.get(0);
+        return event;
     }
 
     @Transactional
