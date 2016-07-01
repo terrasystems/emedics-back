@@ -42,13 +42,13 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
 
-    private Event createTaskLogic(User patient, User current, Template template) {
+    private Event createTaskLogic(User patient, User current, Template template, String data) {
         Event event = new Event();
         event.setFromUser(current);
         event.setPatient(patient);
         event.setDate(new Date());
         event.setTemplate(template);
-        event.setData("{}");
+        event.setData(data);
         event.setStatus(StatusEnum.NEW);
         eventRepository.save(event);
         return event;
@@ -56,7 +56,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
     @Override
-    public Event createTask(UserTemplateDto userTemplate, String patientId, String fromId) {
+    public Event createTask(UserTemplateDto userTemplate, String patientId, String fromId, String data) {
         Template template = templateRepository.findOne(userTemplate.getId());
         User patient = null;
         if (patientId != null) {
@@ -70,12 +70,12 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 if (countNew > 0 || countAccepted > 0) {
                     return null;
                 } else {
-                    Event event = createTaskLogic(patient, fromUser, template);
+                    Event event = createTaskLogic(patient, fromUser, template, data);
                     return event;
                 }
 
             } else {
-                Event event = createTaskLogic(patient, fromUser, template);
+                Event event = createTaskLogic(patient, fromUser, template, data);
                 return event;
             }
         } else if (fromUser.getDiscriminatorValue().equals("patient")) {
@@ -85,7 +85,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return null;
             }
 
-            Event event = createTaskLogic(patient, fromUser, template);
+            Event event = createTaskLogic(patient, fromUser, template, data);
             return event;
         } else if (fromUser.getDiscriminatorValue().equals("stuff")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
@@ -94,7 +94,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return null;
             }
 
-            Event event = createTaskLogic(patient, fromUser, template);
+            Event event = createTaskLogic(patient, fromUser, template, data);
             return event;
         } else {
             return null;
@@ -241,7 +241,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 for (String patientId: patients) {
                     UserTemplateDto userTemplateDto = new UserTemplateDto();
                     userTemplateDto.setId(templateId);
-                    Event event = createTask(userTemplateDto, patientId, current.getId());
+                    //TODO deal with {} hardcode
+                    Event event = createTask(userTemplateDto, patientId, current.getId(), "{}");
                     StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
                     stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
@@ -371,31 +372,5 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         return eventRepository.save(event);
     }
 }
- /*List<Event> events = new ArrayList<>();
-        Date date = new Date();
-        Date date1 = new Date();
-        switch (criteria.getPeriod()) {
-            case 1:
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 2:
-                date.setHours(0);
-                date.setMinutes(0);
-                date.setSeconds(0);
-                date1.setDate(date1.getDate() - 1);
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 3:
-                date1.setDate(date1.getDate() - 7);
-                break;
-            case 4:
-                date1.setMonth(date1.getMonth() - 1);
-                break;
-        }
-        events.addAll(eventRepository.findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(criteria.getTemplateId(), criteria.getFromId(), criteria.getPatientId(), date1, date));
-        */
+
 

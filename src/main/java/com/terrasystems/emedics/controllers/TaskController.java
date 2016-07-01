@@ -91,12 +91,12 @@ public class TaskController {
                 response.setState(new StateDto(false, "User with such id doesn't exist"));
                 return response;
             } else {
-                Event event = taskService.createTask(request.getTemplate(), request.getPatient(), request.getFromId());
+                Event event = taskService.createTask(request.getTemplate(), request.getPatient(), request.getFromId(), request.getData());
                 return createTaskLogic(event);
             }
         } else {
             User current = userRepository.findByEmail((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            Event event = taskService.createTask(request.getTemplate(), request.getPatient(), current.getId());
+            Event event = taskService.createTask(request.getTemplate(), request.getPatient(), current.getId(), request.getData());
             return createTaskLogic(event);
         }
     }

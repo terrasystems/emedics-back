@@ -10,7 +10,7 @@ import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import java.util.List;
 
 public interface TaskService {
-    Event createTask(UserTemplateDto userTemplate, String patientId, String fromId);
+    Event createTask(UserTemplateDto userTemplate, String patientId, String fromId, String data);
     List<Event> getAllTasks(TaskSearchCriteria criteria);
     Event getTask(String id);
     Event editTask(EventDto eventDto);
