@@ -8,6 +8,7 @@ import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
+import com.terrasystems.emedics.utils.LambdaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -149,7 +150,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                         LocalDateTime now = LocalDateTime.now();
                         LocalTime timeNow = now.toLocalTime();
                         int hours = timeNow.getHour();
-                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime to = now;
                         LocalDateTime from = to.minusDays(7);
                         return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
                     }
@@ -157,7 +158,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                         LocalDateTime now = LocalDateTime.now();
                         LocalTime timeNow = now.toLocalTime();
                         int hours = timeNow.getHour();
-                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime to = now;
                         LocalDateTime from = to.minusMonths(1);
                         return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -223,7 +224,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
             }
             return null;
-        }));
+        })
+        .and(LambdaUtils.datePredicate));
 
         return events;
     }
@@ -340,7 +342,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                         LocalDateTime now = LocalDateTime.now();
                         LocalTime timeNow = now.toLocalTime();
                         int hours = timeNow.getHour();
-                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime to = now;
                         LocalDateTime from = to.minusDays(7);
                         return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
                     }
@@ -348,7 +350,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                         LocalDateTime now = LocalDateTime.now();
                         LocalTime timeNow = now.toLocalTime();
                         int hours = timeNow.getHour();
-                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime to = now;
                         LocalDateTime from = to.minusMonths(1);
                         return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
 
