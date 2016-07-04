@@ -119,13 +119,13 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return b.or(fromNew, toAccepted);
         })
         .and((r, q, b) -> {
-            if (criteria.getTemplateName() != null) {
+            if (!criteria.getTemplateName().isEmpty()) {
                 return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
             }
             return null;
         })
         .and((r, q, b) -> {
-                    if (criteria.getPatientName() != null) {
+                    if (!criteria.getPatientName().isEmpty()) {
                         return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
                     }
                     return null;
@@ -311,13 +311,13 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return b.and(fromto, close);
         })
         .and((r, q, b) -> {
-                    if (criteria.getTemplateName() != null) {
+                    if (!criteria.getTemplateName().isEmpty()) {
                         return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
                     }
                     return null;
                 })
         .and((r, q, b) -> {
-                    if (criteria.getPatientName() != null) {
+                    if (!criteria.getPatientName().isEmpty()) {
                         return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
                     }
                     return null;
