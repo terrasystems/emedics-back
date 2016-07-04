@@ -14,6 +14,8 @@ public class StuffDto implements Serializable {
     private String password;
     private String phone;
     private String typeExp;
+    private String name;
+    private String docType;
 
     public StuffDto() {}
 
@@ -79,5 +81,21 @@ public class StuffDto implements Serializable {
 
     public void setTypeExp(String typeExp) {
         this.typeExp = typeExp;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        docType = docType;
     }
 }

@@ -3,6 +3,7 @@ package com.terrasystems.emedics.model.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.terrasystems.emedics.model.DocType;
 
 import java.io.Serializable;
 
@@ -15,6 +16,9 @@ public class ReferenceDto implements Serializable {
     private String phone;
     private String email;
     private boolean enabled;
+    private String firstName;
+    private String lastName;
+    private String docType;
 
     public ReferenceDto() {
     }
@@ -73,6 +77,30 @@ public class ReferenceDto implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     @Override

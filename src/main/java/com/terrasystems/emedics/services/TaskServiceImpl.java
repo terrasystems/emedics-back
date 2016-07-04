@@ -8,10 +8,13 @@ import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
+import com.terrasystems.emedics.utils.LambdaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.time.*;
 
 import java.util.ArrayList;
@@ -38,13 +41,15 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     @Autowired
     EventNotificationService eventNotificationService;
 
-    private Event createTaskLogic(User patient, User current, Template template) {
+
+
+    private Event createTaskLogic(User patient, User current, Template template, String data) {
         Event event = new Event();
         event.setFromUser(current);
         event.setPatient(patient);
         event.setDate(new Date());
         event.setTemplate(template);
-        event.setData("{}");
+        event.setData(data);
         event.setStatus(StatusEnum.NEW);
         eventRepository.save(event);
         return event;
@@ -52,7 +57,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
 
     @Override
-    public Event createTask(UserTemplateDto userTemplate, String patientId, String fromId) {
+    public Event createTask(UserTemplateDto userTemplate, String patientId, String fromId, String data) {
         Template template = templateRepository.findOne(userTemplate.getId());
         User patient = null;
         if (patientId != null) {
@@ -66,12 +71,12 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 if (countNew > 0 || countAccepted > 0) {
                     return null;
                 } else {
-                    Event event = createTaskLogic(patient, fromUser, template);
+                    Event event = createTaskLogic(patient, fromUser, template, data);
                     return event;
                 }
 
             } else {
-                Event event = createTaskLogic(patient, fromUser, template);
+                Event event = createTaskLogic(patient, fromUser, template, data);
                 return event;
             }
         } else if (fromUser.getDiscriminatorValue().equals("patient")) {
@@ -81,7 +86,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return null;
             }
 
-            Event event = createTaskLogic(patient, fromUser, template);
+            Event event = createTaskLogic(patient, fromUser, template, data);
             return event;
         } else if (fromUser.getDiscriminatorValue().equals("stuff")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
@@ -90,7 +95,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return null;
             }
 
-            Event event = createTaskLogic(patient, fromUser, template);
+            Event event = createTaskLogic(patient, fromUser, template, data);
             return event;
         } else {
             return null;
@@ -98,11 +103,74 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     }
 
     @Override
-    public List<Event> getAllTasks() {
+    public List<Event> getAllTasks(TaskSearchCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(),StatusEnum.NEW));
+        List<Event> events;
+        /*events.addAll(eventRepository.findByFromUser_IdAndStatus(current.getId(),StatusEnum.NEW));
         events.addAll(eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.ACCEPTED));
+        */
+        events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate statusNew = b.equal(r.<StatusEnum>get("status"), StatusEnum.NEW);
+            Predicate statusAccepted = b.equal(r.<StatusEnum>get("status"), StatusEnum.ACCEPTED);
+            Predicate fromNew = b.and(from, statusNew);
+            Predicate toAccepted = b.and(to, statusAccepted);
+            return b.or(fromNew, toAccepted);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
+                return  null;
+            }
+            else{
+                return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
+            }
+
+        })
+        .and((r, q, b) -> {
+                    if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
+                        return  null;
+                    }
+            else{
+                        return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+                    }
+
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPeriod() == 1) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime before = now.minusHours(hours);
+                        return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 2) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 3) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now;
+                        LocalDateTime from = to.minusDays(7);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 4) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now;
+                        LocalDateTime from = to.minusMonths(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+                    }
+                    return null;
+                }));
 
 
         return events;
@@ -135,32 +203,36 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     public List<Event> getByCriteria(TaskSearchCriteria criteria) {
-        List<Event> events = new ArrayList<>();
-        Date date = new Date();
-        Date date1 = new Date();
-        switch (criteria.getPeriod()) {
-            case 1:
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 2:
-                date.setHours(0);
-                date.setMinutes(0);
-                date.setSeconds(0);
-                date1.setDate(date1.getDate() - 1);
-                date1.setHours(0);
-                date1.setMinutes(0);
-                date1.setSeconds(0);
-                break;
-            case 3:
-                date1.setDate(date1.getDate() - 7);
-                break;
-            case 4:
-                date1.setMonth(date1.getMonth() - 1);
-                break;
-        }
-        events.addAll(eventRepository.findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(criteria.getTemplateId(), criteria.getFromId(), criteria.getPatientId(), date1, date));
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate fromto = b.or(from,to);
+            Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
+            return b.and(fromto, close);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getTemplateName() != null) {
+                return b.like(r.<Template>get("template").<String>get("name"), "%" + criteria.getTemplateName() + "%");
+            }
+            return null;
+        })
+        .and((r, q, b) -> {
+            if (criteria.getPatientName() != null) {
+                return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+            }
+            return null;
+        })
+        .and((r, q, b) -> {
+            if (criteria.getPeriod() == 1) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime before = now.minusDays(2);
+                return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            return null;
+        })
+        .and(LambdaUtils.datePredicate));
+
         return events;
     }
 
@@ -177,15 +249,27 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 for (String patientId: patients) {
                     UserTemplateDto userTemplateDto = new UserTemplateDto();
                     userTemplateDto.setId(templateId);
-                    Event event = createTask(userTemplateDto, patientId, current.getId());
+                    //TODO deal with {} hardcode
+                    Event event = createTask(userTemplateDto, patientId, current.getId(), "{}");
                     StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
                     stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                stateMessage = "not supporterd yet";
+                stateMessage = "not supported yet";
             }
 
         return new StateDto(true, stateMessage);
+    }
+
+    @Override
+    public Event findUserTask(String templateId) {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = eventRepository.findByFromUser_IdAndTemplate_IdAndStatus(current.getId(), templateId, StatusEnum.NEW);
+        if(events.isEmpty()) {
+            return null;
+        }
+        Event event = events.get(0);
+        return event;
     }
 
     @Transactional
@@ -223,10 +307,67 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
     }
 
     @Override
-    public List<Event> getHistory() {
+    public List<Event> getHistory(TaskSearchCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
-        List<Event> events = new ArrayList<>();
-        events.addAll(eventRepository.findByStatusAndFromUser_IdOrToUser_Id(StatusEnum.CLOSED, current.getId(), current.getId()));
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate fromto = b.or(from,to);
+            Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
+            return b.and(fromto, close);
+        })
+        .and((r, q, b) -> {
+                    if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
+                        return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
+                    }
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
+                        return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+                    }
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getPeriod() == 1) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime before = now.minusHours(hours);
+                        return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 2) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now.minusHours(hours);
+                        LocalDateTime from = to.minusDays(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 3) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now;
+                        LocalDateTime from = to.minusDays(7);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+                    }
+                    if (criteria.getPeriod() == 4) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalTime timeNow = now.toLocalTime();
+                        int hours = timeNow.getHour();
+                        LocalDateTime to = now;
+                        LocalDateTime from = to.minusMonths(1);
+                        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+                    }
+                    return null;
+                }));
+
         return events;
     }
 
@@ -243,3 +384,5 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         return eventRepository.save(event);
     }
 }
+
+

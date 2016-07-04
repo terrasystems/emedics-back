@@ -48,18 +48,27 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
                 .map(userTemplate -> userTemplate.getTemplate().getId())
                 .collect(Collectors.toList());
 
+        List<UserTemplate> loadUserTemplates =  userTemplateRepository.findByUser_Id(current.getId());
+        List<String> idLoadTemplates = loadUserTemplates.stream()
+                .map(userTemplate -> userTemplate.getTemplate().getId())
+                .collect(Collectors.toList());
+
 
         return templates.stream()
                .map(template -> {
-                   TemplateDto dto = new TemplateDto();
-                    if (idPaidTemplates.contains(template.getId())) {
-                        dto.setExistPaid(true);
-                    }
+                   TemplateDto dto = null;
                    try {
                        dto = mapper.toDto(template);
                    } catch (IOException e) {
                        e.printStackTrace();
                    }
+                   if (idPaidTemplates.contains(template.getId())) {
+                        dto.setExistPaid(true);
+                    }
+                    if (idLoadTemplates.contains(template.getId())) {
+                       dto.setLoad(true);
+                    }
+
                     return dto;
                 })
                 .collect(Collectors.toList());

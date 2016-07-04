@@ -5,7 +5,7 @@ import com.google.common.base.Objects;
 
 import java.io.Serializable;
 
-public class UserTemplateDto implements Serializable{
+public class UserTemplateDto implements Serializable {
     private static final long serialVersionUID = 6270274520343122805L;
     private String id;
     private String type;

@@ -10,6 +10,7 @@ public class EventCreateRequest implements Serializable{
     private UserTemplateDto template;
     private String patient;
     private String fromId;
+    private String data;
 
     public EventCreateRequest() {}
 
@@ -35,5 +36,13 @@ public class EventCreateRequest implements Serializable{
 
     public void setFromId(String fromId) {
         this.fromId = fromId;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }
