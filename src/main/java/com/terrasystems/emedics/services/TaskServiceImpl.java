@@ -119,16 +119,22 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return b.or(fromNew, toAccepted);
         })
         .and((r, q, b) -> {
-            if (!criteria.getTemplateName().isEmpty()) {
+            if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
+                return  null;
+            }
+            else{
                 return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
             }
-            return null;
+
         })
         .and((r, q, b) -> {
-                    if (!criteria.getPatientName().isEmpty()) {
+                    if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
+                        return  null;
+                    }
+            else{
                         return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
                     }
-                    return null;
+
                 })
         .and((r, q, b) -> {
                     if (criteria.getPeriod() == 1) {
@@ -311,16 +317,20 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return b.and(fromto, close);
         })
         .and((r, q, b) -> {
-                    if (!criteria.getTemplateName().isEmpty()) {
+                    if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
                         return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
                     }
-                    return null;
                 })
         .and((r, q, b) -> {
-                    if (!criteria.getPatientName().isEmpty()) {
+                    if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
                         return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
                     }
-                    return null;
                 })
         .and((r, q, b) -> {
                     if (criteria.getPeriod() == 1) {
