@@ -213,7 +213,7 @@ public class TaskController {
         Event event = taskService.findUserTask(id);
         StateDto stateDto = new StateDto();
         if(event == null) {
-            stateDto.setValue(false);
+            stateDto.setValue(true);
             stateDto.setMessage("Task don't exist");
             response.setState(stateDto);
             return response;
