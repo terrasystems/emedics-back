@@ -50,6 +50,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
 
     @Override
     public List<TemplateEventDto> getPatientsEvents(String patientId) {
+        User current = userRepository.findByEmail(getPrincipals());
         Patient patient = (Patient) userRepository.findOne(patientId);
         if (patient == null) {
             return null;
@@ -60,7 +61,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                 .map(s -> {
                     TemplateEventDto dto = new TemplateEventDto();
                     Template template = templateRepository.findOne(s);
-                    List<Event> events = eventRepository.findByPatient_IdAndTemplate_IdAndStatusIsNot(patient.getId(),template.getId(),StatusEnum.DECLINED);
+                    List<Event> events = eventRepository.findByPatient_IdAndTemplate_IdAndStatusIsNotAndFromUser_IdOrToUser_Id(patient.getId(),template.getId(),StatusEnum.DECLINED, current.getId(), current.getId());
                     dto.setName(template.getName());
                     dto.setId(template.getId());
                     List<EventDto> dtos = new ArrayList<>();
