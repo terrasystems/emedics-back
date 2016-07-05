@@ -22,7 +22,7 @@ public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRep
     Long countByFromUser_IdAndTemplate_IdAndStatus (String userId, String templateId, StatusEnum status);
     Long countByToUser_IdAndTemplate_IdAndStatus(String userId, String templateId, StatusEnum status);
     List<Event> findByFromUser_Id(String userId);
-    List<Event> findByPatient_IdAndTemplate_IdAndStatusIsNot(String patientId, String templateId, StatusEnum status);
+    List<Event> findByPatient_IdAndTemplate_IdAndStatusIsNotAndFromUser_IdOrToUser_Id(String patientId, String templateId, StatusEnum status, String fromUser, String toUser);
 
     @Query("SELECT DISTINCT e.template.id from Event as e where e.patient.id=:patientId")
     List<String> findTemplate_IdByPatient_Id(@Param("patientId") String patientId);
