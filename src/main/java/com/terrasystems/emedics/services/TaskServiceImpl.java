@@ -67,8 +67,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         if (fromUser.getDiscriminatorValue().equals("doctor")) {
             if (template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
                 Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-                if (countNew > 0 || countAccepted > 0) {
+                Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+                if (countNew > 0 || countProcessed > 0) {
                     return null;
                 } else {
                     Event event = createTaskLogic(patient, fromUser, template, data);
@@ -81,8 +81,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
         } else if (fromUser.getDiscriminatorValue().equals("patient")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-            if (countNew > 0 || countAccepted > 0) {
+            Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+            if (countNew > 0 || countProcessed > 0) {
                 return null;
             }
 
@@ -90,8 +90,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return event;
         } else if (fromUser.getDiscriminatorValue().equals("stuff")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-            if (countNew > 0 || countAccepted > 0) {
+            Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+            if (countNew > 0 || countProcessed > 0) {
                 return null;
             }
 
@@ -113,10 +113,10 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
             Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
             Predicate statusNew = b.equal(r.<StatusEnum>get("status"), StatusEnum.NEW);
-            Predicate statusAccepted = b.equal(r.<StatusEnum>get("status"), StatusEnum.ACCEPTED);
+            Predicate statusProcessed = b.equal(r.<StatusEnum>get("status"), StatusEnum.PROCESSED);
             Predicate fromNew = b.and(from, statusNew);
-            Predicate toAccepted = b.and(to, statusAccepted);
-            return b.or(fromNew, toAccepted);
+            Predicate toProcessed = b.and(from, statusProcessed);
+            return b.or(fromNew, toProcessed);
         })
         .and((r, q, b) -> {
             if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
@@ -127,6 +127,13 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
 
         })
+        .and((r, q, b) -> {
+                if(criteria.getStatusEnum()==null) {
+                    return null;
+                } else {
+                    return b.equal(r.<StatusEnum>get("status"), criteria.getStatusEnum());
+                }
+            })
         .and((r, q, b) -> {
                     if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
                         return  null;
@@ -381,6 +388,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         Event event = eventRepository.findOne(eventDto.getId());
         event.setDate(new Date());
         event.setData(eventDto.getData().toString());
+        event.setStatus(StatusEnum.PROCESSED);
         return eventRepository.save(event);
     }
 }

@@ -113,8 +113,8 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
             if(current.getDiscriminatorValue().equals("doctor")){
                 if(event.getTemplate().getTypeEnum().equals(TypeEnum.MEDICAL)){
                     Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.NEW);
-                    Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.ACCEPTED);
-                    if (countNew > 0 || countAccepted > 0) {
+                    Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.PROCESSED);
+                    if (countNew > 0 || countProcessed > 0) {
                         return new StateDto(false, "You already have this task");
                     } else {
                         Event newEvent = cloneEvent(event);
@@ -134,8 +134,8 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
                 }
             } else if (current.getDiscriminatorValue().equals("patient")) {
                 Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.NEW);
-                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.ACCEPTED);
-                if (countNew > 0 || countAccepted > 0) {
+                Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(current.getId(),event.getTemplate().getId(),StatusEnum.PROCESSED);
+                if (countNew > 0 || countProcessed > 0) {
                     return new StateDto(false, "You already have this task");
                 } else {
                     Event newEvent = cloneEvent(event);
@@ -174,7 +174,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
 
     private static Event cloneEvent(Event event) {
         Event newEvent = new Event();
-        newEvent.setStatus(StatusEnum.NEW);
+        newEvent.setStatus(StatusEnum.PROCESSED);
         newEvent.setData(event.getData());
         newEvent.setFromUser(event.getToUser());
         newEvent.setDescr(event.getDescr());
