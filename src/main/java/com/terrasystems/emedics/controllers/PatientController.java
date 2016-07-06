@@ -4,6 +4,7 @@ package com.terrasystems.emedics.controllers;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.*;
+import com.terrasystems.emedics.model.mapping.PatientMapper;
 import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.PatientReferenceServiceImpl;
 import com.terrasystems.emedics.services.ReferenceCreateService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/rest/private/dashboard/")
@@ -24,16 +26,20 @@ public class PatientController {
     ReferenceService referenceService;
 
 
-    @RequestMapping(value = "/patients", method = RequestMethod.GET)
+    @RequestMapping(value = "/patients", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardPatientsResponse getPatients() {
+    public DashboardPatientsResponse getPatients(@RequestBody PatientCriteria criteria) {
         DashboardPatientsResponse response = new DashboardPatientsResponse();
-        List<PatientDto> patients = eventPatientService.getAllPatients();
+        PatientMapper mapper = PatientMapper.getInstance();
+        List<Patient> patients = eventPatientService.getAllPatients(criteria);
         if (patients == null) {
             response.setState(new StateDto(false,"Not supported yet"));
             return response;
         }
-        response.setResult(eventPatientService.getAllPatients());
+        List<PatientDto> dtos = patients.stream()
+                .map(patient -> mapper.toDto(patient))
+                .collect(Collectors.toList());
+        response.setResult(dtos);
         response.setState(new StateDto(true, "All patients"));
         return response;
     }

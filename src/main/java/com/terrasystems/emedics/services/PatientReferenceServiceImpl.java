@@ -47,6 +47,13 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         } else return stuffService.findOrgReferencesByCriteria(search);
     }
 
+    public List<ReferenceDto> findMyReferencesByCriteria(ReferenceCriteria criteria) {
+        User current = userRepository.findByEmail(getPrincipals());
+
+
+        return null;
+    }
+
     @Override
     public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
         ReferenceConverter converter = new ReferenceConverter();

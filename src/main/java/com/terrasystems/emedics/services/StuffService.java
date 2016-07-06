@@ -8,7 +8,7 @@ import com.terrasystems.emedics.model.dto.*;
 import java.util.List;
 
 public interface StuffService {
-    List<Stuff> getAllStuff();
+    List<Stuff> getAllStuff(StuffCriteria criteria);
     Stuff getById(String id);
     Stuff createStuff(StuffDto dto);
     void deleteStuff(String id);

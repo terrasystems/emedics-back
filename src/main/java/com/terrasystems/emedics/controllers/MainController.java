@@ -2,20 +2,24 @@ package com.terrasystems.emedics.controllers;
 
 
 import com.terrasystems.emedics.dao.*;
-import com.terrasystems.emedics.model.*;
+import com.terrasystems.emedics.model.Doctor;
+import com.terrasystems.emedics.model.Patient;
+import com.terrasystems.emedics.model.Role;
+import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.dto.PatientCriteria;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.TemplateEventDto;
 import com.terrasystems.emedics.services.EventPatientService;
 import com.terrasystems.emedics.services.LoaderService;
 import com.terrasystems.emedics.services.MailService;
-import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
+import javax.persistence.criteria.Subquery;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +45,8 @@ public class MainController  {
     EventPatientService eventPatientService;
     @Autowired
     LoaderService loaderService;
+    @Autowired
+    PatientRepository patientRepository;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -158,13 +164,23 @@ public class MainController  {
         return "Sended";
     }
 
-    /*@RequestMapping(value = "/rest/pats/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/pats/", method = RequestMethod.GET)
     @ResponseBody
-    public String testVelocity(@PathVariable String id) {
-        List<String> strings = eventRepository.findTemplate_IdByPatient_Id(id);
-        strings.forEach(System.out::println);
+    public String testPats() {
+        PatientCriteria patientCriteria = new PatientCriteria();
+        patientCriteria.setName("test");
+        Doctor current = doctorRepository.findOne("47521352-aac3-4db8-850f-08b3dd93d340");
+        List<Patient> patients = patientRepository.findAll(Specifications.<Patient>where((r, q, b) -> {
+            Subquery<Patient> sq = q.subquery(Patient.class);
+            Root<Doctor> doctor = sq.from(Doctor.class);
+            Join<Doctor, Patient> sqPat = doctor.join("patients");
+            System.out.println("dddd");
+            sq.select(sqPat.get("id")).where(b.equal(doctor.get("id"), current.getId()));
+            return b.in(r).value(sq);
+        }));
+        patients.forEach(patient -> System.out.println(patient.getName()));
         return "Sended";
-    }*/
+    }
 
     @RequestMapping(value = "/rest/pats/{id}", method = RequestMethod.GET)
     @ResponseBody
