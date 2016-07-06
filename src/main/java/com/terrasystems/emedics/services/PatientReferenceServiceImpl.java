@@ -11,6 +11,7 @@ import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,6 +132,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     public List<ReferenceDto> getAllReferences(ReferenceCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
         ReferenceConverter converter = new ReferenceConverter();
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
         List<User> refs = userRepository.findAll(Specifications.<User>where((r, q, b) -> {
             Subquery<User> sq = q.subquery(User.class);
             Root<User> user = sq.from(User.class);
@@ -153,7 +155,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             else{
                 return b.equal(r.get("userType"), criteria.getType());
             }
-        }));
+        }), sort);
         return refs.stream().map(user -> converter.toDto(user)).collect(Collectors.toList());
     }
 
