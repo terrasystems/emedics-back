@@ -12,9 +12,14 @@ import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
 import com.terrasystems.emedics.model.mapping.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,19 +38,25 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     @Autowired
     ReferenceCreateService referenceCreateService;
     @Override
-    public List<PatientDto> getAllPatients() {
-        PatientMapper mapper = PatientMapper.getInstance();
-        User current =  userRepository.findByEmail(getPrincipals());
-        if (current.getDiscriminatorValue().equals("doctor")) {
-            return ((Doctor)current).getPatients().stream()
-                    .map(patient -> mapper.toDto(patient))
-                    .collect(Collectors.toList());
-        } else if (current.getDiscriminatorValue().equals("stuff")) {
-            return ((Stuff) current).getDoctor().getPatients().stream()
-                    .map(patient -> mapper.toDto(patient))
-                    .collect(Collectors.toList());
-        }
-            return null;
+    public List<Patient> getAllPatients(PatientCriteria criteria) {
+        User current = userRepository.findByEmail(getPrincipals());
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
+        List<Patient> patients = patientRepository.findAll(Specifications.<Patient>where((r, q, b) -> {
+            Subquery<Patient> sq = q.subquery(Patient.class);
+            Root<Doctor> doctor = sq.from(Doctor.class);
+            Join<Doctor, Patient> sqPat = doctor.join("patients");
+            sq.select(sqPat.get("id")).where(b.equal(doctor.get("id"), current.getId()));
+            return b.in(r).value(sq);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                return  null;
+            }
+            else{
+                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+            }
+        }), sort);
+        return patients;
     }
 
     @Override
@@ -197,6 +208,19 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             }
         }
     }
+
+    /*PatientMapper mapper = PatientMapper.getInstance();
+    User current =  userRepository.findByEmail(getPrincipals());
+    if (current.getDiscriminatorValue().equals("doctor")) {
+        return ((Doctor)current).getPatients().stream()
+                .map(patient -> mapper.toDto(patient))
+                .collect(Collectors.toList());
+    } else if (current.getDiscriminatorValue().equals("stuff")) {
+        return ((Stuff) current).getDoctor().getPatients().stream()
+                .map(patient -> mapper.toDto(patient))
+                .collect(Collectors.toList());
+    }
+    return null;*/
 
 
 

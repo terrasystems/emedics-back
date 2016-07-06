@@ -21,12 +21,12 @@ public class StuffController {
     @Autowired
     StuffService stuffService;
 
-    @RequestMapping(value = "/stuff", method = RequestMethod.GET)
+    @RequestMapping(value = "/stuff", method = RequestMethod.POST)
     @ResponseBody
-    public ObjectResponse getStuff() {
+    public ObjectResponse getStuff(StuffCriteria criteria) {
         StuffMapper mapper = StuffMapper.getInstance();
         ObjectResponse response = new ObjectResponse();
-        List<StuffDto> stuffDtos = stuffService.getAllStuff().stream()
+        List<StuffDto> stuffDtos = stuffService.getAllStuff(criteria).stream()
                 .map(stuff -> {
                     StuffDto dto = mapper.toDto(stuff);
                     return dto;

@@ -2,6 +2,7 @@ package com.terrasystems.emedics.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.terrasystems.emedics.enums.UserType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -66,6 +67,9 @@ public class User implements UserDetails, Serializable {
 
     @Column
     protected Date registrationDate;
+
+    @Column(name = "user_type")
+    protected UserType userType;
 
     @Column(nullable = false)
     protected String password;
@@ -255,6 +259,14 @@ public class User implements UserDetails, Serializable {
 
     public void setOrg(Boolean org) {
         this.org = org;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     //TODO add fields for accaunt disabelin(Expirision, Locked etc)

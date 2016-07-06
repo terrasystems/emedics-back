@@ -6,7 +6,7 @@ import com.terrasystems.emedics.enums.StatusEnum;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 
-public class TaskSearchCriteria implements Serializable{
+public class TaskSearchCriteria implements Serializable {
     private static final long serialVersionUID = 7117761988440805625L;
     private int period;
     private String templateName;

@@ -86,4 +86,23 @@ public class ReferenceConverter {
                 .collect(Collectors.toList());
         return refs;
     }
+    public ReferenceDto toDto(User user) {
+        ReferenceDto ref = new ReferenceDto();
+        ref.setId(user.getId());
+        //ref.setType(user.getType);
+        ref.setPhone(user.getPhone());
+        ref.setName(user.getName());
+        ref.setEmail(user.getEmail());
+        ref.setEnabled(user.isEnabled());
+        ref.setFirstName(user.getFirstName());
+        ref.setLastName(user.getLastName());
+        if(user.getDiscriminatorValue().equals("doctor")) {
+            Doctor doctor = (Doctor) user;
+            if(doctor.getType() != null) {
+                ref.setDocType(doctor.getType().getName());
+                return ref;
+            }
+        }
+        return ref;
+    }
 }

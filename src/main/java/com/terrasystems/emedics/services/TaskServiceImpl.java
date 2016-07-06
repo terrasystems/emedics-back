@@ -8,15 +8,15 @@ import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
-import com.terrasystems.emedics.utils.LambdaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.time.*;
-
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -123,7 +123,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 return  null;
             }
             else{
-                return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
+                return b.like(r.<Template>get("template").<String>get("id"), "%" + criteria.getTemplateName() + "%");
             }
 
         })
@@ -210,7 +210,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     public List<Event> getByCriteria(TaskSearchCriteria criteria) {
-        User current = userRepository.findByEmail(getPrincipals());
+        /*User current = userRepository.findByEmail(getPrincipals());
         List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
             Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
@@ -238,9 +238,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
             return null;
         })
-        .and(LambdaUtils.datePredicate));
-
-        return events;
+        .and());*/
+        return null;
     }
 
     @Override
