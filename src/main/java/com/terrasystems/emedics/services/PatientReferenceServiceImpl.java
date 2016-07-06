@@ -11,9 +11,13 @@ import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,12 +51,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         } else return stuffService.findOrgReferencesByCriteria(search);
     }
 
-    public List<ReferenceDto> findMyReferencesByCriteria(ReferenceCriteria criteria) {
-        User current = userRepository.findByEmail(getPrincipals());
 
-
-        return null;
-    }
 
     @Override
     public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
@@ -128,6 +127,34 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 }).collect(Collectors.toList());
         List<User> refsList = (List<User>) userRepository.findAll(refs);*/
 
+    }
+    public List<ReferenceDto> getAllReferences(ReferenceCriteria criteria) {
+        User current = userRepository.findByEmail(getPrincipals());
+        ReferenceConverter converter = new ReferenceConverter();
+        List<User> refs = userRepository.findAll(Specifications.<User>where((r, q, b) -> {
+            Subquery<User> sq = q.subquery(User.class);
+            Root<User> user = sq.from(User.class);
+            Join<Doctor, Patient> sqPat = user.join("userRef");
+            sq.select(sqPat.get("id")).where(b.equal(user.get("id"), current.getId()));
+            return b.in(r).value(sq);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                return  null;
+            }
+            else{
+                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+            }
+        })
+        .and((r, q, b) -> {
+            if (criteria.getType()==null) {
+                return  null;
+            }
+            else{
+                return b.equal(r.get("userType"), criteria.getType());
+            }
+        }));
+        return refs.stream().map(user -> converter.toDto(user)).collect(Collectors.toList());
     }
 
     @Override

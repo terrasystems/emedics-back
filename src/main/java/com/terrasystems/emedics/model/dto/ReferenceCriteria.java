@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class ReferenceCriteria implements Serializable{
     private static final long serialVersionUID = -6866869778107237994L;
     private String name;
-    private int type;
+    private Integer type;
     private String address;
 
     public String getName() {
@@ -17,11 +17,11 @@ public class ReferenceCriteria implements Serializable{
         this.name = name;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

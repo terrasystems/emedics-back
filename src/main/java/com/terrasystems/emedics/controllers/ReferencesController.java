@@ -40,11 +40,11 @@ public class ReferencesController {
         response.setState(state);
         return response;
     }
-    @RequestMapping(value = "/references", method = RequestMethod.GET)
+    @RequestMapping(value = "/references", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardReferenceResponse getAllReferences() {
+    public DashboardReferenceResponse getAllReferences(@RequestBody ReferenceCriteria criteria) {
         DashboardReferenceResponse response = new DashboardReferenceResponse();
-        List<ReferenceDto> references = (List<ReferenceDto>) referenceService.getAllReferences();
+        List<ReferenceDto> references = (List<ReferenceDto>) referenceService.getAllReferences(criteria);
         StateDto state = new StateDto();
         if (references == null) {
             state.setValue(false);
