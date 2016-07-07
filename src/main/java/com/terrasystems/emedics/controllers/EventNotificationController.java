@@ -20,12 +20,12 @@ public class EventNotificationController {
         return response;
     }
 
-    @RequestMapping(value = "events/notifications/all", method = RequestMethod.GET)
+    @RequestMapping(value = "events/notifications/all", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse getAllNotifications(){
+    public DashboardEventResponse getAllNotifications(@RequestBody NotificationCriteria criteria){
         DashboardEventResponse response = new DashboardEventResponse();
         response.setState(new StateDto(true, "Notifications"));
-        response.setResult(eventNotificationService.getNotifications());
+        response.setResult(eventNotificationService.getNotifications(criteria));
         return response;
     }
 

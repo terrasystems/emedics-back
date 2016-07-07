@@ -3,6 +3,7 @@ package com.terrasystems.emedics.controllers;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.security.RegistrationService;
 import com.terrasystems.emedics.services.MailService;
+import com.terrasystems.emedics.services.UserSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,8 @@ public class PublicController {
     RegistrationService registrationService;
     @Autowired
     MailService mailService;
+    @Autowired
+    UserSettingsService userSettingsService;
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
@@ -80,7 +83,14 @@ public class PublicController {
 
     }
 
-
+    @RequestMapping(value = "/checkEmail", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse checkExistEmail(@RequestBody String email) {
+        ObjectResponse response = new ObjectResponse();
+        StateDto stateDto = userSettingsService.checkEmail(email);
+        response.setState(stateDto);
+        return response;
+    }
 
 
 }

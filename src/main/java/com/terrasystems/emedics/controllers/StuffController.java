@@ -21,12 +21,12 @@ public class StuffController {
     @Autowired
     StuffService stuffService;
 
-    @RequestMapping(value = "/stuff", method = RequestMethod.GET)
+    @RequestMapping(value = "/stuff", method = RequestMethod.POST)
     @ResponseBody
-    public ObjectResponse getStuff() {
+    public ObjectResponse getStuff(StuffCriteria criteria) {
         StuffMapper mapper = StuffMapper.getInstance();
         ObjectResponse response = new ObjectResponse();
-        List<StuffDto> stuffDtos = stuffService.getAllStuff().stream()
+        List<StuffDto> stuffDtos = stuffService.getAllStuff(criteria).stream()
                 .map(stuff -> {
                     StuffDto dto = mapper.toDto(stuff);
                     return dto;
@@ -104,42 +104,6 @@ public class StuffController {
         return response;
     }
 
-    @RequestMapping(value = "/stuff/ref", method = RequestMethod.GET)
-    @ResponseBody
-    public ObjectResponse getRefs() {
-        ObjectResponse response = new ObjectResponse();
-        List<ReferenceDto> referenceDtos = stuffService.getAllReferences();
-        StateDto state = new StateDto();
-        if(referenceDtos == null) {
-            state.setValue(false);
-            state.setMessage("References is empty");
-        } else {
-            state.setValue(true);
-            state.setMessage("References");
-        }
-
-        response.setResult(referenceDtos);
-        response.setState(state);
-        return response;
-    }
-
-    @RequestMapping(value = "/stuff/addRef/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public ObjectResponse addRefs(@PathVariable String id) {
-        ObjectResponse response = new ObjectResponse();
-        StateDto stateDto = stuffService.addReferences(id);
-        response.setState(stateDto);
-        return response;
-    }
-
-    @RequestMapping(value = "/stuff/search", method = RequestMethod.POST)
-    @ResponseBody
-    public ObjectResponse searchRefs(@RequestBody DashboardReferenceRequest request) {
-        ObjectResponse response = new ObjectResponse();
-        response.setResult(stuffService.findOrgReferencesByCriteria(request.getCriteria().getSearch()));
-        response.setState(new StateDto(true, MessageEnums.MSG_SEARCH.toString()));
-        return response;
-    }
 
     @RequestMapping(value = "stuff/inactiveStuff/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -174,5 +138,35 @@ public class StuffController {
         return response;
     }
 
+    @RequestMapping(value = "stuff/event/adminEdit", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectResponse adminEdit(@RequestBody EventEditRequest eventEditRequest) {
+        if(eventEditRequest.getEvent()!=null) {
+            ObjectResponse response = stuffService.editTask(eventEditRequest.getEvent());
+            return response;
+        } else {
+            ObjectResponse response = new ObjectResponse();
+            response.setState(new StateDto(false, "Failed edit Task"));
+            return response;
+        }
+    }
+
+    @RequestMapping(value = "stuff/event/adminClose/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse adminClose(@PathVariable String id) {
+        ObjectResponse response = new ObjectResponse();
+        response.setState(stuffService.closeTask(id));
+        return response;
+    }
+
+    @RequestMapping(value = "stuff/getOrgPatients", method = RequestMethod.GET)
+    @ResponseBody
+    public ObjectResponse getOrgPatients(){
+        ObjectResponse response = new ObjectResponse();
+
+        response.setResult(stuffService.getAllPatients());
+        response.setState(new StateDto(true, "All patients"));
+        return response;
+    }
 
 }

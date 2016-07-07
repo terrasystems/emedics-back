@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dto.ReferenceCreateRequest;
+import com.terrasystems.emedics.model.dto.ReferenceCriteria;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 
@@ -14,6 +15,7 @@ public interface ReferenceService {
     List<ReferenceDto> findMyReferencesByCriteria(String searchCriteria);
     StateDto addReferences(String reference);
     Iterable<ReferenceDto> getAllReferences();
+    Iterable<ReferenceDto> getAllReferences(ReferenceCriteria criteria);
     StateDto removeReferences(String reference) throws Exception;
     String createReference(ReferenceCreateRequest request);
     List<ReferenceDto> findMyRefs(String search, String type);

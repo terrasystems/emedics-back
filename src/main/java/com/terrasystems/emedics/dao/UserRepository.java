@@ -1,6 +1,8 @@
 package com.terrasystems.emedics.dao;
 
 import com.terrasystems.emedics.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
     User findByName(String name);
     User findByEmail(String email);
     User findByValueKey(String valueKey);

@@ -11,9 +11,14 @@ import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import com.terrasystems.emedics.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,8 +49,10 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             return findPatientReferencesByCriteria(search);
         } else if (currentUser.getDiscriminatorValue().equals("doctor")) {
             return findDoctorsReferencesByCriteria(search);
-        } else return findStuffReferencesByCriteria(search);
+        } else return stuffService.findOrgReferencesByCriteria(search);
     }
+
+
 
     @Override
     public List<ReferenceDto> findAllReferencesByCriteria(String search, String type) {
@@ -122,6 +129,35 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
         List<User> refsList = (List<User>) userRepository.findAll(refs);*/
 
     }
+    public List<ReferenceDto> getAllReferences(ReferenceCriteria criteria) {
+        User current = userRepository.findByEmail(getPrincipals());
+        ReferenceConverter converter = new ReferenceConverter();
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
+        List<User> refs = userRepository.findAll(Specifications.<User>where((r, q, b) -> {
+            Subquery<User> sq = q.subquery(User.class);
+            Root<User> user = sq.from(User.class);
+            Join<Doctor, Patient> sqPat = user.join("userRef");
+            sq.select(sqPat.get("id")).where(b.equal(user.get("id"), current.getId()));
+            return b.in(r).value(sq);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                return  null;
+            }
+            else{
+                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+            }
+        })
+        .and((r, q, b) -> {
+            if (criteria.getType()==null) {
+                return  null;
+            }
+            else{
+                return b.equal(r.get("userType"), criteria.getType());
+            }
+        }), sort);
+        return refs.stream().map(user -> converter.toDto(user)).collect(Collectors.toList());
+    }
 
     @Override
     @Transactional
@@ -134,7 +170,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
             ((Doctor) refToRemove).getPatients().remove(current);
 
             return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
-        } else {
+        } else if(current.getDiscriminatorValue().equals("doctor")){
             if (refToRemove.getDiscriminatorValue().equals("patient")) {
                 ((Doctor) current).getPatients().remove(refToRemove);
                 current.getUserRef().remove(refToRemove);
@@ -147,6 +183,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                 refToRemove.getUserRef().remove(current);
                 return new StateDto(true, MessageEnums.MSG_SAVE_REFS.toString());
             }
+        } else {
+            return null;
         }
     }
 

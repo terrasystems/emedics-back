@@ -6,12 +6,18 @@ import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
+import com.terrasystems.emedics.model.mapping.PatientMapper;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,11 +42,24 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
 
 
     @Override
-    public List<Stuff> getAllStuff() {
+    public List<Stuff> getAllStuff(StuffCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
+        Doctor doctor;
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
         if (current.getDiscriminatorValue().equals("doctor")) {
-            return ((Doctor)current).getStuff();
-        } else return  ((Stuff) current).getDoctor().getStuff();
+            doctor = (Doctor) current;
+        } else doctor = ((Stuff)current).getDoctor();
+        return stuffRepository.findAll(Specifications.<Stuff>where((r, q, b) -> {
+            return b.equal(r.get("doctor").get("id"), doctor.getId());
+        })
+        .and((r, q, b) -> {
+            if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                return  null;
+            }
+            else {
+                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+            }
+        }), sort);
     }
 
     @Override
@@ -218,6 +237,72 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         Event event = eventRepository.findOne(eventId);
         event.setFromUser(stuff);
         return eventRepository.save(event);
+    }
+
+    @Override
+    @Transactional
+    public ObjectResponse editTask(EventDto eventDto) {
+        EventMapper mapper = EventMapper.getInstance();
+        ObjectResponse response = new ObjectResponse();
+        User current = userRepository.findByEmail(getPrincipals());
+        if(current.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(current.getId());
+            List<Stuff> stuffs = doctor.getStuff();
+            Stuff stuff = (Stuff) userRepository.findOne(eventDto.getFromUser().getId());
+            if(current.getOrg()&&stuffs.contains(stuff)){
+                Event event = eventRepository.findOne(eventDto.getId());
+                event.setDate(new Date());
+                event.setData(eventDto.getData().toString());
+                try {
+                    response.setResult(mapper.toDto(eventRepository.save(event)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                response.setState(new StateDto(true, "Task Edited"));
+                return response;
+            } else {
+                response.setState(new StateDto(false, "You aren't Admin or this task don't belong your stuff"));
+                return response;
+            }
+        } else {
+            response.setState(new StateDto(false, "You aren't Admin"));
+            return response;
+        }
+    }
+
+    @Override
+    public StateDto closeTask(String id) {
+        User current = userRepository.findByEmail(getPrincipals());
+        Event event = eventRepository.findOne(id);
+        if(current.getDiscriminatorValue().equals("doctor")){
+            Doctor doctor = doctorRepository.findOne(current.getId());
+            List<Stuff> stuffs = doctor.getStuff();
+            Stuff stuff = (Stuff) userRepository.findOne(event.getFromUser().getId());
+            if(event.getStatus().equals(StatusEnum.NEW)){
+                if(current.getOrg()&&stuffs.contains(stuff)){
+                    event.setStatus(StatusEnum.CLOSED);
+                    eventRepository.save(event);
+                    return new StateDto(true, "Task closed");
+                } else {
+                    return new StateDto(false, "You aren't Admin or this task don't belong your stuff");
+                }
+            } else {
+                return new StateDto(false, "You can close tasks with only NEW status");
+            }
+        } else {
+            return new StateDto(false, "You aren't Admin");
+        }
+    }
+
+    @Override
+    public List<PatientDto> getAllPatients(){
+        PatientMapper mapper = PatientMapper.getInstance();
+        User current =  userRepository.findByEmail(getPrincipals());
+        Stuff stuff = stuffRepository.findOne(current.getId());
+        Doctor doctor = stuff.getDoctor();
+        return doctor.getPatients().stream()
+                .map(patient -> mapper.toDto(patient))
+                .collect(Collectors.toList());
     }
 
 
