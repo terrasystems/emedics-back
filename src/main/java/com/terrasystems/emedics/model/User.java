@@ -363,8 +363,10 @@ public class User implements UserDetails, Serializable {
         allowedFormsCount = 5;
         if ((firstName == null) && (lastName == null)) {
             name = email;
-        } else {
-            name = firstName == null ? lastName : firstName;
-        }
+        } else if (firstName == null) {
+            name = lastName;
+        } else if (lastName == null) {
+            name = firstName;
+        } else name = firstName + " " + lastName;
     }
 }
