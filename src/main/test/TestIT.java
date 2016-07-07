@@ -22,11 +22,6 @@ import java.util.Date;
 @WebAppConfiguration
 public class TestIT {
 
-    @Autowired
-    RegistrationService registrationService;
-    @Autowired
-    UserRepository userRepository;
-
 
     @Test
     public void dbTest() {
@@ -36,31 +31,6 @@ public class TestIT {
     @Test
 
     public void registrationDoctorTest() {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode root;
-        ObjectNode user = mapper.createObjectNode();
-        user.put("email","serhiimorunov@gmail.com")
-                .put("password", "1234")
-                .put("firstName", "Sergo")
-                .put("lastName", "Sergo")
-                .put("username", "vasa");
-        ObjectNode organization = mapper.createObjectNode();
-        organization.put("name","name")
-                .put("fullname","fullname")
-                .put("website", "website")
-                .put("address","address");
-        UserDto dto = new UserDto();
-        dto.setFirstName("Sergo");
-        dto.setLastName("Sergo");
-        dto.setEmail("serhiimorunov@gmail.com");
-        dto.setPassword("1234");
-        dto.setPhone("11-22-33");
-        dto.setBirth(new Date());
-        StateDto state = registrationService.registerDoctor(dto);
-        org.junit.Assert.assertTrue(state.isValue());
-        User testUser = userRepository.findByEmail(dto.getEmail());
-        assertNul
-
 
     }
 
