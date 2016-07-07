@@ -7,20 +7,21 @@ import com.terrasystems.emedics.dao.PatientRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
-import com.terrasystems.emedics.model.Doctor;
-import com.terrasystems.emedics.model.Event;
-import com.terrasystems.emedics.model.Patient;
-import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.EventDto;
+import com.terrasystems.emedics.model.dto.NotificationCriteria;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.mapping.EventMapper;
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -155,6 +156,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     }
 
     @Override
+    @Transactional
     public List<EventDto> getNotifications() {
         User current = userRepository.findByEmail(getPrincipals());
         List<EventDto> eventDtos = eventRepository.findByToUser_IdAndStatus(current.getId(),StatusEnum.SENT).stream()
@@ -170,6 +172,73 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
                 }).collect(Collectors.toList());
 
         return eventDtos;
+    }
+    @Transactional
+    public List<EventDto> getNotifications(NotificationCriteria criteria) {
+        User current = userRepository.findByEmail(getPrincipals());
+        List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, q, b) -> {
+            Predicate sentTo = b.equal(r.<User>get("toUser").<String>get("id"), current.getId());
+            Predicate status = b.equal(r.get("status"), StatusEnum.SENT);
+            return b.and(sentTo,status);
+        })
+        .and((r, q, b) -> {
+            if (criteria.getDescription()==null || criteria.getDescription().isEmpty()) {
+                return  null;
+            }
+            else{
+                return b.like(r.get("descr"), "%" + criteria.getDescription() + "%");
+            }
+        })
+        .and((r, q, b) -> {
+            if (criteria.getFormType() == null) {
+                return null;
+            } else {
+                return b.equal(r.<Template>get("template").get("typeEnum"), criteria.getFormType());
+            }
+        })
+        .and((r, q, b) -> {
+            if (criteria.getTemplateId() == null || criteria.getTemplateId().isEmpty()) {
+                return null;
+            } else {
+                return b.equal(r.<Template>get("template").get("id"), criteria.getTemplateId());
+            }
+        })
+        .and((r, q, b) -> {
+            if (criteria.getPeriod() == 1) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalTime timeNow = now.toLocalTime();
+                int hours = timeNow.getHour();
+                LocalDateTime before = now.minusHours(hours);
+                return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            if (criteria.getPeriod() == 2) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalTime timeNow = now.toLocalTime();
+                int hours = timeNow.getHour();
+                LocalDateTime to = now.minusHours(hours);
+                LocalDateTime from = to.minusDays(1);
+                return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            if (criteria.getPeriod() == 3) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalTime timeNow = now.toLocalTime();
+                int hours = timeNow.getHour();
+                LocalDateTime to = now;
+                LocalDateTime from = to.minusDays(7);
+                return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            if (criteria.getPeriod() == 4) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalTime timeNow = now.toLocalTime();
+                int hours = timeNow.getHour();
+                LocalDateTime to = now;
+                LocalDateTime from = to.minusMonths(1);
+                return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+            }
+            return null;
+        }));
+        return null;
     }
 
     private static Event cloneEvent(Event event) {
