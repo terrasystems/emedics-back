@@ -244,7 +244,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     @Transactional
-    public StateDto multiCreateTask(String templateId, List<String> patients, String message) {
+    public StateDto multiCreateTask(String templateId, List<String> patients, String message, boolean assignAll) {
         if (patients == null) {
             return new StateDto(false, "U mast choose patient");
         }
@@ -265,6 +265,9 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
 
         return new StateDto(true, "Tasks created");
+    }
+    private void createTaskForAllPatients(String doctorId) {
+
     }
 
     @Override
