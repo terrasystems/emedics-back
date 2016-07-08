@@ -20,6 +20,6 @@ public interface TaskService {
     List<Event> getTasksByFromUserId(String id);
     List<Event> getTasksByPatient(String id);*/
     List<Event> getByCriteria(TaskSearchCriteria criteria);
-    StateDto multiSendTask(String eventId, List<String> toUsers, String message);
+    StateDto multiCreateTask(String eventId, List<String> toUsers, String message);
     Event findUserTask(String id);
 }

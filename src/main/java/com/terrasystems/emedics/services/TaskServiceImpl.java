@@ -244,7 +244,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     @Transactional
-    public StateDto multiSendTask(String templateId, List<String> patients, String message) {
+    public StateDto multiCreateTask(String templateId, List<String> patients, String message) {
         if (patients == null) {
             return new StateDto(false, "U mast choose patient");
         }
@@ -257,14 +257,14 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                     userTemplateDto.setId(templateId);
                     //TODO deal with {} hardcode
                     Event event = createTask(userTemplateDto, patientId, current.getId(), "{}");
-                    StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
-                    stateMessage = stateMessage + stateDto.getMessage() + " ";
+                    //StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
+                    //stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
                 stateMessage = "not supported yet";
             }
 
-        return new StateDto(true, stateMessage);
+        return new StateDto(true, "Tasks created");
     }
 
     @Override
