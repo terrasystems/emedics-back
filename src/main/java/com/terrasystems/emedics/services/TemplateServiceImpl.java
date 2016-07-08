@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TemplateServiceImpl implements TemplateService, CurrentUserService{
+public class TemplateServiceImpl implements TemplateService, CurrentUserService {
 
     @Autowired
     TemplateRepository templateRepository;
