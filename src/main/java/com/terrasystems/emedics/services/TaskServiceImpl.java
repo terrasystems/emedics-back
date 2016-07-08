@@ -9,6 +9,7 @@ import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService, CurrentUserService {
@@ -251,6 +254,23 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         String stateMessage = "";
         User current = userRepository.findByEmail(getPrincipals());
 
+        if(assignAll) {
+            if(current.getDiscriminatorValue().equals("doctor")){
+                Doctor doctor = doctorRepository.findOne(current.getId());
+                List<Patient> patientList = doctor.getPatients();
+                List<String> patientsId = new ArrayList<>();
+                for(Patient patient : patientList) {
+                    UserTemplateDto userTemplateDto = new UserTemplateDto();
+                    userTemplateDto.setId(templateId);
+                    createTask(userTemplateDto, patient.getId(), current.getId(), "{}");
+                }
+                return new StateDto(true, "Tasks created");
+            } else if(current.getDiscriminatorValue().equals("stuff")) {
+                return new StateDto(true, stateMessage);
+            }
+
+        }
+
             if(current.getDiscriminatorValue().equals("doctor")) {
                 for (String patientId: patients) {
                     UserTemplateDto userTemplateDto = new UserTemplateDto();
@@ -261,7 +281,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                     //stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                stateMessage = "not supported yet";
+                return new StateDto(true, stateMessage);
             }
 
         return new StateDto(true, "Tasks created");
