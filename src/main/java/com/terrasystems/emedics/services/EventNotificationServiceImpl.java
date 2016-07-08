@@ -176,6 +176,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
     @Transactional
     public List<EventDto> getNotifications(NotificationCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
+        EventMapper mapper = EventMapper.getInstance();
         List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, q, b) -> {
             Predicate sentTo = b.equal(r.<User>get("toUser").<String>get("id"), current.getId());
             Predicate status = b.equal(r.get("status"), StatusEnum.SENT);
@@ -237,8 +238,25 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
 
             }
             return null;
+        })
+        .and((r, q, b) -> {
+            if (criteria.getFromName() == null || criteria.getFromName().isEmpty()) {
+                return null;
+            } else {
+                return b.like(r.<User>get("fromUser").<String>get("name"), "%" + criteria.getFromName() + "%");
+            }
+
         }));
-        return null;
+        return events.stream()
+                .map(event -> {
+                    try {
+                        return mapper.toDto(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     private static Event cloneEvent(Event event) {
