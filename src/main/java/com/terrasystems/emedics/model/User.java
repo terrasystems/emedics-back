@@ -2,6 +2,7 @@ package com.terrasystems.emedics.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.terrasystems.emedics.enums.UserType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -66,6 +67,9 @@ public class User implements UserDetails, Serializable {
 
     @Column
     protected Date registrationDate;
+
+    @Column(name = "user_type")
+    protected UserType userType;
 
     @Column(nullable = false)
     protected String password;
@@ -257,6 +261,14 @@ public class User implements UserDetails, Serializable {
         this.org = org;
     }
 
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
     //TODO add fields for accaunt disabelin(Expirision, Locked etc)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -351,8 +363,10 @@ public class User implements UserDetails, Serializable {
         allowedFormsCount = 5;
         if ((firstName == null) && (lastName == null)) {
             name = email;
-        } else {
-            name = firstName == null ? lastName : firstName;
-        }
+        } else if (firstName == null) {
+            name = lastName;
+        } else if (lastName == null) {
+            name = firstName;
+        } else name = firstName + " " + lastName;
     }
 }

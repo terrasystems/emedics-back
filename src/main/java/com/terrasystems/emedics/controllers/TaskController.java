@@ -197,11 +197,11 @@ public class TaskController {
         return response;
     }
 
-    @RequestMapping(value = "/multipleSend", method = RequestMethod.POST)
+    @RequestMapping(value = "/multipleCreate", method = RequestMethod.POST)
     @ResponseBody
     public DashboardEventResponse multipleSend(@RequestBody EventSendMultiRequest request) {
         DashboardEventResponse response = new DashboardEventResponse();
-        response.setState(taskService.multiSendTask(request.getTemplate(), request.getPatients(), request.getMessage()));
+        response.setState(taskService.multiCreateTask(request.getTemplate(), request.getPatients(), request.getMessage(), request.isAssignAll()));
         return response;
     }
 
@@ -213,7 +213,7 @@ public class TaskController {
         Event event = taskService.findUserTask(id);
         StateDto stateDto = new StateDto();
         if(event == null) {
-            stateDto.setValue(false);
+            stateDto.setValue(true);
             stateDto.setMessage("Task don't exist");
             response.setState(stateDto);
             return response;

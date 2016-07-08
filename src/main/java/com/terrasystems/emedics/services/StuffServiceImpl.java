@@ -10,9 +10,14 @@ import com.terrasystems.emedics.model.mapping.PatientMapper;
 import com.terrasystems.emedics.model.mapping.ReferenceConverter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,11 +42,24 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
 
 
     @Override
-    public List<Stuff> getAllStuff() {
+    public List<Stuff> getAllStuff(StuffCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
+        Doctor doctor;
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
         if (current.getDiscriminatorValue().equals("doctor")) {
-            return ((Doctor)current).getStuff();
-        } else return  ((Stuff) current).getDoctor().getStuff();
+            doctor = (Doctor) current;
+        } else doctor = ((Stuff)current).getDoctor();
+        return stuffRepository.findAll(Specifications.<Stuff>where((r, q, b) -> {
+            return b.equal(r.<Doctor>get("doctor").get("id"), doctor.getId());
+        })
+        .and((r, q, b) -> {
+            if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                return  null;
+            }
+            else {
+                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+            }
+        }), sort);
     }
 
     @Override

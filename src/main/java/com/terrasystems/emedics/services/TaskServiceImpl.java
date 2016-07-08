@@ -8,18 +8,21 @@ import com.terrasystems.emedics.model.dto.EventDto;
 import com.terrasystems.emedics.model.dto.StateDto;
 import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
 import com.terrasystems.emedics.model.dto.UserTemplateDto;
-import com.terrasystems.emedics.utils.LambdaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.time.*;
-
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService, CurrentUserService {
@@ -67,8 +70,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         if (fromUser.getDiscriminatorValue().equals("doctor")) {
             if (template.getTypeEnum().equals(TypeEnum.MEDICAL)) {
                 Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-                Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-                if (countNew > 0 || countAccepted > 0) {
+                Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+                if (countNew > 0 || countProcessed > 0) {
                     return null;
                 } else {
                     Event event = createTaskLogic(patient, fromUser, template, data);
@@ -81,8 +84,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
         } else if (fromUser.getDiscriminatorValue().equals("patient")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-            if (countNew > 0 || countAccepted > 0) {
+            Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+            if (countNew > 0 || countProcessed > 0) {
                 return null;
             }
 
@@ -90,8 +93,8 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             return event;
         } else if (fromUser.getDiscriminatorValue().equals("stuff")) {
             Long countNew = eventRepository.countByFromUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.NEW);
-            Long countAccepted = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.ACCEPTED);
-            if (countNew > 0 || countAccepted > 0) {
+            Long countProcessed = eventRepository.countByToUser_IdAndTemplate_IdAndStatus(fromUser.getId(), template.getId(), StatusEnum.PROCESSED);
+            if (countNew > 0 || countProcessed > 0) {
                 return null;
             }
 
@@ -113,20 +116,27 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
             Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
             Predicate statusNew = b.equal(r.<StatusEnum>get("status"), StatusEnum.NEW);
-            Predicate statusAccepted = b.equal(r.<StatusEnum>get("status"), StatusEnum.ACCEPTED);
+            Predicate statusProcessed = b.equal(r.<StatusEnum>get("status"), StatusEnum.PROCESSED);
             Predicate fromNew = b.and(from, statusNew);
-            Predicate toAccepted = b.and(to, statusAccepted);
-            return b.or(fromNew, toAccepted);
+            Predicate toProcessed = b.and(from, statusProcessed);
+            return b.or(fromNew, toProcessed);
         })
         .and((r, q, b) -> {
             if (criteria.getTemplateName()==null || criteria.getTemplateName().isEmpty()) {
                 return  null;
             }
             else{
-                return b.like(r.<Template>get("template").<String>get("id"), criteria.getTemplateName());
+                return b.like(r.<Template>get("template").<String>get("id"), "%" + criteria.getTemplateName() + "%");
             }
 
         })
+        .and((r, q, b) -> {
+                if(criteria.getStatusEnum()==null) {
+                    return null;
+                } else {
+                    return b.equal(r.<StatusEnum>get("status"), criteria.getStatusEnum());
+                }
+            })
         .and((r, q, b) -> {
                     if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
                         return  null;
@@ -203,7 +213,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
 
     @Override
     public List<Event> getByCriteria(TaskSearchCriteria criteria) {
-        User current = userRepository.findByEmail(getPrincipals());
+        /*User current = userRepository.findByEmail(getPrincipals());
         List<Event> events = eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
             Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
@@ -231,19 +241,35 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             }
             return null;
         })
-        .and(LambdaUtils.datePredicate));
-
-        return events;
+        .and());*/
+        return null;
     }
 
     @Override
     @Transactional
-    public StateDto multiSendTask(String templateId, List<String> patients, String message) {
+    public StateDto multiCreateTask(String templateId, List<String> patients, String message, boolean assignAll) {
         if (patients == null) {
             return new StateDto(false, "U mast choose patient");
         }
         String stateMessage = "";
         User current = userRepository.findByEmail(getPrincipals());
+
+        if(assignAll) {
+            if(current.getDiscriminatorValue().equals("doctor")){
+                Doctor doctor = doctorRepository.findOne(current.getId());
+                List<Patient> patientList = doctor.getPatients();
+                List<String> patientsId = new ArrayList<>();
+                for(Patient patient : patientList) {
+                    UserTemplateDto userTemplateDto = new UserTemplateDto();
+                    userTemplateDto.setId(templateId);
+                    createTask(userTemplateDto, patient.getId(), current.getId(), "{}");
+                }
+                return new StateDto(true, "Tasks created");
+            } else if(current.getDiscriminatorValue().equals("stuff")) {
+                return new StateDto(true, stateMessage);
+            }
+
+        }
 
             if(current.getDiscriminatorValue().equals("doctor")) {
                 for (String patientId: patients) {
@@ -251,14 +277,17 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                     userTemplateDto.setId(templateId);
                     //TODO deal with {} hardcode
                     Event event = createTask(userTemplateDto, patientId, current.getId(), "{}");
-                    StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
-                    stateMessage = stateMessage + stateDto.getMessage() + " ";
+                    //StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
+                    //stateMessage = stateMessage + stateDto.getMessage() + " ";
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                stateMessage = "not supported yet";
+                return new StateDto(true, stateMessage);
             }
 
-        return new StateDto(true, stateMessage);
+        return new StateDto(true, "Tasks created");
+    }
+    private void createTaskForAllPatients(String doctorId) {
+
     }
 
     @Override
@@ -381,6 +410,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         Event event = eventRepository.findOne(eventDto.getId());
         event.setDate(new Date());
         event.setData(eventDto.getData().toString());
+        event.setStatus(StatusEnum.PROCESSED);
         return eventRepository.save(event);
     }
 }

@@ -9,6 +9,7 @@ public class EventSendMultiRequest implements Serializable{
     private String template;
     private String message;
     private List<String> patients;
+    private boolean assignAll;
 
     public String getTemplate() {
         return template;
@@ -32,5 +33,13 @@ public class EventSendMultiRequest implements Serializable{
 
     public void setPatients(List<String> patients) {
         this.patients = patients;
+    }
+
+    public boolean isAssignAll() {
+        return assignAll;
+    }
+
+    public void setAssignAll(boolean assignAll) {
+        this.assignAll = assignAll;
     }
 }
