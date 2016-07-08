@@ -141,6 +141,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         }
     }
     //TODO rewrite this
+    @Transactional
     private DashboardTemplateResponse loadTemplateLogic(User currentUser, Template template) {
         DashboardTemplateResponse response = new DashboardTemplateResponse();
         if (userTemplateRepository.countByTemplate_IdAndUser_Id(template.getId(), currentUser.getId()) > 0) {

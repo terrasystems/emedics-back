@@ -50,7 +50,7 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
             doctor = (Doctor) current;
         } else doctor = ((Stuff)current).getDoctor();
         return stuffRepository.findAll(Specifications.<Stuff>where((r, q, b) -> {
-            return b.equal(r.get("doctor").get("id"), doctor.getId());
+            return b.equal(r.<Doctor>get("doctor").get("id"), doctor.getId());
         })
         .and((r, q, b) -> {
             if (criteria.getName()==null || criteria.getName().isEmpty()) {

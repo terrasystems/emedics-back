@@ -23,7 +23,7 @@ public class StuffController {
 
     @RequestMapping(value = "/stuff", method = RequestMethod.POST)
     @ResponseBody
-    public ObjectResponse getStuff(StuffCriteria criteria) {
+    public ObjectResponse getStuff(@RequestBody StuffCriteria criteria) {
         StuffMapper mapper = StuffMapper.getInstance();
         ObjectResponse response = new ObjectResponse();
         List<StuffDto> stuffDtos = stuffService.getAllStuff(criteria).stream()
