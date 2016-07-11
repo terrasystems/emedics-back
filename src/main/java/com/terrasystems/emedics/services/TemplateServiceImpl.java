@@ -41,7 +41,7 @@ public class TemplateServiceImpl implements TemplateService, CurrentUserService{
         if (current.getDiscriminatorValue().equals("patient")) {
             templates = templateRepository.findByTypeEnum(TypeEnum.PATIENT);
         } else {
-            templates = (List<Template>) templateRepository.findAll();
+            templates = templateRepository.findAll();
         }
         List<UserTemplate> userTemplates = userTemplateRepository.findByTypeAndUser_Id("PAID", current.getId());
         List<String> idPaidTemplates = userTemplates.stream()
