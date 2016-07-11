@@ -101,7 +101,7 @@ public class ReferenceConverter {
         ref.setFirstName(user.getFirstName());
         ref.setLastName(user.getLastName());
         ref.setUserType(user.getUserType());
-        if(user.getUserType() != null && user.getUserType().equals(UserType.DOCTOR)) {
+        if (user.getUserType() != null && user.getUserType().equals(UserType.DOCTOR)) {
             Doctor doctor = (Doctor) user;
             if(!doctor.getOrg()) {
                 if(doctor.getType() != null) {

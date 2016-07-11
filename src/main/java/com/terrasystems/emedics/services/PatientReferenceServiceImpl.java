@@ -114,8 +114,8 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
 
     @Override
     public Iterable<ReferenceDto> getAllReferences() {
-        ReferenceConverter converter = new ReferenceConverter();
         User current = userRepository.findByEmail(getPrincipals());
+        ReferenceConverter converter = new ReferenceConverter();
         if(current.getDiscriminatorValue().equals("stuff")) {
             return stuffService.getAllReferences();
         } else {
@@ -132,31 +132,41 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
     public List<ReferenceDto> getAllReferences(ReferenceCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
         ReferenceConverter converter = new ReferenceConverter();
+        List<User> refs;
+        if ("stuff".equals(current.getDiscriminatorValue())) {
+            refs = findRefsByCriteria(criteria, ((Stuff)current).getDoctor().getId());
+        } else {
+            refs = findRefsByCriteria(criteria, current.getId());
+        }
+
+        return refs.stream().map(user -> converter.toDto(user)).collect(Collectors.toList());
+    }
+    private List<User> findRefsByCriteria(ReferenceCriteria criteria, String id) {
         Sort sort = new Sort(Sort.Direction.ASC, "name");
         List<User> refs = userRepository.findAll(Specifications.<User>where((r, q, b) -> {
             Subquery<User> sq = q.subquery(User.class);
             Root<User> user = sq.from(User.class);
             Join<Doctor, Patient> sqPat = user.join("userRef");
-            sq.select(sqPat.get("id")).where(b.equal(user.get("id"), current.getId()));
+            sq.select(sqPat.get("id")).where(b.equal(user.get("id"), id));
             return b.in(r).value(sq);
         })
-        .and((r, q, b) -> {
-            if (criteria.getName()==null || criteria.getName().isEmpty()) {
-                return  null;
-            }
-            else{
-                return b.like(r.get("name"), "%" + criteria.getName() + "%");
-            }
-        })
-        .and((r, q, b) -> {
-            if (criteria.getType()==null) {
-                return  null;
-            }
-            else{
-                return b.equal(r.get("userType"), criteria.getType());
-            }
-        }), sort);
-        return refs.stream().map(user -> converter.toDto(user)).collect(Collectors.toList());
+                .and((r, q, b) -> {
+                    if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
+                        return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                    }
+                })
+                .and((r, q, b) -> {
+                    if (criteria.getType()==null) {
+                        return  null;
+                    }
+                    else{
+                        return b.equal(r.get("userType"), criteria.getType());
+                    }
+                }), sort);
+        return refs;
     }
 
     @Override
