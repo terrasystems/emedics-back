@@ -40,22 +40,32 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
     @Override
     public List<Patient> getAllPatients(PatientCriteria criteria) {
         User current = userRepository.findByEmail(getPrincipals());
+        List<Patient> patients;
+        if ("doctor".equals(current.getDiscriminatorValue())) {
+            patients = getPatients(criteria, current.getId());
+        } else {
+            patients = getPatients(criteria, ((Stuff) current).getDoctor().getId());
+        }
+        return patients;
+    }
+
+    private List<Patient> getPatients(PatientCriteria criteria, String doctorId) {
         Sort sort = new Sort(Sort.Direction.ASC, "name");
         List<Patient> patients = patientRepository.findAll(Specifications.<Patient>where((r, q, b) -> {
             Subquery<Patient> sq = q.subquery(Patient.class);
             Root<Doctor> doctor = sq.from(Doctor.class);
             Join<Doctor, Patient> sqPat = doctor.join("patients");
-            sq.select(sqPat.get("id")).where(b.equal(doctor.get("id"), current.getId()));
+            sq.select(sqPat.get("id")).where(b.equal(doctor.get("id"), doctorId));
             return b.in(r).value(sq);
         })
-        .and((r, q, b) -> {
-            if (criteria.getName()==null || criteria.getName().isEmpty()) {
-                return  null;
-            }
-            else{
-                return b.like(r.get("name"), "%" + criteria.getName() + "%");
-            }
-        }), sort);
+                .and((r, q, b) -> {
+                    if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                        return  null;
+                    }
+                    else{
+                        return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                    }
+                }), sort);
         return patients;
     }
 
@@ -209,18 +219,21 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
         }
     }
 
-    /*PatientMapper mapper = PatientMapper.getInstance();
-    User current =  userRepository.findByEmail(getPrincipals());
-    if (current.getDiscriminatorValue().equals("doctor")) {
-        return ((Doctor)current).getPatients().stream()
-                .map(patient -> mapper.toDto(patient))
-                .collect(Collectors.toList());
-    } else if (current.getDiscriminatorValue().equals("stuff")) {
-        return ((Stuff) current).getDoctor().getPatients().stream()
-                .map(patient -> mapper.toDto(patient))
-                .collect(Collectors.toList());
-    }
-    return null;*/
+    /*List<Patient> patients = patientRepository.findAll(Specifications.<Patient>where((r, q, b) -> {
+        Subquery<Patient> sq = q.subquery(Patient.class);
+        Root<Doctor> doctor = sq.from(Doctor.class);
+        Join<Doctor, Patient> sqPat = doctor.join("patients");
+        sq.select(sqPat.get("id")).where(b.equal(doctor.get("id"), current.getId()));
+        return b.in(r).value(sq);
+    })
+            .and((r, q, b) -> {
+                if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                    return  null;
+                }
+                else{
+                    return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                }
+            }), sort);*/
 
 
 
