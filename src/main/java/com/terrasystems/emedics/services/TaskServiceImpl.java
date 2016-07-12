@@ -4,10 +4,7 @@ import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.*;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
-import com.terrasystems.emedics.model.dto.UserTemplateDto;
+import com.terrasystems.emedics.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specifications;
@@ -299,6 +296,19 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         }
         Event event = events.get(0);
         return event;
+    }
+
+    @Override
+    @Transactional
+    public void syncTasks(List<EventSyncDto> events) {
+        events.forEach(eventSyncDto -> {
+            Event event = eventRepository.findOne(eventSyncDto.getId());
+            event.setData(eventSyncDto.getData().toString());
+            if (eventSyncDto.getType().toLowerCase().equals("sent")) {
+                User toUser = userRepository.findOne(eventSyncDto.getToUser().getId());
+                event.setToUser(toUser);
+            }
+        });
     }
 
     @Transactional

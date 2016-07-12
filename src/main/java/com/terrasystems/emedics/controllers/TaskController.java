@@ -230,4 +230,12 @@ public class TaskController {
         response.setResult(eventDto);
         return response;
     }
+    @RequestMapping(value = "/syncTasks", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardEventResponse synkTasks(@RequestBody String tasks) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        response.setResult(tasks);
+        return response;
+    }
 }
