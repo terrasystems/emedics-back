@@ -82,7 +82,7 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                 .map(s -> {
                     TemplateEventDto dto = new TemplateEventDto();
                     Template template = templateRepository.findOne(s);
-                    List<Event> events = eventRepository.findByPatient_IdAndTemplate_IdAndStatusIsNotAndFromUser_IdOrStatusIsNotAndToUser_Id(patient.getId(),template.getId(),StatusEnum.DECLINED, current.getId(), StatusEnum.DECLINED, current.getId());
+                    List<Event> events = eventRepository.findDistinctByPatient_IdAndTemplate_IdAndStatusIsNotAndFromUser_IdOrPatient_IdAndTemplate_IdAndStatusIsNotAndToUser_Id(patient.getId(),template.getId(),StatusEnum.DECLINED, current.getId(), patient.getId(), template.getId(), StatusEnum.DECLINED, current.getId());
                     dto.setName(template.getName());
                     dto.setId(template.getId());
                     List<EventDto> dtos = new ArrayList<>();
