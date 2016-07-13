@@ -3,6 +3,7 @@ package com.terrasystems.emedics.model.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.DocType;
 
 import java.io.Serializable;
@@ -19,6 +20,8 @@ public class ReferenceDto implements Serializable {
     private String firstName;
     private String lastName;
     private String docType;
+    private UserType userType;
+    private String orgType;
 
     public ReferenceDto() {
     }
@@ -101,6 +104,22 @@ public class ReferenceDto implements Serializable {
 
     public void setDocType(String docType) {
         this.docType = docType;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public String getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
     }
 
     @Override

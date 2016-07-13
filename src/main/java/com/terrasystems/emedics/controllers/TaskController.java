@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.User;
@@ -228,6 +229,22 @@ public class TaskController {
         stateDto.setMessage("Task is exist");
         response.setState(stateDto);
         response.setResult(eventDto);
+        return response;
+    }
+    @RequestMapping(value = "/syncTasks", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardEventResponse syncTasks(@RequestBody List<JsonNode> tasks) {
+        DashboardEventResponse response = new DashboardEventResponse();
+        StateDto state = new StateDto();
+        try {
+            taskService.syncTasks(tasks);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.setResult(null);
+        state.setValue(true);
+        state.setMessage("Done");
+        response.setState(state);
         return response;
     }
 }

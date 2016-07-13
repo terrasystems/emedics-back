@@ -1,6 +1,8 @@
 package com.terrasystems.emedics.model;
 
 import com.terrasystems.emedics.enums.StatusEnum;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -120,8 +122,31 @@ public class Event  {
         this.descr = descr;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Event event = (Event) o;
 
+        return new EqualsBuilder()
+                .append(id, event.id)
+                .append(date, event.date)
+                .append(status, event.status)
+                .append(data, event.data)
+                .append(descr, event.descr)
+                .isEquals();
+    }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(date)
+                .append(status)
+                .append(data)
+                .append(descr)
+                .toHashCode();
+    }
 }

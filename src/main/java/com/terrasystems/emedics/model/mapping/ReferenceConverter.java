@@ -2,10 +2,13 @@ package com.terrasystems.emedics.model.mapping;
 
 
 import com.terrasystems.emedics.dao.DoctorRepository;
+import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.ReferenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,7 +89,8 @@ public class ReferenceConverter {
                 .collect(Collectors.toList());
         return refs;
     }
-    public ReferenceDto toDto(User user) {
+    public ReferenceDto toDto(User user1) {
+        User user = user1;
         ReferenceDto ref = new ReferenceDto();
         ref.setId(user.getId());
         //ref.setType(user.getType);
@@ -96,11 +100,20 @@ public class ReferenceConverter {
         ref.setEnabled(user.isEnabled());
         ref.setFirstName(user.getFirstName());
         ref.setLastName(user.getLastName());
-        if(user.getDiscriminatorValue().equals("doctor")) {
+        ref.setUserType(user.getUserType());
+        if (user.getUserType() != null && user.getUserType().equals(UserType.DOCTOR)) {
             Doctor doctor = (Doctor) user;
-            if(doctor.getType() != null) {
-                ref.setDocType(doctor.getType().getName());
-                return ref;
+            if(!doctor.getOrg()) {
+                if(doctor.getType() != null) {
+                    ref.setDocType(doctor.getType().getName());
+                    return ref;
+                }
+            } else {
+                if(doctor.getType() != null && doctor.getOrgType() != null) {
+                    ref.setDocType(doctor.getType().getName());
+                    ref.setOrgType(doctor.getOrgType());
+                    return ref;
+                }
             }
         }
         return ref;

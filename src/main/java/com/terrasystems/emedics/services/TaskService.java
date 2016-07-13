@@ -1,12 +1,11 @@
 package com.terrasystems.emedics.services;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.terrasystems.emedics.model.Event;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
-import com.terrasystems.emedics.model.dto.UserTemplateDto;
+import com.terrasystems.emedics.model.dto.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface TaskService {
@@ -22,4 +21,5 @@ public interface TaskService {
     List<Event> getByCriteria(TaskSearchCriteria criteria);
     StateDto multiCreateTask(String eventId, List<String> toUsers, String message, boolean assignAll);
     Event findUserTask(String id);
+    void syncTasks(List<JsonNode> events) throws IOException;
 }

@@ -1,13 +1,12 @@
 package com.terrasystems.emedics.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.model.*;
-import com.terrasystems.emedics.model.dto.EventDto;
-import com.terrasystems.emedics.model.dto.StateDto;
-import com.terrasystems.emedics.model.dto.TaskSearchCriteria;
-import com.terrasystems.emedics.model.dto.UserTemplateDto;
+import com.terrasystems.emedics.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specifications;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -300,6 +300,46 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         Event event = events.get(0);
         return event;
     }
+
+    @Override
+    @Transactional
+    public void syncTasks(List<JsonNode> events) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        for (JsonNode event : events) {
+            String syncType = event.path("type").asText();
+            if ("task".equals(syncType)) {
+                String eventId = event.path("id").asText();
+                JsonNode data = event.path("data");
+                Event entity = eventRepository.findOne(eventId);
+                entity.setData(data.toString());
+                entity.setDate(new Date());
+            } else {
+                String eventId = event.path("event").asText();
+                JsonNode data = event.path("task").path("data");
+                String patientId = event.path("patient").asText();
+                String toUserId = event.path("toUser").asText();
+                Event entity = eventRepository.findOne(eventId);
+                User patient = userRepository.findOne(patientId);
+                User toUser = userRepository.findOne(toUserId);
+                entity.setStatus(StatusEnum.SENT);
+                entity.setData(data.toString());
+                entity.setToUser(toUser);
+                entity.setPatient(patient);
+                entity.setDate(new Date());
+            }
+
+        }
+
+        /*events.forEach(jsonNode -> {
+            String eventId = mapper.readTree(String.valueOf(jsonNode))
+            Event event = eventRepository.findOne(jsonNode.get("id"));
+            event.setData(eventSyncDto.getData().toString());
+            if (eventSyncDto.getType().toLowerCase().equals("sent")) {
+                User toUser = userRepository.findOne(eventSyncDto.getToUser().getId());
+                event.setToUser(toUser);
+            }
+        });
+    */}
 
     @Transactional
     public StateDto StuffMultiSend(User current, User recipient, String patientId, String eventId, String message) {
