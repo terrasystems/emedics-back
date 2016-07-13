@@ -321,6 +321,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 Event entity = eventRepository.findOne(eventId);
                 User patient = userRepository.findOne(patientId);
                 User toUser = userRepository.findOne(toUserId);
+                entity.setStatus(StatusEnum.SENT);
                 entity.setData(data.toString());
                 entity.setToUser(toUser);
                 entity.setPatient(patient);
