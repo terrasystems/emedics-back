@@ -236,7 +236,15 @@ public class TaskController {
     public DashboardEventResponse syncTasks(@RequestBody List<JsonNode> tasks) {
         DashboardEventResponse response = new DashboardEventResponse();
         StateDto state = new StateDto();
-        response.setResult(tasks);
+        try {
+            taskService.syncTasks(tasks);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.setResult(null);
+        state.setValue(true);
+        state.setMessage("Done");
+        response.setState(state);
         return response;
     }
 }
