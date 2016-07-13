@@ -316,7 +316,7 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             } else {
                 String eventId = event.path("event").asText();
                 JsonNode data = event.path("task").path("data");
-                String patientId = event.path("patient").path("id").asText();
+                String patientId = event.path("patient").asText();
                 String toUserId = event.path("toUser").asText();
                 Event entity = eventRepository.findOne(eventId);
                 User patient = userRepository.findOne(patientId);
