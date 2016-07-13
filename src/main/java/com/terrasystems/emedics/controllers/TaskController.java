@@ -1,5 +1,6 @@
 package com.terrasystems.emedics.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.User;
@@ -232,7 +233,7 @@ public class TaskController {
     }
     @RequestMapping(value = "/syncTasks", method = RequestMethod.POST)
     @ResponseBody
-    public DashboardEventResponse synkTasks(@RequestBody String tasks) {
+    public DashboardEventResponse syncTasks(@RequestBody List<JsonNode> tasks) {
         DashboardEventResponse response = new DashboardEventResponse();
         StateDto state = new StateDto();
         response.setResult(tasks);
