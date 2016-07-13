@@ -41,7 +41,7 @@ public class User implements UserDetails, Serializable {
     private String id;
 
     @Column(name = "is_org")
-    protected Boolean org;
+    protected Boolean org = false;
 
     @Column(name = "name")
     protected String name;
@@ -368,5 +368,6 @@ public class User implements UserDetails, Serializable {
         } else if (lastName == null) {
             name = firstName;
         } else name = firstName + " " + lastName;
+        if (org == null) org = false;
     }
 }
