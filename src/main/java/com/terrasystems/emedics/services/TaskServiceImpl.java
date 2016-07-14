@@ -258,7 +258,6 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
             if(current.getDiscriminatorValue().equals("doctor")){
                 Doctor doctor = doctorRepository.findOne(current.getId());
                 List<Patient> patientList = doctor.getPatients();
-                List<String> patientsId = new ArrayList<>();
                 for(Patient patient : patientList) {
                     UserTemplateDto userTemplateDto = new UserTemplateDto();
                     userTemplateDto.setId(templateId);
@@ -266,7 +265,14 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                 }
                 return new StateDto(true, "Tasks created");
             } else if(current.getDiscriminatorValue().equals("stuff")) {
-                return new StateDto(true, stateMessage);
+                Stuff stuff = stuffRepository.findOne(current.getId());
+                List<Patient> patientList = stuff.getDoctor().getPatients();
+                for(Patient patient : patientList) {
+                    UserTemplateDto userTemplateDto = new UserTemplateDto();
+                    userTemplateDto.setId(templateId);
+                    createTask(userTemplateDto, patient.getId(), stuff.getDoctor().getId(), "{}");
+                }
+                return new StateDto(true, "Tasks created");
             }
 
         }
@@ -279,9 +285,16 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
                     Event event = createTask(userTemplateDto, patientId, current.getId(), "{}");
                     //StateDto stateDto = eventNotificationService.sentAction(event.getId(), patientId, message, patientId);
                     //stateMessage = stateMessage + stateDto.getMessage() + " ";
+                    return new StateDto(true, "Tasks created");
                 }
             }  else if (current.getDiscriminatorValue().equals("stuff")) {
-                return new StateDto(true, stateMessage);
+                for (String patientId: patients) {
+                    Stuff stuff = stuffRepository.findOne(current.getId());
+                    UserTemplateDto userTemplateDto = new UserTemplateDto();
+                    userTemplateDto.setId(templateId);
+                    Event event = createTask(userTemplateDto, patientId, stuff.getDoctor().getId(), "{}");
+                }
+                return new StateDto(true, "Tasks created");
             }
 
         return new StateDto(true, "Tasks created");
