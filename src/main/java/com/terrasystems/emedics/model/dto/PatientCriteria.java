@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class PatientCriteria implements Serializable {
     private static final long serialVersionUID = 4149339956348479450L;
     private String name;
+    private String email;
 
     public String getName() {
         return name;
@@ -13,5 +14,13 @@ public class PatientCriteria implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

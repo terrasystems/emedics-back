@@ -63,7 +63,14 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
                         return  null;
                     }
                     else{
-                        return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                        return b.like(b.lower(r.get("name")), "%" + criteria.getName().toLowerCase() + "%");
+                    }
+                })
+                .and((r, q, b) -> {
+                    if (criteria.getEmail() == null || criteria.getEmail().isEmpty()) {
+                        return null;
+                    } else {
+                        return b.like(b.lower(r.get("email")), "%" + criteria.getEmail().toLowerCase() + "%");
                     }
                 }), sort);
         return patients;
