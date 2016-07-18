@@ -5,6 +5,7 @@ import com.terrasystems.emedics.dao.RoleRepository;
 import com.terrasystems.emedics.dao.StuffRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.UserMapper;
@@ -124,6 +125,7 @@ public class RegistrationServiceImp implements RegistrationService {
         registerUser.setEmail(user.getEmail());
         registerUser.setPassword(user.getPassword());
         registerUser.setPhone(user.getPhone());
+        registerUser.setUserType(UserType.PATIENT);
         userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);
@@ -151,6 +153,7 @@ public class RegistrationServiceImp implements RegistrationService {
         registerUser.setEmail(user.getEmail());
         registerUser.setPassword(user.getPassword());
         registerUser.setPhone(user.getPhone());
+        registerUser.setUserType(UserType.DOCTOR);
         userRepository.save(registerUser);
         stateDto.setMessage(REGISTERED);
         stateDto.setValue(true);

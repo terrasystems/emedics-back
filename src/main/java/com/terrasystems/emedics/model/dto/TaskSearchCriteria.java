@@ -12,14 +12,16 @@ public class TaskSearchCriteria implements Serializable {
     private String templateName;
     private String patientName;
     private String fromName;
+    private String descr;
     private StatusEnum statusEnum;
 
-    public TaskSearchCriteria(int period, String templateName, String patientName, String fromName, StatusEnum statusEnum) {
+    public TaskSearchCriteria(int period, String templateName, String patientName, String fromName, StatusEnum statusEnum, String descr) {
         this.period = period;
         this.templateName = templateName;
         this.patientName = patientName;
         this.fromName = fromName;
         this.statusEnum = statusEnum;
+        this.descr = descr;
     }
      public TaskSearchCriteria() {}
 
@@ -62,5 +64,13 @@ public class TaskSearchCriteria implements Serializable {
 
     public void setStatusEnum(StatusEnum statusEnum) {
         this.statusEnum = statusEnum;
+    }
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 }

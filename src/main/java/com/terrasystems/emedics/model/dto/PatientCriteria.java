@@ -4,23 +4,14 @@ package com.terrasystems.emedics.model.dto;
 import java.io.Serializable;
 
 public class PatientCriteria implements Serializable {
-    private static final long serialVersionUID = 4149339956348479450L;
-    private String name;
-    private String email;
+    private static final long serialVersionUID = -5808470678061041129L;
+    private String search;
 
-    public String getName() {
-        return name;
+    public String getSearch() {
+        return search;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSearch(String search) {
+        this.search = search;
     }
 }

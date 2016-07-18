@@ -59,18 +59,18 @@ public class EventPatientServiceImpl implements EventPatientService, CurrentUser
             return b.in(r).value(sq);
         })
                 .and((r, q, b) -> {
-                    if (criteria.getName()==null || criteria.getName().isEmpty()) {
+                    if (criteria.getSearch()==null || criteria.getSearch().isEmpty()) {
                         return  null;
                     }
                     else{
-                        return b.like(b.lower(r.get("name")), "%" + criteria.getName().toLowerCase() + "%");
+                        return b.like(b.lower(r.get("name")), "%" + criteria.getSearch().toLowerCase() + "%");
                     }
                 })
-                .and((r, q, b) -> {
-                    if (criteria.getEmail() == null || criteria.getEmail().isEmpty()) {
+                .or((r, q, b) -> {
+                    if (criteria.getSearch() == null || criteria.getSearch().isEmpty()) {
                         return null;
                     } else {
-                        return b.like(b.lower(r.get("email")), "%" + criteria.getEmail().toLowerCase() + "%");
+                        return b.like(b.lower(r.get("email")), "%" + criteria.getSearch().toLowerCase() + "%");
                     }
                 }), sort);
         return patients;

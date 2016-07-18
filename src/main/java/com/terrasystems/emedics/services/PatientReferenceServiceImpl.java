@@ -155,7 +155,7 @@ public class PatientReferenceServiceImpl implements CurrentUserService, Referenc
                         return  null;
                     }
                     else{
-                        return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                        return b.like(b.lower(r.get("name")), "%" + criteria.getName().toLowerCase() + "%");
                     }
                 })
                 .and((r, q, b) -> {

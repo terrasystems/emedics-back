@@ -140,11 +140,25 @@ public class TaskServiceImpl implements TaskService, CurrentUserService {
         .and((r, q, b) -> {
                     if (criteria.getPatientName()==null || criteria.getPatientName().isEmpty()) {
                         return  null;
-                    }
-            else{
-                        return b.like(r.<User>get("patient").<String>get("name"), "%" + criteria.getPatientName() + "%");
+                    } else{
+                        return b.like(b.lower(r.<User>get("patient").<String>get("name")), "%" + criteria.getPatientName().toLowerCase() + "%");
                     }
 
+                })
+        .and((r, q, b) -> {
+                    if (criteria.getFromName() == null || criteria.getFromName().isEmpty()) {
+                        return null;
+                    } else {
+                        return b.like(b.lower(r.<User>get("fromUser").<String>get("name")), "%" + criteria.getFromName().toLowerCase() + "%");
+                    }
+        })
+                .and((r, q, b) -> {
+                    if (criteria.getDescr()==null || criteria.getDescr().isEmpty()) {
+                        return  null;
+                    }
+                    else{
+                        return b.like(b.lower(r.get("descr")), "%" + criteria.getDescr().toLowerCase() + "%");
+                    }
                 })
         .and((r, q, b) -> {
                     if (criteria.getPeriod() == 1) {

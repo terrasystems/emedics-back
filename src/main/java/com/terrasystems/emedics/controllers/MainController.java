@@ -168,7 +168,7 @@ public class MainController  {
     @ResponseBody
     public String testPats() {
         PatientCriteria patientCriteria = new PatientCriteria();
-        patientCriteria.setName("test");
+        patientCriteria.setSearch("test");
         Doctor current = doctorRepository.findOne("47521352-aac3-4db8-850f-08b3dd93d340");
         List<Patient> patients = patientRepository.findAll(Specifications.<Patient>where((r, q, b) -> {
             Subquery<Patient> sq = q.subquery(Patient.class);

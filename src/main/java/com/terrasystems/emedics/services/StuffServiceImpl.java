@@ -3,6 +3,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.*;
 import com.terrasystems.emedics.enums.StatusEnum;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.*;
 import com.terrasystems.emedics.model.dto.*;
 import com.terrasystems.emedics.model.mapping.EventMapper;
@@ -57,7 +58,7 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
                 return  null;
             }
             else {
-                return b.like(r.get("name"), "%" + criteria.getName() + "%");
+                return b.like(b.lower(r.get("name")), "%" + criteria.getName().toLowerCase() + "%");
             }
         }), sort);
     }
@@ -96,6 +97,7 @@ public class StuffServiceImpl implements StuffService, CurrentUserService {
         stuff.setBirth(dto.getBirth());
         stuff.setEnabled(true);
         stuff.setRegistrationDate(new Date());
+        stuff.setUserType(UserType.STUFF);
         if (stuffRepository.save(stuff) == null) {
             return null;
         }

@@ -3,6 +3,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.DocTypeRepository;
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.Doctor;
 import com.terrasystems.emedics.model.Patient;
 import com.terrasystems.emedics.model.Role;
@@ -55,6 +56,7 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
         registerUser.setUserRef(new HashSet<>());
         registerUser.setUsers(new HashSet<>());
         registerUser.setActivationToken(RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f'));
+        registerUser.setUserType(UserType.PATIENT);
         userRepository.save(registerUser);
         return registerUser;
     }
@@ -78,6 +80,7 @@ public class ReferenceCreateServiceImpl implements ReferenceCreateService {
         registerUser.setUsers(new HashSet<>());
         registerUser.setUserRef(new HashSet<>());
         registerUser.setActivationToken(RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f'));
+        registerUser.setUserType(UserType.DOCTOR);
         userRepository.save(registerUser);
 
         return registerUser;

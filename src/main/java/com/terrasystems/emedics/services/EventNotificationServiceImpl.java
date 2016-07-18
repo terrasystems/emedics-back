@@ -187,7 +187,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
                 return  null;
             }
             else{
-                return b.like(r.get("descr"), "%" + criteria.getDescription() + "%");
+                return b.like(b.lower(r.get("descr")), "%" + criteria.getDescription().toLowerCase() + "%");
             }
         })
         .and((r, q, b) -> {
@@ -243,7 +243,7 @@ public class EventNotificationServiceImpl implements EventNotificationService, C
             if (criteria.getFromName() == null || criteria.getFromName().isEmpty()) {
                 return null;
             } else {
-                return b.like(r.<User>get("fromUser").<String>get("name"), "%" + criteria.getFromName() + "%");
+                return b.like(b.lower(r.<User>get("fromUser").<String>get("name")), "%" + criteria.getFromName().toLowerCase() + "%");
             }
 
         }));
