@@ -13,16 +13,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "user_templates")
-public class UserTemplate implements Serializable{
+public class UserTemplate extends BaseEntity{
 
-    private static final long serialVersionUID = -6401117131659013366L;
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @JsonIgnore
-    @Column(name = "id", unique = true)
-    private String id;
-
+    private static final long serialVersionUID = -4933760370608608485L;
     @Column(name = "type")
     private String type;
 
@@ -37,14 +30,6 @@ public class UserTemplate implements Serializable{
     private String description;
 
     public UserTemplate() {}
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getType() {
         return type;

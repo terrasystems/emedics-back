@@ -5,6 +5,9 @@ import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.StaffDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v2/staff")
 public class StaffControllerV2 {
@@ -12,7 +15,10 @@ public class StaffControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllStaff(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new StaffDto());
+        List<StaffDto> staffDtos = new ArrayList<>();
+        staffDtos.add(new StaffDto());
+        staffDtos.add(new StaffDto());
+        return new ResponseDto(true, "Base msg", staffDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)

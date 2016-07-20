@@ -20,8 +20,9 @@ import java.util.Set;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
-public class User implements UserDetails, Serializable {
-    private static final long serialVersionUID = -6219736093120889122L;
+public class User extends BaseEntity implements UserDetails{
+
+    private static final long serialVersionUID = 560754003970679875L;
 
     public User() {
         //bla
@@ -33,12 +34,7 @@ public class User implements UserDetails, Serializable {
         this.email = email;
     }
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @JsonIgnore
-    @Column(name = "id", unique = true)
-    private String id;
+
 
     @Column(name = "is_org")
     protected Boolean org = false;
@@ -170,15 +166,6 @@ public class User implements UserDetails, Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Date getRegistrationDate() {

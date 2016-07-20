@@ -5,6 +5,7 @@ import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TaskDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -14,7 +15,10 @@ public class TaskControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllTasks(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new TaskDto());
+        List<TaskDto> taskDtos = new ArrayList<>();
+        taskDtos.add(new TaskDto());
+        taskDtos.add(new TaskDto());
+        return new ResponseDto(true, "Base msg", taskDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
@@ -62,7 +66,10 @@ public class TaskControllerV2 {
     @RequestMapping(value = "/history", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getHistory(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new TaskDto());
+        List<TaskDto> taskDtos = new ArrayList<>();
+        taskDtos.add(new TaskDto());
+        taskDtos.add(new TaskDto());
+        return new ResponseDto(true, "Base msg", taskDtos);
     }
 
 

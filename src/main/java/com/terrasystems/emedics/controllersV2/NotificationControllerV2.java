@@ -5,6 +5,9 @@ import com.terrasystems.emedics.model.dtoV2.NotificationDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v2/notifications")
 public class NotificationControllerV2 {
@@ -12,7 +15,10 @@ public class NotificationControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllNotifications(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new NotificationDto());
+        List<NotificationDto> notificationDtos = new ArrayList<>();
+        notificationDtos.add(new NotificationDto());
+        notificationDtos.add(new NotificationDto());
+        return new ResponseDto(true, "Base msg", notificationDtos);
     }
 
     @RequestMapping(value = "/accept/{id}", method = RequestMethod.GET)

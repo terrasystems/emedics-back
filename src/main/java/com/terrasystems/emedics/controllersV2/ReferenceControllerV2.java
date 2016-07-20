@@ -5,6 +5,9 @@ import com.terrasystems.emedics.model.dtoV2.ReferenceDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v2/references")
 public class ReferenceControllerV2 {
@@ -12,7 +15,10 @@ public class ReferenceControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllReferences(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new ReferenceDto());
+        List<ReferenceDto> referenceDtos = new ArrayList<>();
+        referenceDtos.add(new ReferenceDto());
+        referenceDtos.add(new ReferenceDto());
+        return new ResponseDto(true, "Base msg", referenceDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
@@ -24,7 +30,10 @@ public class ReferenceControllerV2 {
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto myReferences(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new ReferenceDto());
+        List<ReferenceDto> referenceDtos = new ArrayList<>();
+        referenceDtos.add(new ReferenceDto());
+        referenceDtos.add(new ReferenceDto());
+        return new ResponseDto(true, "Base msg", referenceDtos);
     }
 
     @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)

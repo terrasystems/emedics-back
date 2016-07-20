@@ -10,7 +10,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "templates")
-public class Template {
+public class Template extends BaseEntity{
+
+    private static final long serialVersionUID = -1077414207848205659L;
 
     public Template(String category, String body, String descr, String name, String number, CommercialEnum commercialEnum,
                     TypeEnum typeEnum) {
@@ -26,13 +28,6 @@ public class Template {
     public Template() {
         //bla
     }
-
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @JsonIgnore
-    @Column(name = "id", unique = true)
-    private String id;
 
     @Column(name = "name")
     private String name;
@@ -72,15 +67,6 @@ public class Template {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getCategory() {

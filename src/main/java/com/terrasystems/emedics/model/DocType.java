@@ -9,14 +9,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "doc_type")
-public class DocType {
+public class DocType extends BaseEntity {
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "id", unique = true)
-    private String id;
-
+    private static final long serialVersionUID = 2755302903912676886L;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type", fetch = FetchType.EAGER, orphanRemoval = true)
     protected Set<Doctor> doctors;
 
@@ -27,14 +22,6 @@ public class DocType {
     private DocTypeEnum value;
 
     public DocType() {}
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

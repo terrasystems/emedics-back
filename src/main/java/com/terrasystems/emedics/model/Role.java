@@ -10,21 +10,14 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "roles")
-public class Role implements GrantedAuthority, Serializable {
+public class Role extends BaseEntity implements GrantedAuthority{
+    private static final long serialVersionUID = -2271830859183553214L;
+
     public Role() {}
 
     public Role(String name){
         this.name = name;
     }
-
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "role_id", unique = true)
-    @JsonIgnore
-    private String id;
-
-    //private String authoruty;
 
     @Column(name = "role_name")
     private String name;

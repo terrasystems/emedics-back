@@ -11,13 +11,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "event_journal")
-public class Event  {
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "id", unique = true)
-    private String id;
+public class Event extends BaseEntity {
 
+    private static final long serialVersionUID = -2396205074360027797L;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
     private Date date;
@@ -49,14 +45,6 @@ public class Event  {
     private String descr;
 
     public Event() {}
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public Date getDate() {
         return date;

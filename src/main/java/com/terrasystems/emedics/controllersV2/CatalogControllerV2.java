@@ -5,6 +5,9 @@ import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TemplateDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v2/catalog")
 public class CatalogControllerV2 {
@@ -12,7 +15,10 @@ public class CatalogControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllCatalog(@RequestBody CriteriaDto criteria) {
-        return new ResponseDto(true, "Base msg", new TemplateDto());
+        List<TemplateDto> templateDtos = new ArrayList<>();
+        templateDtos.add(new TemplateDto());
+        templateDtos.add(new TemplateDto());
+        return new ResponseDto(true, "Base msg", templateDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
