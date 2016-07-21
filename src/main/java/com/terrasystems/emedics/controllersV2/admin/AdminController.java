@@ -1,4 +1,4 @@
-package com.terrasystems.emedics.controllers.admin;
+package com.terrasystems.emedics.controllersV2.admin;
 
 import com.terrasystems.emedics.model.User;
 import org.springframework.security.core.context.SecurityContextHolder;

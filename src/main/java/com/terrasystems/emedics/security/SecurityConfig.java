@@ -41,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().cacheControl();
         http.authorizeRequests()
 
-                //.antMatchers("/rest/public/**").permitAll()
-                //.antMatchers("/api/v2/auth/**").permitAll()
+                .antMatchers("/rest/public/**").permitAll()
+                .antMatchers("/api/v2/auth/**").permitAll()
 
                 .antMatchers("/api/v2/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()

@@ -1,10 +1,10 @@
 package com.terrasystems.emedics.model.mapping;
 
+
 import com.terrasystems.emedics.model.User;
-import com.terrasystems.emedics.model.dto.UserDto;
+import com.terrasystems.emedics.model.dtoV2.UserDto;
 
-
-public final class UserMapper {
+public class UserMapper {
 
     private  static UserMapper mapper;
 
@@ -19,23 +19,20 @@ public final class UserMapper {
     public UserDto toDTO(User entity) {
         UserDto dto = new UserDto();
         dto.setId(entity.getId());
-        dto.setEmail(entity.getEmail());
-        dto.setUsername(entity.getName());
-        dto.setTypeExp(entity.getTypeExp());
+        dto.setUserType(entity.getUserType());
+        dto.setType(entity.getType());
+        dto.setName(entity.getName());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
-        dto.setBirth(entity.getBirth());
-        dto.setType(entity.getDiscriminatorValue());
-        dto.setOrg(entity.getOrg());
+        dto.setDob(entity.getBirth());
+        dto.setEmail(entity.getEmail());
+        dto.setPhone(entity.getPhone());
+        dto.setAdmin(entity.isAdmin());
+        if (dto.getAdmin()) {
+            dto.setAddress(entity.getOrganization().getAddress());
+            dto.setOrgName(entity.getOrganization().getName());
+            dto.setWebsite(entity.getOrganization().getWebsite());
+        }
         return dto;
-    }
-
-    public User toEntity(UserDto dto) {
-        User entity = new User();
-        entity.setEmail(dto.getEmail());
-        //entity.setDiscriminatorValue(dto.getType());  //methods dto.getType(), setDiscriminatorValue() not supported yet
-        //entity.setUsername(dto.getUsername());    //method getUsername() not supported yet
-        entity.setPassword(dto.getPassword());
-        return entity;
     }
 }

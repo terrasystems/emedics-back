@@ -1,11 +1,16 @@
 package com.terrasystems.emedics.controllersV2;
 
 import com.terrasystems.emedics.model.dtoV2.*;
+import com.terrasystems.emedics.security.RegistrationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v2/auth")
 public class PublicControllerV2 {
+
+    @Autowired
+    RegistrationService registrationService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
@@ -16,13 +21,15 @@ public class PublicControllerV2 {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto registration(@RequestBody UserDto request) {
-        return new ResponseDto(true, "Base msg");
+        ResponseDto responseDto = registrationService.registerUser(request);
+        return responseDto;
     }
 
     @RequestMapping(value = "/activate/{key}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto activate(@PathVariable String key) {
-        return new ResponseDto(true, "Base msg");
+        ResponseDto responseDto = registrationService.activateUser(key);
+        return responseDto;
     }
 
     @RequestMapping(value = "/reset_pass", method = RequestMethod.POST)
