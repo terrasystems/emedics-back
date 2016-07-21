@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     Set<User> findByIdIsNotAndNameContainingOrEmailContaining(String name, String email, String id);
     User findByActivationToken(String link);
 
-    @Query("select d from User d "+//" left join DocType dt " +
+    @Query("select d from User d "+//" left join Types dt " +
             "where (d.id != :id)")/* and ((lower(d.email) like :search) or (lower(d.name) " +
             "like :search) or (lower(d.orgName) like :search) or (lower(dt.name) like :search) ) ")*/
         //TODO search in lower case

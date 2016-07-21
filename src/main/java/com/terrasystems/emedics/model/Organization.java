@@ -7,13 +7,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "organizations")
-public class Organization {
+public class Organization extends BaseEntity {
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "id", unique = true)
-    private String id;
 
     @Column
     private String name;
@@ -25,30 +20,19 @@ public class Organization {
     private String address;
     @Column
     private String descr;
-    @Column
-    String type;
     /*@OneToMany(cascade = CascadeType.ALL, mappedBy = "organization", fetch = FetchType.LAZY)
     private List<Stuff> stuff;*/
 
 
-    public Organization(String name, String fullName, String website, String address, String descr, String type) {
+    public Organization(String name, String fullName, String website, String address, String descr) {
         this.name = name;
         this.fullName = fullName;
         this.website = website;
         this.address = address;
         this.descr = descr;
-        this.type = type;
 
     }
     public Organization(){}
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getId() {
         return id;

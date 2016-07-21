@@ -40,7 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .servletApi().and()
                 .headers().cacheControl();
         http.authorizeRequests()
-                .antMatchers("/rest/public/**").permitAll()
+
+                //.antMatchers("/rest/public/**").permitAll()
+                //.antMatchers("/api/v2/auth/**").permitAll()
+
+                .antMatchers("/api/v2/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
                 .antMatchers("/rest/private/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
                 .antMatchers("/rest/private/dashboard/stuff/**").hasAnyRole("DOCTOR", "STUFF_ADMIN")

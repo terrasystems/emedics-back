@@ -1,9 +1,8 @@
 package com.terrasystems.emedics.model.dtoV2;
 
 
-import com.google.common.base.Objects;
 import com.terrasystems.emedics.enums.UserType;
-import com.terrasystems.emedics.model.DocType;
+import com.terrasystems.emedics.model.Types;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,21 +12,22 @@ import java.util.Date;
 
 public class ReferenceDto implements Serializable {
 
-    private static final long serialVersionUID = -5803263070539095835L;
+    private static final long serialVersionUID = 2125034027282121044L;
     private String id;
     private String name;
     private String firstName;
     private String lastName;
     private UserType userType;
     private Date dob;
-    private DocType type;
+    private Types type;
     private String email;
     private Boolean active;
+    private String phone;
 
     public ReferenceDto() {
     }
 
-    public ReferenceDto(String id, String name, String firstName, String lastName, UserType userType, Date dob, DocType type, String email, Boolean active) {
+    public ReferenceDto(String id, String name, String firstName, String lastName, UserType userType, Date dob, Types type, String email, Boolean active, String phone) {
         this.id = id;
         this.name = name;
         this.firstName = firstName;
@@ -37,6 +37,7 @@ public class ReferenceDto implements Serializable {
         this.type = type;
         this.email = email;
         this.active = active;
+        this.phone = phone;
     }
 
     public String getId() {
@@ -87,11 +88,11 @@ public class ReferenceDto implements Serializable {
         this.dob = dob;
     }
 
-    public DocType getType() {
+    public Types getType() {
         return type;
     }
 
-    public void setType(DocType type) {
+    public void setType(Types type) {
         this.type = type;
     }
 
@@ -111,6 +112,14 @@ public class ReferenceDto implements Serializable {
         this.active = active;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -123,6 +132,7 @@ public class ReferenceDto implements Serializable {
                 .append("type", type)
                 .append("email", email)
                 .append("active", active)
+                .append("phone", phone)
                 .toString();
     }
 
@@ -141,6 +151,7 @@ public class ReferenceDto implements Serializable {
                 .append(lastName, that.lastName)
                 .append(email, that.email)
                 .append(active, that.active)
+                .append(phone, that.phone)
                 .isEquals();
     }
 
@@ -153,6 +164,7 @@ public class ReferenceDto implements Serializable {
                 .append(lastName)
                 .append(email)
                 .append(active)
+                .append(phone)
                 .toHashCode();
     }
 }

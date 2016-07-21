@@ -2,7 +2,7 @@ package com.terrasystems.emedics.model.dtoV2;
 
 
 import com.terrasystems.emedics.enums.UserType;
-import com.terrasystems.emedics.model.DocType;
+import com.terrasystems.emedics.model.Types;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -14,7 +14,7 @@ public class UserDto implements Serializable {
 
     private String id;
     private UserType userType;
-    private DocType type;
+    private Types type;
     private String name;
     private String firstName;
     private String lastName ;
@@ -30,7 +30,7 @@ public class UserDto implements Serializable {
     public UserDto() {
     }
 
-    public UserDto(String id, UserType userType, DocType type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin) {
+    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin) {
         this.id = id;
         this.userType = userType;
         this.type = type;
@@ -63,11 +63,11 @@ public class UserDto implements Serializable {
         this.userType = userType;
     }
 
-    public DocType getType() {
+    public Types getType() {
         return type;
     }
 
-    public void setType(DocType type) {
+    public void setType(Types type) {
         this.type = type;
     }
 

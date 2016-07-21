@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.terrasystems.emedics.enums.UserType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +23,10 @@ import java.util.Set;
 @DiscriminatorColumn(name = "DISC", discriminatorType = DiscriminatorType.STRING, length = 15)
 public class User extends BaseEntity implements UserDetails{
 
-    private static final long serialVersionUID = 560754003970679875L;
+
+    private static final long serialVersionUID = -3737168202495827435L;
 
     public User() {
-        //bla
     }
 
     public User(String name, String password, String email) {
@@ -36,8 +37,8 @@ public class User extends BaseEntity implements UserDetails{
 
 
 
-    @Column(name = "is_org")
-    protected Boolean org = false;
+    @Column(name = "is_org", nullable = false)
+    protected boolean isAdmin = false;
 
     @Column(name = "name")
     protected String name;
@@ -77,16 +78,24 @@ public class User extends BaseEntity implements UserDetails{
     protected String typeExp;
 
     @Column
-    protected Long expires;
-
-    @Column
     protected boolean enabled = false;
 
-    @Column(name = "allowed_forms_count")
-    protected int allowedFormsCount;
+    //TODO
+    @Column(name = "allowed_forms_count", nullable = false)
+    protected int allowedFormsCount = 5;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Types type;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private User userOrg;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Role> roles;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "org_id")
+    private Organization organization;
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -95,65 +104,34 @@ public class User extends BaseEntity implements UserDetails{
     @ManyToMany(
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY,
-            mappedBy = "userRef"
+            mappedBy = "references"
 
     )
     private Set<User> users;
 
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_users",
+            name = "references",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
     )
-    private Set<User> userRef;
+    private Set<User> references;
 
-    public List<UserTemplate> getUserTemplates() {
-        return userTemplates;
+
+
+    @Transient
+    public String getDiscriminatorValue() {
+        DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
+
+        return val == null ? null : val.value();
     }
 
-    public void setUserTemplates(List<UserTemplate> userTemplates) {
-        this.userTemplates = userTemplates;
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
-    public String getTypeExp() {
-        return typeExp;
-    }
-
-    public void setTypeExp(String typeExp) {
-        this.typeExp = typeExp;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getValueKey() {
-        return valueKey;
-    }
-
-    public void setValueKey(String valueKey) {
-        this.valueKey = valueKey;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<User> getUserRef() {
-        return userRef;
-    }
-
-    public void setUserRef(Set<User> userRef) {
-        this.userRef = userRef;
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public String getName() {
@@ -162,42 +140,6 @@ public class User extends BaseEntity implements UserDetails{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Long getExpires() {
-        return expires;
-    }
-
-    public void setExpires(Long expires) {
-        this.expires = expires;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFirstName() {
@@ -216,6 +158,14 @@ public class User extends BaseEntity implements UserDetails{
         this.lastName = lastName;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public Date getBirth() {
         return birth;
     }
@@ -232,20 +182,20 @@ public class User extends BaseEntity implements UserDetails{
         this.activationToken = activationToken;
     }
 
-    public int getAllowedFormsCount() {
-        return allowedFormsCount;
+    public String getValueKey() {
+        return valueKey;
     }
 
-    public void setAllowedFormsCount(int allowedFormsCount) {
-        this.allowedFormsCount = allowedFormsCount;
+    public void setValueKey(String valueKey) {
+        this.valueKey = valueKey;
     }
 
-    public Boolean getOrg() {
-        return org;
+    public Date getRegistrationDate() {
+        return registrationDate;
     }
 
-    public void setOrg(Boolean org) {
-        this.org = org;
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public UserType getUserType() {
@@ -256,7 +206,6 @@ public class User extends BaseEntity implements UserDetails{
         this.userType = userType;
     }
 
-    //TODO add fields for accaunt disabelin(Expirision, Locked etc)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -265,10 +214,6 @@ public class User extends BaseEntity implements UserDetails{
     @Override
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
@@ -291,22 +236,123 @@ public class User extends BaseEntity implements UserDetails{
         return true;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTypeExp() {
+        return typeExp;
+    }
+
+    public void setTypeExp(String typeExp) {
+        this.typeExp = typeExp;
+    }
+
     @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Transient
-    public String getDiscriminatorValue() {
-        DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
-
-        return val == null ? null : val.value();
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
+    public int getAllowedFormsCount() {
+        return allowedFormsCount;
+    }
+
+    public void setAllowedFormsCount(int allowedFormsCount) {
+        this.allowedFormsCount = allowedFormsCount;
+    }
+
+    public Types getType() {
+        return type;
+    }
+
+    public void setType(Types type) {
+        this.type = type;
+    }
+
+    public User getUserOrg() {
+        return userOrg;
+    }
+
+    public void setUserOrg(User userOrg) {
+        this.userOrg = userOrg;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
+    public List<UserTemplate> getUserTemplates() {
+        return userTemplates;
+    }
+
+    public void setUserTemplates(List<UserTemplate> userTemplates) {
+        this.userTemplates = userTemplates;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Set<User> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Set<User> references) {
+        this.references = references;
+    }
 
     public String resetPassword(String newPass) {
         setPassword(newPass);
         return newPass;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("isAdmin", isAdmin)
+                .append("name", name)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("phone", phone)
+                .append("birth", birth)
+                .append("activationToken", activationToken)
+                .append("valueKey", valueKey)
+                .append("registrationDate", registrationDate)
+                .append("userType", userType)
+                .append("password", password)
+                .append("email", email)
+                .append("typeExp", typeExp)
+                .append("enabled", enabled)
+                .append("allowedFormsCount", allowedFormsCount)
+                .toString();
     }
 
     @Override
@@ -318,30 +364,40 @@ public class User extends BaseEntity implements UserDetails{
         User user = (User) o;
 
         return new EqualsBuilder()
-                .append(enabled, user.enabled)
-                .append(id, user.id)
-                .append(name, user.name)
-                .append(phone, user.phone)
-                .append(valueKey, user.valueKey)
-                .append(registrationDate, user.registrationDate)
-                .append(password, user.password)
-                .append(email, user.email)
-                .append(expires, user.expires)
+                .append(isAdmin(), user.isAdmin())
+                .append(isEnabled(), user.isEnabled())
+                .append(getAllowedFormsCount(), user.getAllowedFormsCount())
+                .append(getName(), user.getName())
+                .append(getFirstName(), user.getFirstName())
+                .append(getLastName(), user.getLastName())
+                .append(getPhone(), user.getPhone())
+                .append(getBirth(), user.getBirth())
+                .append(getActivationToken(), user.getActivationToken())
+                .append(getValueKey(), user.getValueKey())
+                .append(getRegistrationDate(), user.getRegistrationDate())
+                .append(getPassword(), user.getPassword())
+                .append(getEmail(), user.getEmail())
+                .append(getTypeExp(), user.getTypeExp())
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(name)
-                .append(phone)
-                .append(registrationDate)
-                .append(password)
-                .append(email)
-                .append(expires)
-                .append(enabled)
-                .append(valueKey)
+                .append(isAdmin())
+                .append(getName())
+                .append(getFirstName())
+                .append(getLastName())
+                .append(getPhone())
+                .append(getBirth())
+                .append(getActivationToken())
+                .append(getValueKey())
+                .append(getRegistrationDate())
+                .append(getPassword())
+                .append(getEmail())
+                .append(getTypeExp())
+                .append(isEnabled())
+                .append(getAllowedFormsCount())
                 .toHashCode();
     }
 
@@ -355,6 +411,5 @@ public class User extends BaseEntity implements UserDetails{
         } else if (lastName == null) {
             name = firstName;
         } else name = firstName + " " + lastName;
-        if (org == null) org = false;
     }
 }

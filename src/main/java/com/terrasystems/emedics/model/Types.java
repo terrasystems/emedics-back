@@ -8,12 +8,12 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "doc_type")
-public class DocType extends BaseEntity {
+@Table(name = "types")
+public class Types extends BaseEntity {
 
-    private static final long serialVersionUID = 2755302903912676886L;
+    private static final long serialVersionUID = -2537566422604593137L;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type", fetch = FetchType.EAGER, orphanRemoval = true)
-    protected Set<Doctor> doctors;
+    protected Set<User> users;
 
     @Column(name = "name")
     private String name;
@@ -21,7 +21,7 @@ public class DocType extends BaseEntity {
     @Column(name = "value")
     private DocTypeEnum value;
 
-    public DocType() {}
+    public Types() {}
 
     public String getName() {
         return name;
@@ -39,11 +39,11 @@ public class DocType extends BaseEntity {
         this.value = value;
     }
 
-    public Set<Doctor> getDoctors() {
-        return doctors;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setDoctors(Set<Doctor> doctors) {
-        this.doctors = doctors;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

@@ -1,10 +1,6 @@
 package com.terrasystems.emedics.controllersV2;
 
-import com.terrasystems.emedics.model.dto.ChangePasswordDto;
-import com.terrasystems.emedics.model.dtoV2.LoginDto;
-import com.terrasystems.emedics.model.dtoV2.ResetPasswordDto;
-import com.terrasystems.emedics.model.dtoV2.ResponseDto;
-import com.terrasystems.emedics.model.dtoV2.UserDto;
+import com.terrasystems.emedics.model.dtoV2.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -32,7 +32,6 @@ public class TokenAuthServiceImp implements TokenAuthService {
     public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
         final User user = authentication.getDetails();
         //TODO do smth with expire, check for user creation date, change username not be email (!!carefull)
-        user.setExpires(System.currentTimeMillis() + TEN_DAYS);
         String token = tokenUtil.createTokenForUser(user);
         response.addHeader(AUTH_HEADER_NAME, token);
         response.setContentType(RESPONSE_JSON_CONTENT_TYPE);
@@ -52,7 +51,7 @@ public class TokenAuthServiceImp implements TokenAuthService {
                     "      \"org\": \"%b\"\n" +
                     "  },\n" +
                     "  \"token\": \"%s\"\n" +
-                    "}", true, type, user.getEmail(), user.getName(), user.getId(),user.getOrg(),token));
+                    "}", true, type, user.getEmail(), user.getName(), user.getId(),user.isAdmin(),token));
             //response.getWriter().write();
             response.getWriter().flush();
             response.getWriter().close();
