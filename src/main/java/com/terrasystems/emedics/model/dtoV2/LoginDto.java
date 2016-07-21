@@ -9,16 +9,16 @@ import java.io.Serializable;
 
 public class LoginDto implements Serializable {
 
-    private static final long serialVersionUID = 2987635504584330619L;
+    private static final long serialVersionUID = 6347309628203281322L;
     private String email;
-    private String pass;
+    private String password;
 
     public LoginDto() {
     }
 
-    public LoginDto(String email, String pass) {
+    public LoginDto(String email, String password) {
         this.email = email;
-        this.pass = pass;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -29,19 +29,19 @@ public class LoginDto implements Serializable {
         this.email = email;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("email", email)
-                .append("pass", pass)
+                .append("password", password)
                 .toString();
     }
 
@@ -55,7 +55,7 @@ public class LoginDto implements Serializable {
 
         return new EqualsBuilder()
                 .append(email, loginDto.email)
-                .append(pass, loginDto.pass)
+                .append(password, loginDto.password)
                 .isEquals();
     }
 
@@ -63,7 +63,7 @@ public class LoginDto implements Serializable {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(email)
-                .append(pass)
+                .append(password)
                 .toHashCode();
     }
 }

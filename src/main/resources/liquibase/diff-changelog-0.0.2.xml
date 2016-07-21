@@ -6,10 +6,25 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
-    <changeSet author="melnyk (generated)" id="1465987205067-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="users">
-            <column name="valuekey" type="varchar(255 BYTE)"/>
-        </addColumn>
-    </changeSet>
 
+
+    <changeSet author="melnyk (generated)" id="1469110145109-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="user_references">
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_ref_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="melnyk (generated)" id="1469110145109-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="user_id, user_ref_id" constraintName="user_references_pkey" tableName="user_references"/>
+    </changeSet>
+    <changeSet author="melnyk (generated)" id="1469110145109-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="user_ref_id" baseTableName="user_references" constraintName="fkmjoi39v2yhqhf1m3kbhijat00" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="melnyk (generated)" id="1469110145109-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_references" constraintName="fktexn58shoo8vjoibdftmtetf9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
 </databaseChangeLog>

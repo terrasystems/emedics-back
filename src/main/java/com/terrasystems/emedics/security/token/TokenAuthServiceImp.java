@@ -37,21 +37,20 @@ public class TokenAuthServiceImp implements TokenAuthService {
         response.setContentType(RESPONSE_JSON_CONTENT_TYPE);
         String type = user.getDiscriminatorValue();
         try {
-            response.getWriter().write(String.format("{\n" +
-                    "  \"state\": {\n" +
-                    "    \"value\": %b,\n" +
-                    "    \"message\": \"Login OK\"\n" +
-                    "  },\n" +
-                    "  \"user\": {\n" +
-                    "    \"type\": \"%s\",\n" +
-                    "    \"email\": \"%s\",\n" +
-                    "    \"password\": null,\n" +
-                    "    \"username\": \"%s\",\n" +
-                    "     \"id\": \"%s\",\n" +
-                    "      \"org\": \"%b\"\n" +
-                    "  },\n" +
-                    "  \"token\": \"%s\"\n" +
-                    "}", true, type, user.getEmail(), user.getName(), user.getId(),user.isAdmin(),token));
+            response.getWriter().write(String.format(
+                    "{\n" +
+                    "   \"state\": %b,\n" +
+                    "   \"msg\": \"Login OK\",\n" +
+                    "   \"result\": {\n" +
+                    "       \"type\": \"%s\",\n" +
+                    "       \"email\": \"%s\",\n" +
+                    "       \"password\": null,\n" +
+                    "       \"username\": \"%s\",\n" +
+                    "       \"id\": \"%s\",\n" +
+                    "       \"org\": \"%b\",\n" +
+                    "       \"token\": \"%s\"\n" +
+                    "   }\n" +
+                    "}", true, user.getUserType(), user.getEmail(), user.getName(), user.getId(),user.isAdmin(),token));
             //response.getWriter().write();
             response.getWriter().flush();
             response.getWriter().close();

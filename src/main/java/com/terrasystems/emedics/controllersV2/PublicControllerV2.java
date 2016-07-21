@@ -12,12 +12,6 @@ public class PublicControllerV2 {
     @Autowired
     RegistrationService registrationService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseDto login(@RequestBody LoginDto request) {
-        return new ResponseDto(true, "Base msg", new UserDto());
-    }
-
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto registration(@RequestBody UserDto request) {

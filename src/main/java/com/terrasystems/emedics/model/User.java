@@ -111,7 +111,7 @@ public class User extends BaseEntity implements UserDetails{
 
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "references",
+            name = "user_references",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_ref_id", referencedColumnName = "id")
     )

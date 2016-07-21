@@ -85,11 +85,6 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
     }
 
     @Override
-    public ResponseDto loginUser(LoginDto loginDto) {
-        return null;
-    }
-
-    @Override
     @Transactional
     public ResponseDto activateUser(String key) {
         UserMapper mapper = UserMapper.getInstance();
@@ -103,7 +98,8 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 String token = tokenUtil.createTokenForUser(user);
                 user.setRegistrationDate(new Date());
                 user.setEnabled(true);
-                //userRepository.save(user);
+                user.setActivationToken(null);
+                userRepository.save(user);
                 ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
                 return response;
             }
@@ -112,10 +108,10 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
         user.setEnabled(true);
+        user.setActivationToken(null);
         ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
 
         userRepository.save(user);
-        //TODO delete link after activation
         return response;
     }
 
