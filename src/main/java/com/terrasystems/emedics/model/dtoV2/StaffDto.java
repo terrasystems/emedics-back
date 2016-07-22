@@ -23,6 +23,10 @@ public class StaffDto implements Serializable {
     public StaffDto() {
     }
 
+    public StaffDto(String id) {
+        this.id = id;
+    }
+
     public StaffDto(String id, String name, String firstName, String lastName, String phone, String email, Date dob, String address) {
         this.id = id;
         this.name = name;

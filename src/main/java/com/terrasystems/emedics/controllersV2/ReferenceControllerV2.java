@@ -16,23 +16,23 @@ public class ReferenceControllerV2 {
     @ResponseBody
     public ResponseDto getAllReferences(@RequestBody CriteriaDto criteria) {
         List<ReferenceDto> referenceDtos = new ArrayList<>();
-        referenceDtos.add(new ReferenceDto());
-        referenceDtos.add(new ReferenceDto());
+        referenceDtos.add(new ReferenceDto("id"));
+        referenceDtos.add(new ReferenceDto("id"));
         return new ResponseDto(true, "Base msg", referenceDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getReference(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new ReferenceDto());
+        return new ResponseDto(true, "Base msg", new ReferenceDto("id"));
     }
 
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto myReferences(@RequestBody CriteriaDto criteria) {
         List<ReferenceDto> referenceDtos = new ArrayList<>();
-        referenceDtos.add(new ReferenceDto());
-        referenceDtos.add(new ReferenceDto());
+        referenceDtos.add(new ReferenceDto("id"));
+        referenceDtos.add(new ReferenceDto("id"));
         return new ResponseDto(true, "Base msg", referenceDtos);
     }
 

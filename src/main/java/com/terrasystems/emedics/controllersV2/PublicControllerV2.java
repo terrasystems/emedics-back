@@ -35,19 +35,22 @@ public class PublicControllerV2 {
     @RequestMapping(value = "/change_pass", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto changePassword(@RequestBody ChangePasswordDto request) {
-        return new ResponseDto(true, "Base msg", new UserDto());
+        ResponseDto responseDto = registrationService.changePassword(request);
+        return responseDto;
     }
 
     @RequestMapping(value = "/check_email/{email}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto checkEmail(@PathVariable String email) {
-        return new ResponseDto(true, "Base msg");
+        ResponseDto responseDto = registrationService.checkEmail(email);
+        return responseDto;
     }
 
     @RequestMapping(value = "/check_key/{key}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto checkKey(@PathVariable String key) {
-        return new ResponseDto(true, "Base msg");
+        ResponseDto responseDto = registrationService.checkKey(key);
+        return responseDto;
     }
 
 

@@ -15,15 +15,15 @@ public class MyTemplateControllerV2 {
     @ResponseBody
     public ResponseDto getAllMyTemplates(@RequestBody Object criteria) {
         List<TemplateDto> templateDtos = new ArrayList<>();
-        templateDtos.add(new TemplateDto());
-        templateDtos.add(new TemplateDto());
+        templateDtos.add(new TemplateDto("id"));
+        templateDtos.add(new TemplateDto("id"));
         return new ResponseDto(true, "Base msg", templateDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getMyTemplate(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TemplateDto());
+        return new ResponseDto(true, "Base msg", new TemplateDto("id"));
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)

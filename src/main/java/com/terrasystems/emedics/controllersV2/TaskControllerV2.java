@@ -16,15 +16,15 @@ public class TaskControllerV2 {
     @ResponseBody
     public ResponseDto getAllTasks(@RequestBody CriteriaDto criteria) {
         List<TaskDto> taskDtos = new ArrayList<>();
-        taskDtos.add(new TaskDto());
-        taskDtos.add(new TaskDto());
+        taskDtos.add(new TaskDto("id"));
+        taskDtos.add(new TaskDto("id"));
         return new ResponseDto(true, "Base msg", taskDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getTask(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TaskDto());
+        return new ResponseDto(true, "Base msg", new TaskDto("id"));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -67,8 +67,8 @@ public class TaskControllerV2 {
     @ResponseBody
     public ResponseDto getHistory(@RequestBody CriteriaDto criteria) {
         List<TaskDto> taskDtos = new ArrayList<>();
-        taskDtos.add(new TaskDto());
-        taskDtos.add(new TaskDto());
+        taskDtos.add(new TaskDto("id"));
+        taskDtos.add(new TaskDto("id"));
         return new ResponseDto(true, "Base msg", taskDtos);
     }
 

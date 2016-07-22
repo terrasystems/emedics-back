@@ -16,15 +16,15 @@ public class TypeControllerV2 {
     @ResponseBody
     public ResponseDto getAllTypes(@RequestBody CriteriaDto criteria) {
         List<TypeDto> typeDtos = new ArrayList<>();
-        typeDtos.add(new TypeDto());
-        typeDtos.add(new TypeDto());
+        typeDtos.add(new TypeDto("id"));
+        typeDtos.add(new TypeDto("id"));
         return new ResponseDto(true, "Base msg", typeDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getType(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TypeDto());
+        return new ResponseDto(true, "Base msg", new TypeDto("id"));
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)

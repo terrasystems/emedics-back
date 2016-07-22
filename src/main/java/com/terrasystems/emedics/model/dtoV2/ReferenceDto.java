@@ -27,6 +27,10 @@ public class ReferenceDto implements Serializable {
     public ReferenceDto() {
     }
 
+    public ReferenceDto(String id) {
+        this.id = id;
+    }
+
     public ReferenceDto(String id, String name, String firstName, String lastName, UserType userType, Date dob, Types type, String email, Boolean active, String phone) {
         this.id = id;
         this.name = name;

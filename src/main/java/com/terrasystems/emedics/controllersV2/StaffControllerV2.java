@@ -16,15 +16,15 @@ public class StaffControllerV2 {
     @ResponseBody
     public ResponseDto getAllStaff(@RequestBody CriteriaDto criteria) {
         List<StaffDto> staffDtos = new ArrayList<>();
-        staffDtos.add(new StaffDto());
-        staffDtos.add(new StaffDto());
+        staffDtos.add(new StaffDto("id"));
+        staffDtos.add(new StaffDto("id"));
         return new ResponseDto(true, "Base msg", staffDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getStaff(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new StaffDto());
+        return new ResponseDto(true, "Base msg", new StaffDto("id"));
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

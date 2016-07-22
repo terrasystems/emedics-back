@@ -16,15 +16,15 @@ public class CatalogControllerV2 {
     @ResponseBody
     public ResponseDto getAllCatalog(@RequestBody CriteriaDto criteria) {
         List<TemplateDto> templateDtos = new ArrayList<>();
-        templateDtos.add(new TemplateDto());
-        templateDtos.add(new TemplateDto());
+        templateDtos.add(new TemplateDto("id"));
+        templateDtos.add(new TemplateDto("id"));
         return new ResponseDto(true, "Base msg", templateDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TemplateDto());
+        return new ResponseDto(true, "Base msg", new TemplateDto("id"));
     }
 
     @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)
@@ -42,6 +42,6 @@ public class CatalogControllerV2 {
     @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto viewCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TemplateDto());
+        return new ResponseDto(true, "Base msg", new TemplateDto("id"));
     }
 }

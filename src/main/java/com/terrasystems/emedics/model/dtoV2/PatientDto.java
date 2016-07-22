@@ -20,6 +20,10 @@ public class PatientDto implements Serializable {
     public PatientDto() {
     }
 
+    public PatientDto(String id) {
+        this.id = id;
+    }
+
     public PatientDto(String id, String name, String firstName, String lastName, String phone, String email) {
         this.id = id;
         this.name = name;

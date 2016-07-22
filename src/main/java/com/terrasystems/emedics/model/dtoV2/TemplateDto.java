@@ -24,6 +24,10 @@ public class TemplateDto implements Serializable {
     public TemplateDto() {
     }
 
+    public TemplateDto(String id) {
+        this.id = id;
+    }
+
     public TemplateDto(String id, JsonNode body, String type, String name, Boolean commerce, Boolean isPaid, String number, Boolean load, String descr) {
         this.id = id;
         this.body = body;

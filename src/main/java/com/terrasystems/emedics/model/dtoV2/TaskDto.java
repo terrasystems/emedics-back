@@ -31,6 +31,10 @@ public class TaskDto implements Serializable {
     public TaskDto() {
     }
 
+    public TaskDto(String id) {
+        this.id = id;
+    }
+
     public TaskDto(String id, User fromUser, User toUser, String descr, Template template, User patient, Date date, StatusEnum status, JsonNode model, String _id, String _rev, String _type) {
         this.id = id;
         this.fromUser = fromUser;

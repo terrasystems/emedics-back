@@ -32,6 +32,10 @@ public class UserDto implements Serializable {
     public UserDto() {
     }
 
+    public UserDto(String id) {
+        this.id = id;
+    }
+
     public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin, String token) {
         this.id = id;
         this.userType = userType;

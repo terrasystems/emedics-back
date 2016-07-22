@@ -20,6 +20,10 @@ public class NotificationDto implements Serializable {
     public NotificationDto() {
     }
 
+    public NotificationDto(String id) {
+        this.id = id;
+    }
+
     public NotificationDto(String id, String descr, Date date, String fromUserName, String templateName) {
         this.id = id;
         this.descr = descr;

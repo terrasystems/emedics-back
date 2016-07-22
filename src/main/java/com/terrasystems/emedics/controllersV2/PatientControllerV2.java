@@ -15,23 +15,23 @@ public class PatientControllerV2 {
     @ResponseBody
     public ResponseDto getAllPatients(@RequestBody Object criteria) {
         List<PatientDto> patientDtos = new ArrayList<>();
-        patientDtos.add(new PatientDto());
-        patientDtos.add(new PatientDto());
+        patientDtos.add(new PatientDto("id"));
+        patientDtos.add(new PatientDto("id"));
         return new ResponseDto(true, "Base msg", patientDtos);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getPatient(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new PatientDto());
+        return new ResponseDto(true, "Base msg", new PatientDto("id"));
     }
 
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getMyPatients(@RequestBody Object criteria) {
         List<PatientDto> patientDtos = new ArrayList<>();
-        patientDtos.add(new PatientDto());
-        patientDtos.add(new PatientDto());
+        patientDtos.add(new PatientDto("id"));
+        patientDtos.add(new PatientDto("id"));
         return new ResponseDto(true, "Base msg", patientDtos);
     }
 

@@ -16,8 +16,8 @@ public class NotificationControllerV2 {
     @ResponseBody
     public ResponseDto getAllNotifications(@RequestBody CriteriaDto criteria) {
         List<NotificationDto> notificationDtos = new ArrayList<>();
-        notificationDtos.add(new NotificationDto());
-        notificationDtos.add(new NotificationDto());
+        notificationDtos.add(new NotificationDto("id"));
+        notificationDtos.add(new NotificationDto("id"));
         return new ResponseDto(true, "Base msg", notificationDtos);
     }
 

@@ -18,6 +18,10 @@ public class TypeDto implements Serializable {
     public TypeDto() {
     }
 
+    public TypeDto(String id) {
+        this.id = id;
+    }
+
     public TypeDto(String id, UserType userType, String name) {
         this.id = id;
         this.userType = userType;

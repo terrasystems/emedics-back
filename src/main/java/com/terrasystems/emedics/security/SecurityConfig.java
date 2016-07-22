@@ -40,13 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .servletApi().and()
                 .headers().cacheControl();
         http.authorizeRequests()
-
+                //.antMatchers("/api/V2/auth/**").permitAll()
                 .antMatchers("/rest/public/**").permitAll()
-                .antMatchers("/api/v2/auth/**").permitAll()
-
-                .antMatchers("/api/v2/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
                 //.antMatchers(HttpMethod.POST, "/rest/public/login").permitAll()
                 .antMatchers("/rest/private/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
+                //.antMatchers("/api/V2/**").hasAnyRole("PATIENT", "DOCTOR", "STUFF", "STUFF_ADMIN")
                 .antMatchers("/rest/private/dashboard/stuff/**").hasAnyRole("DOCTOR", "STUFF_ADMIN")
                 //.antMatchers("/rest/private/dashboard/patients/**").hasAnyRole("DOCTOR","STUFF_ADMIN","STUFF")
                 //.antMatchers("/rest/private/**").hasRole("DOCTOR")
@@ -54,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole()
                 .and()
                 //{"username":"<name>","password":"<password>"}
-                .addFilterBefore(new LoginFilter("/api/v2/auth/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LoginFilter("/api/V2/auth/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new AuthenticationFilter(tokenAuthService), UsernamePasswordAuthenticationFilter.class);
     }
 
