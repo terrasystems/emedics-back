@@ -1,13 +1,16 @@
 package com.terrasystems.emedics.security;
 
 
+import com.terrasystems.emedics.dao.OrganizationRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.enums.UserType;
+import com.terrasystems.emedics.model.Organization;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.*;
 import com.terrasystems.emedics.model.mapping.UserMapper;
-import com.terrasystems.emedics.security.token.TokenUtil;
+import com.terrasystems.emedics.security.JWT.JwtTokenUtil;
 import com.terrasystems.emedics.services.CurrentUserService;
 import com.terrasystems.emedics.services.MailService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,15 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class RegistrationServiceImpl implements RegistrationService, CurrentUserService {
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
-    private final TokenUtil tokenUtil;
+    private final JwtTokenUtil tokenUtil;
 
     @Autowired
     UserRepository userRepository;
     @Autowired
+    OrganizationRepository organizationRepository;
+    @Autowired
     MailService mailService;
     @Autowired
     public RegistrationServiceImpl(@Value("${token.secret}") String secret) {
-        tokenUtil = new TokenUtil(DatatypeConverter.parseBase64Binary(secret));
+        tokenUtil = new JwtTokenUtil();
     }
 
     @Override
@@ -59,7 +63,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             if (mailState.getState()) {
                 User registerUser = new User();
                 Set<Role> roles = new HashSet<>();
-                Role role = new Role(userDto.getUserType().toString());
+                Role role = new Role("ROLE_"+userDto.getUserType().toString());
                 role.setUser(registerUser);
                 roles.add(role);
                 registerUser.setRoles(roles);
@@ -73,6 +77,16 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 registerUser.setPhone(userDto.getPhone());
                 registerUser.setUserType(userDto.getUserType());
                 registerUser.setActivationToken(activateToken);
+                if (userDto.getAdmin()) {
+                    registerUser.setAdmin(true);
+                    Organization organization = new Organization();
+                    registerUser.setOrganization(organization);
+                    organization.setAddress(userDto.getAddress());
+                    organization.setName(userDto.getOrgName());
+                    organization.setWebsite(userDto.getWebsite());
+                    organization.setDescr(userDto.getDescr());
+                    organizationRepository.save(organization);
+                }
                 userRepository.save(registerUser);
                 responseDto.setMsg(MessageEnums.MSG_SEND_LETTER.toString());
                 responseDto.setState(true);
@@ -81,7 +95,6 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 return mailState;
             }
         }
-
     }
 
     @Override
@@ -95,7 +108,6 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 return new ResponseDto(false, MessageEnums.MSG_BAD.toString());
             } else {
                 user.setEnabled(true);
-                String token = tokenUtil.createTokenForUser(user);
                 user.setRegistrationDate(new Date());
                 user.setEnabled(true);
                 user.setActivationToken(null);
@@ -105,7 +117,6 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             }
         }
         User user = userRepository.findByEmail(emailsStore.get(key));
-        String token = tokenUtil.createTokenForUser(user);
         user.setRegistrationDate(new Date());
         user.setEnabled(true);
         user.setActivationToken(null);
@@ -116,31 +127,65 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
     }
 
     @Override
-    public ResponseDto resetPassword(ResetPasswordDto resetPasswordDto) {
-        return null;
+    public ResponseDto loginUser(LoginDto loginDto) {
+        ResponseDto responseDto = new ResponseDto();
+        User user = userRepository.findByEmail(loginDto.getEmail());
+        UserMapper userMapper = UserMapper.getInstance();
+        if (user == null) {
+            responseDto.setState(false);
+            responseDto.setMsg("Password or email are incorrect");
+            return responseDto;
+        }
+
+        if (loginDto.getPassword().equals(user.getPassword())) {
+            UserDto dto = userMapper.toDTO(user);
+            dto.setToken(user.getEmail() + ":" + user.getPassword() + ":" + user.getUserType().toString());
+            responseDto.setMsg("Login correct");
+            responseDto.setState(true);
+            responseDto.setResult(dto);
+            return responseDto;
+        } else {
+            responseDto.setState(false);
+            responseDto.setMsg("Password or email are incorrect");
+            return responseDto;
+        }
     }
 
     @Override
-    public ResponseDto changePassword(ChangePasswordDto changePasswordDto) {
-        UserMapper userMapper = UserMapper.getInstance();
+    public ResponseDto resetPassword(UserDto userDto) {
+        User loadedUser = userRepository.findByEmail(userDto.getEmail());
         ResponseDto responseDto = new ResponseDto();
-        User current = userRepository.findByEmail(getPrincipals());
-        if (current == null) {
+        if (loadedUser == null) {
             responseDto.setMsg(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
             responseDto.setState(false);
             return responseDto;
         }
-        if (!current.getPassword().equals(changePasswordDto.getOldPass())) {
-            responseDto.setMsg("Old password are incorrect");
-            responseDto.setState(false);
+        String valueKey = RandomStringUtils.randomAlphabetic(10);
+        responseDto = mailService.sendResetPasswordMail(userDto.getEmail(), valueKey);
+        if (responseDto.getState()){
+            loadedUser.setValueKey(valueKey);
+            userRepository.save(loadedUser);
             return responseDto;
         }
-        current.setPassword(changePasswordDto.getNewPass());
-        userRepository.save(current);
-        responseDto.setMsg("Password changed");
-        responseDto.setState(true);
-        responseDto.setResult(userMapper.toDTO(current));
         return responseDto;
+    }
+
+    @Override
+    public ResponseDto changePassword(ResetPasswordDto resetPasswordDto) {
+        User current = userRepository.findByValueKey(resetPasswordDto.getValidKey());
+        ResponseDto responseDto = new ResponseDto();
+        if (current == null) {
+            responseDto.setMsg(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
+            responseDto.setState(false);
+            return responseDto;
+        } else {
+            current.setPassword(resetPasswordDto.getNewPassword());
+            current.setValueKey(null);
+            userRepository.save(current);
+            responseDto.setMsg("Password changed");
+            responseDto.setState(true);
+            return responseDto;
+        }
     }
 
     @Override
@@ -163,7 +208,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         User current = userRepository.findByValueKey(key);
         ResponseDto responseDto = new ResponseDto();
         if(current == null) {
-            responseDto.setMsg("Key is invalid");
+            responseDto.setMsg(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
             responseDto.setState(false);
             return responseDto;
         } else {

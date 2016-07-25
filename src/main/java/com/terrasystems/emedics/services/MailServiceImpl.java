@@ -46,8 +46,18 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public ResponseDto sendResetPasswordMail(String address, String newPass) {
-        return null;
+    public ResponseDto sendResetPasswordMail(String address, String valueKey) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(address);
+        message.setSubject("Reset password for emedics");
+        message.setText("Please visit to link"+" " + URL_RESET+valueKey);
+        message.setFrom("admin@emedics.org");
+        try {
+            mailSender.send(message);
+        } catch (MailException ex) {
+            return new ResponseDto(false, MessageEnums.MSG_ERROR_SEND_MAIL.toString());
+        }
+        return new ResponseDto(true,MessageEnums.MSG_SEND_MAIL.toString());
     }
 
     @Override

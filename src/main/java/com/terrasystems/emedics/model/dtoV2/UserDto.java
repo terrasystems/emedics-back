@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class UserDto implements Serializable {
 
-    private static final long serialVersionUID = 2228192701696515825L;
+    private static final long serialVersionUID = -4420973826814482388L;
     private String id;
     private UserType userType;
     private Types type;
@@ -28,6 +28,7 @@ public class UserDto implements Serializable {
     private String website;
     private Boolean isAdmin;
     private String token;
+    private String descr;
 
     public UserDto() {
     }
@@ -36,7 +37,7 @@ public class UserDto implements Serializable {
         this.id = id;
     }
 
-    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin, String token) {
+    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin, String token, String descr) {
         this.id = id;
         this.userType = userType;
         this.type = type;
@@ -52,6 +53,7 @@ public class UserDto implements Serializable {
         this.website = website;
         this.isAdmin = isAdmin;
         this.token = token;
+        this.descr = descr;
     }
 
     public String getId() {
@@ -174,6 +176,14 @@ public class UserDto implements Serializable {
         this.token = token;
     }
 
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -192,6 +202,7 @@ public class UserDto implements Serializable {
                 .append("website", website)
                 .append("isAdmin", isAdmin)
                 .append("token", token)
+                .append("descr", descr)
                 .toString();
     }
 
@@ -215,6 +226,7 @@ public class UserDto implements Serializable {
                 .append(orgName, userDto.orgName)
                 .append(website, userDto.website)
                 .append(isAdmin, userDto.isAdmin)
+                .append(descr, userDto.descr)
                 .isEquals();
     }
 
@@ -232,6 +244,7 @@ public class UserDto implements Serializable {
                 .append(orgName)
                 .append(website)
                 .append(isAdmin)
+                .append(descr)
                 .toHashCode();
     }
 }

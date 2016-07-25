@@ -7,8 +7,9 @@ public interface RegistrationService {
 
     ResponseDto registerUser(UserDto userDto);
     ResponseDto activateUser(String key);
-    ResponseDto resetPassword(ResetPasswordDto resetPasswordDto);
-    ResponseDto changePassword(ChangePasswordDto changePasswordDto);
+    ResponseDto resetPassword(UserDto userDto);
+    ResponseDto changePassword(ResetPasswordDto resetPasswordDto);
     ResponseDto checkEmail(String email);
     ResponseDto checkKey(String key);
+    ResponseDto loginUser(LoginDto loginDto);
 }

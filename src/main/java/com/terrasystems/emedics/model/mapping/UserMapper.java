@@ -32,6 +32,7 @@ public class UserMapper {
             dto.setAddress(entity.getOrganization().getAddress());
             dto.setOrgName(entity.getOrganization().getName());
             dto.setWebsite(entity.getOrganization().getWebsite());
+            dto.setDescr(entity.getOrganization().getDescr());
         }
         return dto;
     }
