@@ -37,6 +37,8 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
     @Autowired
     MailService mailService;
     @Autowired
+    private JwtTokenUtil generateToken;
+    @Autowired
     public RegistrationServiceImpl(@Value("${token.secret}") String secret) {
         tokenUtil = new JwtTokenUtil();
     }
@@ -99,6 +101,36 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
 
     @Override
     @Transactional
+    public ResponseDto login(LoginDto loginDto) {
+        ResponseDto responseDto = new ResponseDto();
+        UserMapper userMapper = UserMapper.getInstance();
+        /*final UserDetails userDetails =  userDetailsService.loadUserByUsername(loginDto.getEmail());
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userDetails.getUsername(),
+                        userDetails.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);*/
+        User user = userRepository.findByEmail(loginDto.getEmail());
+        if (user != null && user.getPassword().equals(loginDto.getPassword())) {
+            final String token = generateToken.generateToken(user);
+            UserDto dto = userMapper.toDTO(user);
+            dto.setToken(token);
+            responseDto.setState(true);
+            responseDto.setMsg("Auth ok");
+            responseDto.setResult(dto);
+
+            return responseDto;
+        } else {
+            responseDto.setState(false);
+            responseDto.setMsg("User with such email doesn't exist or password is incorrect");
+            return responseDto;
+        }
+    }
+
+    @Override
+    @Transactional
     public ResponseDto activateUser(String key) {
         UserMapper mapper = UserMapper.getInstance();
         String email = emailsStore.get(key);
@@ -107,12 +139,13 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             if (user == null) {
                 return new ResponseDto(false, MessageEnums.MSG_BAD.toString());
             } else {
-                user.setEnabled(true);
                 user.setRegistrationDate(new Date());
                 user.setEnabled(true);
                 user.setActivationToken(null);
                 userRepository.save(user);
-                ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
+                UserDto dto = mapper.toDTO(user);
+                dto.setToken(generateToken.generateToken(user));
+                ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), dto);
                 return response;
             }
         }
@@ -120,36 +153,13 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         user.setRegistrationDate(new Date());
         user.setEnabled(true);
         user.setActivationToken(null);
-        ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString());
-
         userRepository.save(user);
+        UserDto dto = mapper.toDTO(user);
+        dto.setToken(generateToken.generateToken(user));
+        ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), dto);
         return response;
     }
 
-    @Override
-    public ResponseDto loginUser(LoginDto loginDto) {
-        ResponseDto responseDto = new ResponseDto();
-        User user = userRepository.findByEmail(loginDto.getEmail());
-        UserMapper userMapper = UserMapper.getInstance();
-        if (user == null) {
-            responseDto.setState(false);
-            responseDto.setMsg("Password or email are incorrect");
-            return responseDto;
-        }
-
-        if (loginDto.getPassword().equals(user.getPassword())) {
-            UserDto dto = userMapper.toDTO(user);
-            dto.setToken(user.getEmail() + ":" + user.getPassword() + ":" + user.getUserType().toString());
-            responseDto.setMsg("Login correct");
-            responseDto.setState(true);
-            responseDto.setResult(dto);
-            return responseDto;
-        } else {
-            responseDto.setState(false);
-            responseDto.setMsg("Password or email are incorrect");
-            return responseDto;
-        }
-    }
 
     @Override
     public ResponseDto resetPassword(UserDto userDto) {

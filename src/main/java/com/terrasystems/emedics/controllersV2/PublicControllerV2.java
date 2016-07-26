@@ -49,32 +49,8 @@ public class PublicControllerV2 {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto login(@RequestBody LoginDto loginDto) throws AuthenticationException {
-        ResponseDto responseDto = new ResponseDto();
-        UserMapper userMapper = UserMapper.getInstance();
-
-        /*final UserDetails userDetails =  userDetailsService.loadUserByUsername(loginDto.getEmail());
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDetails.getUsername(),
-                        userDetails.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);*/
-        User user = userRepository.findByEmail(loginDto.getEmail());
-        if (user != null && user.getPassword().equals(loginDto.getPassword())) {
-            final String token = generateToken.generateToken(user);
-            UserDto dto = userMapper.toDTO(user);
-            dto.setToken(token);
-            responseDto.setState(true);
-            responseDto.setMsg("Auth ok");
-            responseDto.setResult(dto);
-
-            return responseDto;
-        } else {
-            responseDto.setState(false);
-            responseDto.setMsg("User with such email doesn't exist or password is incorrect");
-            return responseDto;
-        }
+        ResponseDto responseDto = registrationService.login(loginDto);
+        return responseDto;
     }
 
     @RequestMapping(value = "/activate/{key}", method = RequestMethod.GET)

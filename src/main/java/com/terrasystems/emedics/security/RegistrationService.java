@@ -11,5 +11,5 @@ public interface RegistrationService {
     ResponseDto changePassword(ResetPasswordDto resetPasswordDto);
     ResponseDto checkEmail(String email);
     ResponseDto checkKey(String key);
-    ResponseDto loginUser(LoginDto loginDto);
+    ResponseDto login(LoginDto loginDto);
 }
