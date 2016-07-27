@@ -9,6 +9,7 @@ import com.terrasystems.emedics.model.Organization;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.*;
+import com.terrasystems.emedics.model.mapping.TypeMapper;
 import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.security.JWT.JwtTokenUtil;
 import com.terrasystems.emedics.services.CurrentUserService;
@@ -48,10 +49,13 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
     public ResponseDto registerUser(UserDto userDto) {
 
         ResponseDto responseDto = new ResponseDto();
+        TypeMapper mapper = TypeMapper.getInstance();
         ResponseDto mailState;
 
-        if (userDto.getPass() == null) {
-            userDto.setPass(RandomStringUtils.random(10, 'a','b','c','A','B','C','1','2','3','4','5'));
+        if (userDto.getPass() == null || userDto.getEmail() == null) {
+            responseDto.setMsg("Fill in all required fields");
+            responseDto.setState(false);
+            return responseDto;
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
@@ -79,6 +83,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 registerUser.setPhone(userDto.getPhone());
                 registerUser.setUserType(userDto.getUserType());
                 registerUser.setActivationToken(activateToken);
+                registerUser.setType(mapper.toEntity(userDto.getType()));
                 if (userDto.getAdmin()) {
                     registerUser.setAdmin(true);
                     Organization organization = new Organization();

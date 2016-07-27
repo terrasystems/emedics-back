@@ -15,7 +15,7 @@ public class UserDto implements Serializable {
     private static final long serialVersionUID = -4420973826814482388L;
     private String id;
     private UserType userType;
-    private Types type;
+    private TypeDto type;
     private String name;
     private String firstName;
     private String lastName ;
@@ -36,7 +36,7 @@ public class UserDto implements Serializable {
         this.id = id;
     }
 
-    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin,String descr) {
+    public UserDto(String id, UserType userType, TypeDto type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin,String descr) {
         this.id = id;
         this.userType = userType;
         this.type = type;
@@ -70,11 +70,11 @@ public class UserDto implements Serializable {
         this.userType = userType;
     }
 
-    public Types getType() {
+    public TypeDto getType() {
         return type;
     }
 
-    public void setType(Types type) {
+    public void setType(TypeDto type) {
         this.type = type;
     }
 

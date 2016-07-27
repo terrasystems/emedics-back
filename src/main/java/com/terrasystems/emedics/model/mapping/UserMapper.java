@@ -17,10 +17,11 @@ public class UserMapper {
     }
 
     public UserDto toDTO(User entity) {
+        TypeMapper mapper = TypeMapper.getInstance();
         UserDto dto = new UserDto();
         dto.setId(entity.getId());
         dto.setUserType(entity.getUserType());
-        dto.setType(entity.getType());
+        dto.setType(mapper.toDto(entity.getType()));
         dto.setName(entity.getName());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());

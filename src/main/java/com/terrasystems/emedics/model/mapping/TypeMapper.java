@@ -22,4 +22,12 @@ public class TypeMapper {
         dto.setId(types.getId());
         return dto;
     }
+
+    public Types toEntity(TypeDto dto) {
+        Types type = new Types();
+        type.setUserType(dto.getUserType());
+        type.setName(dto.getName());
+        type.setId(dto.getId());
+        return type;
+    }
 }
