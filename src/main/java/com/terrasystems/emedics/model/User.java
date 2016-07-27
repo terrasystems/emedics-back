@@ -80,9 +80,6 @@ public class User extends BaseEntity implements UserDetails{
     @Column
     protected boolean enabled = false;
 
-    //TODO
-    @Column(name = "allowed_forms_count", nullable = false)
-    protected int allowedFormsCount = 5;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Types type;
@@ -265,14 +262,6 @@ public class User extends BaseEntity implements UserDetails{
         this.enabled = enabled;
     }
 
-    public int getAllowedFormsCount() {
-        return allowedFormsCount;
-    }
-
-    public void setAllowedFormsCount(int allowedFormsCount) {
-        this.allowedFormsCount = allowedFormsCount;
-    }
-
     public Types getType() {
         return type;
     }
@@ -351,7 +340,6 @@ public class User extends BaseEntity implements UserDetails{
                 .append("email", email)
                 .append("typeExp", typeExp)
                 .append("enabled", enabled)
-                .append("allowedFormsCount", allowedFormsCount)
                 .toString();
     }
 
@@ -366,7 +354,6 @@ public class User extends BaseEntity implements UserDetails{
         return new EqualsBuilder()
                 .append(isAdmin(), user.isAdmin())
                 .append(isEnabled(), user.isEnabled())
-                .append(getAllowedFormsCount(), user.getAllowedFormsCount())
                 .append(getName(), user.getName())
                 .append(getFirstName(), user.getFirstName())
                 .append(getLastName(), user.getLastName())
@@ -397,13 +384,11 @@ public class User extends BaseEntity implements UserDetails{
                 .append(getEmail())
                 .append(getTypeExp())
                 .append(isEnabled())
-                .append(getAllowedFormsCount())
                 .toHashCode();
     }
 
     @PrePersist
     public void preInsert() {
-        allowedFormsCount = 5;
         if ((firstName == null) && (lastName == null)) {
             name = email;
         } else if (firstName == null) {

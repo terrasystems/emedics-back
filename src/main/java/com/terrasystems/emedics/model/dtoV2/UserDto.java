@@ -27,7 +27,6 @@ public class UserDto implements Serializable {
     private String orgName;
     private String website;
     private Boolean isAdmin;
-    private String token;
     private String descr;
 
     public UserDto() {
@@ -37,7 +36,7 @@ public class UserDto implements Serializable {
         this.id = id;
     }
 
-    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin, String token, String descr) {
+    public UserDto(String id, UserType userType, Types type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin,String descr) {
         this.id = id;
         this.userType = userType;
         this.type = type;
@@ -52,7 +51,6 @@ public class UserDto implements Serializable {
         this.orgName = orgName;
         this.website = website;
         this.isAdmin = isAdmin;
-        this.token = token;
         this.descr = descr;
     }
 
@@ -168,14 +166,6 @@ public class UserDto implements Serializable {
         isAdmin = admin;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getDescr() {
         return descr;
     }
@@ -201,7 +191,6 @@ public class UserDto implements Serializable {
                 .append("orgName", orgName)
                 .append("website", website)
                 .append("isAdmin", isAdmin)
-                .append("token", token)
                 .append("descr", descr)
                 .toString();
     }

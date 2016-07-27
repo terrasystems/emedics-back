@@ -115,11 +115,10 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user != null && user.getPassword().equals(loginDto.getPassword())) {
             final String token = generateToken.generateToken(user);
-            UserDto dto = userMapper.toDTO(user);
-            dto.setToken(token);
+            AuthDto authDto = new AuthDto(userMapper.toDTO(user), token);
             responseDto.setState(true);
             responseDto.setMsg("Auth ok");
-            responseDto.setResult(dto);
+            responseDto.setResult(authDto);
 
             return responseDto;
         } else {
@@ -143,9 +142,8 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
                 user.setEnabled(true);
                 user.setActivationToken(null);
                 userRepository.save(user);
-                UserDto dto = mapper.toDTO(user);
-                dto.setToken(generateToken.generateToken(user));
-                ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), dto);
+                AuthDto authDto = new AuthDto(mapper.toDTO(user), generateToken.generateToken(user));
+                ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), authDto);
                 return response;
             }
         }
@@ -154,9 +152,8 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         user.setEnabled(true);
         user.setActivationToken(null);
         userRepository.save(user);
-        UserDto dto = mapper.toDTO(user);
-        dto.setToken(generateToken.generateToken(user));
-        ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), dto);
+        AuthDto authDto = new AuthDto(mapper.toDTO(user), generateToken.generateToken(user));
+        ResponseDto response = new ResponseDto(true, MessageEnums.MSG_USER_ACTIVED.toString(), authDto);
         return response;
     }
 
@@ -182,6 +179,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
 
     @Override
     public ResponseDto changePassword(ResetPasswordDto resetPasswordDto) {
+        UserMapper mapper = UserMapper.getInstance();
         User current = userRepository.findByValueKey(resetPasswordDto.getValidKey());
         ResponseDto responseDto = new ResponseDto();
         if (current == null) {
@@ -192,8 +190,10 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             current.setPassword(resetPasswordDto.getNewPassword());
             current.setValueKey(null);
             userRepository.save(current);
+            AuthDto authDto = new AuthDto(mapper.toDTO(current), generateToken.generateToken(current));
             responseDto.setMsg("Password changed");
             responseDto.setState(true);
+            responseDto.setResult(authDto);
             return responseDto;
         }
     }

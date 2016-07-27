@@ -1,7 +1,7 @@
 package com.terrasystems.emedics.model;
 
 
-import com.terrasystems.emedics.enums.DocTypeEnum;
+import com.terrasystems.emedics.enums.UserType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,14 +12,12 @@ import java.util.Set;
 public class Types extends BaseEntity {
 
     private static final long serialVersionUID = -2537566422604593137L;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type", fetch = FetchType.EAGER, orphanRemoval = true)
-    protected Set<User> users;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "value")
-    private DocTypeEnum value;
+    @Column(name = "userType")
+    private UserType userType;
 
     public Types() {}
 
@@ -31,19 +29,12 @@ public class Types extends BaseEntity {
         this.name = name;
     }
 
-    public DocTypeEnum getValue() {
-        return value;
+    public UserType getUserType() {
+        return userType;
     }
 
-    public void setValue(DocTypeEnum value) {
-        this.value = value;
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
 }

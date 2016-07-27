@@ -31,4 +31,12 @@ public class ApplicationExceptionHandler {
         ResponseDto resp = new ResponseDto(false, MessageEnums.MSG_NOT_ACTIVATE.toString());
         return resp;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @RequestMapping("incorrect")
+    @ResponseBody
+    public ResponseDto incorrect(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ResponseDto resp = new ResponseDto(false, "The request sent by the client was syntactically incorrect.");
+        return resp;
+    }
 }

@@ -1,20 +1,22 @@
 package com.terrasystems.emedics.model.dtoV2;
 
 
+import com.terrasystems.emedics.enums.UserType;
+
 import java.io.Serializable;
 
 public class CriteriaDto implements Serializable {
 
-    private static final long serialVersionUID = -6811391987702533531L;
+    private static final long serialVersionUID = -6811391987702531431L;
     private String search;
     private Integer count;
     private Integer start;
-    private String type;
+    private UserType type;
 
     public CriteriaDto() {
     }
 
-    public CriteriaDto(String search, Integer count, Integer start, String type) {
+    public CriteriaDto(String search, Integer count, Integer start, UserType type) {
         this.search = search;
         this.count = count;
         this.start = start;
@@ -45,11 +47,11 @@ public class CriteriaDto implements Serializable {
         this.start = start;
     }
 
-    public String getType() {
+    public UserType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(UserType type) {
         this.type = type;
     }
 }

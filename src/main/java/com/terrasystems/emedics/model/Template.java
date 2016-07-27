@@ -1,12 +1,11 @@
 package com.terrasystems.emedics.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.terrasystems.emedics.enums.CommercialEnum;
 import com.terrasystems.emedics.enums.TypeEnum;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "templates")
@@ -14,13 +13,12 @@ public class Template extends BaseEntity{
 
     private static final long serialVersionUID = -1077414207848205659L;
 
-    public Template(String category, String body, String descr, String name, String number, CommercialEnum commercialEnum,
-                    TypeEnum typeEnum) {
-        this.number = number;
+    public Template(String name, String category, String body, String descr, String number, boolean commercialEnum, TypeEnum typeEnum) {
+        this.name = name;
         this.category = category;
         this.body = body;
         this.descr = descr;
-        this.name = name;
+        this.number = number;
         this.commercialEnum = commercialEnum;
         this.typeEnum = typeEnum;
     }
@@ -47,7 +45,7 @@ public class Template extends BaseEntity{
     private String number;
 
     @Column(name = "commercial")
-    private CommercialEnum commercialEnum;
+    private boolean commercialEnum;
 
     @Column(name = "med_type")
     private TypeEnum typeEnum;
@@ -93,11 +91,11 @@ public class Template extends BaseEntity{
         this.descr = descr;
     }
 
-    public CommercialEnum getCommercialEnum() {
+    public boolean isCommercialEnum() {
         return commercialEnum;
     }
 
-    public void setCommercialEnum(CommercialEnum commercialEnum) {
+    public void setCommercialEnum(boolean commercialEnum) {
         this.commercialEnum = commercialEnum;
     }
 

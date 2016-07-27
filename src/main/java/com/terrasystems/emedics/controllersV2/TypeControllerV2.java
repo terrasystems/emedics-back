@@ -3,6 +3,8 @@ package com.terrasystems.emedics.controllersV2;
 import com.terrasystems.emedics.model.dtoV2.CriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TypeDto;
+import com.terrasystems.emedics.services.TypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,13 +14,13 @@ import java.util.List;
 @RequestMapping(value = "/api/v2/types")
 public class TypeControllerV2 {
 
+    @Autowired
+    TypeService typeService;
+
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllTypes(@RequestBody CriteriaDto criteria) {
-        List<TypeDto> typeDtos = new ArrayList<>();
-        typeDtos.add(new TypeDto("id"));
-        typeDtos.add(new TypeDto("id"));
-        return new ResponseDto(true, "Base msg", typeDtos);
+        return typeService.getAllTypes(criteria);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
