@@ -81,7 +81,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                 registerUser.setPhone(userDto.getPhone());
                 registerUser.setUserType(userDto.getUserType());
                 registerUser.setActivationToken(activateToken);
-                registerUser.setType(mapper.toEntity(userDto.getType()));
+                if (userDto.getUserType().toString().equals("DOCTOR") || userDto.getUserType().toString().equals("ORG")){
+                    if (userDto.getType() == null) {
+                        responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
+                        responseDto.setState(false);
+                        return responseDto;
+                    }
+                    registerUser.setType(mapper.toEntity(userDto.getType()));
+                }
                 if (userDto.getAdmin()) {
                     registerUser.setAdmin(true);
                     Organization organization = new Organization();

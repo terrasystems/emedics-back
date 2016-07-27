@@ -21,7 +21,9 @@ public class UserMapper {
         UserDto dto = new UserDto();
         dto.setId(entity.getId());
         dto.setUserType(entity.getUserType());
-        dto.setType(mapper.toDto(entity.getType()));
+        if (entity.getType() != null) {
+            dto.setType(mapper.toDto(entity.getType()));
+        }
         dto.setName(entity.getName());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
