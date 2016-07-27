@@ -4,7 +4,6 @@ package com.terrasystems.emedics.security;
 import com.terrasystems.emedics.dao.OrganizationRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
-import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.Organization;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
@@ -12,7 +11,6 @@ import com.terrasystems.emedics.model.dtoV2.*;
 import com.terrasystems.emedics.model.mapping.TypeMapper;
 import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.security.JWT.JwtTokenUtil;
-import com.terrasystems.emedics.services.CurrentUserService;
 import com.terrasystems.emedics.services.MailService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class RegistrationServiceImpl implements RegistrationService, CurrentUserService {
+public class RegistrationServiceImpl implements RegistrationService {
     private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
     private final JwtTokenUtil tokenUtil;
 
@@ -53,14 +51,14 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         ResponseDto mailState;
 
         if (userDto.getPass() == null || userDto.getEmail() == null) {
-            responseDto.setMsg("Fill in all required fields");
+            responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
             responseDto.setState(false);
             return responseDto;
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
             responseDto.setState(false);
-            responseDto.setMsg("User with such email exist");
+            responseDto.setMsg(MessageEnums.MSG_EMAIL_EXIST.toString());
             return responseDto;
         } else {
             String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f');
@@ -122,13 +120,13 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             final String token = generateToken.generateToken(user);
             AuthDto authDto = new AuthDto(userMapper.toDTO(user), token);
             responseDto.setState(true);
-            responseDto.setMsg("Auth ok");
+            responseDto.setMsg(MessageEnums.MSG_LOGINED.toString());
             responseDto.setResult(authDto);
 
             return responseDto;
         } else {
             responseDto.setState(false);
-            responseDto.setMsg("User with such email doesn't exist or password is incorrect");
+            responseDto.setMsg(MessageEnums.MSG_BAD_CREDENTIALS.toString());
             return responseDto;
         }
     }
@@ -196,7 +194,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             current.setValueKey(null);
             userRepository.save(current);
             AuthDto authDto = new AuthDto(mapper.toDTO(current), generateToken.generateToken(current));
-            responseDto.setMsg("Password changed");
+            responseDto.setMsg(MessageEnums.MSG_PASS_CHANGED.toString());
             responseDto.setState(true);
             responseDto.setResult(authDto);
             return responseDto;
@@ -208,11 +206,11 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
         boolean emailExist = userRepository.existsByEmail(email);
         ResponseDto responseDto = new ResponseDto();
         if(emailExist) {
-            responseDto.setMsg("User with this email exist");
+            responseDto.setMsg(MessageEnums.MSG_EMAIL_EXIST.toString());
             responseDto.setState(false);
             return responseDto;
         } else {
-            responseDto.setMsg("Email is valid");
+            responseDto.setMsg(MessageEnums.MSG_VALID_EMAIL.toString());
             responseDto.setState(true);
             return responseDto;
         }
@@ -227,7 +225,7 @@ public class RegistrationServiceImpl implements RegistrationService, CurrentUser
             responseDto.setState(false);
             return responseDto;
         } else {
-            responseDto.setMsg("Key is valid");
+            responseDto.setMsg(MessageEnums.MSG_VALID_KEY.toString());
             responseDto.setState(true);
             return responseDto;
         }

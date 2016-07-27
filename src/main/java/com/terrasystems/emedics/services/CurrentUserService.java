@@ -1,3 +1,4 @@
+/*
 package com.terrasystems.emedics.services;
 
 
@@ -9,3 +10,4 @@ public interface CurrentUserService {
         return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
+*/

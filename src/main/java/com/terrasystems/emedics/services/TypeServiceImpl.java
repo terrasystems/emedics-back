@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.TypeRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.dtoV2.CriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TypeDto;
@@ -36,6 +37,6 @@ public class TypeServiceImpl implements  TypeService {
             return responseDto;
         }
 
-        return new ResponseDto(false, "Type is null");
+        return new ResponseDto(false, MessageEnums.MSG_TYPE_IS_NULL.toString());
     }
 }

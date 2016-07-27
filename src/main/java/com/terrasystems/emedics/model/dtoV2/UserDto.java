@@ -26,7 +26,7 @@ public class UserDto implements Serializable {
     private String address;
     private String orgName;
     private String website;
-    private Boolean isAdmin;
+    private Boolean admin;
     private String descr;
 
     public UserDto() {
@@ -36,7 +36,7 @@ public class UserDto implements Serializable {
         this.id = id;
     }
 
-    public UserDto(String id, UserType userType, TypeDto type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean isAdmin,String descr) {
+    public UserDto(String id, UserType userType, TypeDto type, String name, String firstName, String lastName, String pass, Date dob, String email, String phone, String address, String orgName, String website, Boolean admin,String descr) {
         this.id = id;
         this.userType = userType;
         this.type = type;
@@ -50,7 +50,7 @@ public class UserDto implements Serializable {
         this.address = address;
         this.orgName = orgName;
         this.website = website;
-        this.isAdmin = isAdmin;
+        this.admin = admin;
         this.descr = descr;
     }
 
@@ -159,11 +159,11 @@ public class UserDto implements Serializable {
     }
 
     public Boolean getAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public String getDescr() {
@@ -190,7 +190,7 @@ public class UserDto implements Serializable {
                 .append("address", address)
                 .append("orgName", orgName)
                 .append("website", website)
-                .append("isAdmin", isAdmin)
+                .append("admin", admin)
                 .append("descr", descr)
                 .toString();
     }
@@ -214,7 +214,7 @@ public class UserDto implements Serializable {
                 .append(address, userDto.address)
                 .append(orgName, userDto.orgName)
                 .append(website, userDto.website)
-                .append(isAdmin, userDto.isAdmin)
+                .append(admin, userDto.admin)
                 .append(descr, userDto.descr)
                 .isEquals();
     }
@@ -232,7 +232,7 @@ public class UserDto implements Serializable {
                 .append(address)
                 .append(orgName)
                 .append(website)
-                .append(isAdmin)
+                .append(admin)
                 .append(descr)
                 .toHashCode();
     }

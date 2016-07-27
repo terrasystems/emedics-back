@@ -16,7 +16,7 @@ public class TemplateDto implements Serializable {
     private String type;
     private String name;
     private Boolean commerce;
-    private Boolean isPaid;
+    private Boolean paid;
     private String number;
     private Boolean load;
     private String descr;
@@ -28,13 +28,13 @@ public class TemplateDto implements Serializable {
         this.id = id;
     }
 
-    public TemplateDto(String id, JsonNode body, String type, String name, Boolean commerce, Boolean isPaid, String number, Boolean load, String descr) {
+    public TemplateDto(String id, JsonNode body, String type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr) {
         this.id = id;
         this.body = body;
         this.type = type;
         this.name = name;
         this.commerce = commerce;
-        this.isPaid = isPaid;
+        this.paid = paid;
         this.number = number;
         this.load = load;
         this.descr = descr;
@@ -80,14 +80,6 @@ public class TemplateDto implements Serializable {
         this.commerce = commerce;
     }
 
-    public Boolean getPaid() {
-        return isPaid;
-    }
-
-    public void setPaid(Boolean paid) {
-        isPaid = paid;
-    }
-
     public String getNumber() {
         return number;
     }
@@ -112,6 +104,14 @@ public class TemplateDto implements Serializable {
         this.descr = descr;
     }
 
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -120,7 +120,7 @@ public class TemplateDto implements Serializable {
                 .append("type", type)
                 .append("name", name)
                 .append("commerce", commerce)
-                .append("isPaid", isPaid)
+                .append("paid", paid)
                 .append("number", number)
                 .append("load", load)
                 .append("descr", descr)
@@ -140,7 +140,7 @@ public class TemplateDto implements Serializable {
                 .append(type, that.type)
                 .append(name, that.name)
                 .append(commerce, that.commerce)
-                .append(isPaid, that.isPaid)
+                .append(paid, that.paid)
                 .append(number, that.number)
                 .append(load, that.load)
                 .append(descr, that.descr)
@@ -154,7 +154,7 @@ public class TemplateDto implements Serializable {
                 .append(type)
                 .append(name)
                 .append(commerce)
-                .append(isPaid)
+                .append(paid)
                 .append(number)
                 .append(load)
                 .append(descr)

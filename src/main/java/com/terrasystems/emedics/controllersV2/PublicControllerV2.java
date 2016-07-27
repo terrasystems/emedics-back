@@ -1,6 +1,7 @@
 package com.terrasystems.emedics.controllersV2;
 
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.MessageEnums;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.*;
 import com.terrasystems.emedics.model.mapping.UserMapper;
@@ -64,7 +65,7 @@ public class PublicControllerV2 {
     @ResponseBody
     public ResponseDto resetPass(@RequestBody UserDto userDto) {
         if (userDto.getEmail() == null) {
-            return new ResponseDto(false, "email is null");
+            return new ResponseDto(false, MessageEnums.MSG_EMPTY_EMAIL.toString());
         }
         ResponseDto response = registrationService.resetPassword(userDto);
         response.setResult(userDto.getEmail());
