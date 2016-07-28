@@ -19,7 +19,7 @@ public class ReferenceDto implements Serializable {
     private String lastName;
     private UserType userType;
     private Date dob;
-    private Types type;
+    private TypeDto type;
     private String email;
     private Boolean active;
     private String phone;
@@ -31,7 +31,7 @@ public class ReferenceDto implements Serializable {
         this.id = id;
     }
 
-    public ReferenceDto(String id, String name, String firstName, String lastName, UserType userType, Date dob, Types type, String email, Boolean active, String phone) {
+    public ReferenceDto(String id, String name, String firstName, String lastName, UserType userType, Date dob, TypeDto type, String email, Boolean active, String phone) {
         this.id = id;
         this.name = name;
         this.firstName = firstName;
@@ -92,11 +92,11 @@ public class ReferenceDto implements Serializable {
         this.dob = dob;
     }
 
-    public Types getType() {
+    public TypeDto getType() {
         return type;
     }
 
-    public void setType(Types type) {
+    public void setType(TypeDto type) {
         this.type = type;
     }
 

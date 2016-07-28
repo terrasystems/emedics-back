@@ -4,6 +4,7 @@ package com.terrasystems.emedics.security;
 import com.terrasystems.emedics.dao.OrganizationRepository;
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.Organization;
 import com.terrasystems.emedics.model.Role;
 import com.terrasystems.emedics.model.User;
@@ -26,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
-    private static Map<String,String> emailsStore= new ConcurrentHashMap<>();
+    private static Map<String, String> emailsStore = new ConcurrentHashMap<>();
     private final JwtTokenUtil tokenUtil;
 
     @Autowired
@@ -37,6 +38,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     MailService mailService;
     @Autowired
     private JwtTokenUtil generateToken;
+
     @Autowired
     public RegistrationServiceImpl(@Value("${token.secret}") String secret) {
         tokenUtil = new JwtTokenUtil();
@@ -45,68 +47,120 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public ResponseDto registerUser(UserDto userDto) {
-
-        ResponseDto responseDto = new ResponseDto();
         TypeMapper mapper = TypeMapper.getInstance();
-        ResponseDto mailState;
 
-        if (userDto.getPass() == null || userDto.getEmail() == null) {
-            responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
-            responseDto.setState(false);
-            return responseDto;
+        if (isInvalidCredentionals(userDto)) {
+            return createInvalidCredentionalResponse();
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            responseDto.setState(false);
-            responseDto.setMsg(MessageEnums.MSG_EMAIL_EXIST.toString());
-            return responseDto;
-        } else {
-            String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c','d','e','f');
-            emailsStore.put(activateToken, userDto.getEmail());
-            mailState = mailService.sendRegistrationMail(userDto.getEmail(), activateToken, userDto.getPass());
-            if (mailState.getState()) {
-                User registerUser = new User();
-                Set<Role> roles = new HashSet<>();
-                Role role = new Role("ROLE_"+userDto.getUserType().toString());
-                role.setUser(registerUser);
-                roles.add(role);
-                registerUser.setRoles(roles);
-                registerUser.setUsers(new HashSet<>());
-                registerUser.setReferences(new HashSet<>());
-                registerUser.setFirstName(userDto.getFirstName());
-                registerUser.setLastName(userDto.getLastName());
-                registerUser.setBirth(userDto.getDob());
-                registerUser.setEmail(userDto.getEmail());
-                registerUser.setPassword(userDto.getPass());
-                registerUser.setPhone(userDto.getPhone());
-                registerUser.setUserType(userDto.getUserType());
-                registerUser.setActivationToken(activateToken);
-                if (userDto.getUserType().toString().equals("DOCTOR") || userDto.getUserType().toString().equals("ORG")){
-                    if (userDto.getType() == null) {
-                        responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
-                        responseDto.setState(false);
-                        return responseDto;
-                    }
-                    registerUser.setType(mapper.toEntity(userDto.getType()));
-                }
-                if (userDto.getAdmin()) {
-                    registerUser.setAdmin(true);
-                    Organization organization = new Organization();
-                    registerUser.setOrganization(organization);
-                    organization.setAddress(userDto.getAddress());
-                    organization.setName(userDto.getOrgName());
-                    organization.setWebsite(userDto.getWebsite());
-                    organization.setDescr(userDto.getDescr());
-                    organizationRepository.save(organization);
-                }
-                userRepository.save(registerUser);
-                responseDto.setMsg(MessageEnums.MSG_SEND_LETTER.toString());
-                responseDto.setState(true);
-                return responseDto;
-            } else {
-                return mailState;
-            }
+            return createMailExistsResponse();
         }
+
+        String activateToken = createActivationMark(userDto);
+        ResponseDto mailState = mailService.sendRegistrationMail(userDto.getEmail(), activateToken, userDto.getPass());
+        if (!mailState.getState()) {
+            return mailState;
+        }
+
+        User registerUser = createUser(userDto, activateToken);
+        Role role = createRole(userDto, registerUser);
+
+        bindUserRole(registerUser, role);
+
+        if (isDoctorOrOrg(userDto)) {
+            if (userDto.getType() == null) {
+                return createRequiredFieldFailResponse();
+            }
+            registerUser.setType(mapper.toEntity(userDto.getType()));
+        }
+        if (userDto.getAdmin()) {
+            registerUser.setAdmin(true);
+            Organization organization = createOrganization(userDto, registerUser);
+            organizationRepository.save(organization);
+        }
+        userRepository.save(registerUser);
+        return createSuccessRegistrationResponse();
+    }
+
+    private String createActivationMark(UserDto userDto) {
+        String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c', 'd', 'e', 'f');
+        emailsStore.put(activateToken, userDto.getEmail());
+        return activateToken;
+    }
+
+
+    private ResponseDto createSuccessRegistrationResponse() {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMsg(MessageEnums.MSG_SEND_LETTER.toString());
+        responseDto.setState(true);
+        return responseDto;
+    }
+
+    private Organization createOrganization(UserDto userDto, User registerUser) {
+        Organization organization = new Organization();
+        registerUser.setOrganization(organization);
+        organization.setAddress(userDto.getAddress());
+        organization.setName(userDto.getOrgName());
+        organization.setWebsite(userDto.getWebsite());
+        organization.setDescr(userDto.getDescr());
+        return organization;
+    }
+
+    private ResponseDto createRequiredFieldFailResponse() {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
+        responseDto.setState(false);
+        return responseDto;
+    }
+
+    private boolean isDoctorOrOrg(UserDto userDto) {
+        return UserType.DOCTOR.equals(userDto.getUserType()) || userDto.getUserType() == UserType.ORG;
+    }
+
+    private void bindUserRole(User registerUser, Role role) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        registerUser.setRoles(roles);
+    }
+
+    private Role createRole(UserDto userDto, User registerUser) {
+        Role role = new Role("ROLE_" + userDto.getUserType().toString());
+        role.setUser(registerUser);
+        return role;
+    }
+
+    private User createUser(UserDto userDto, String activateToken) {
+        User registerUser = new User();
+        registerUser.setUsers(new HashSet<>());
+        registerUser.setReferences(new HashSet<>());
+        registerUser.setFirstName(userDto.getFirstName());
+        registerUser.setLastName(userDto.getLastName());
+        registerUser.setBirth(userDto.getDob());
+        registerUser.setEmail(userDto.getEmail());
+        registerUser.setPassword(userDto.getPass());
+        registerUser.setPhone(userDto.getPhone());
+        registerUser.setUserType(userDto.getUserType());
+        registerUser.setActivationToken(activateToken);
+        return registerUser;
+    }
+
+    private ResponseDto createMailExistsResponse() {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setState(false);
+        responseDto.setMsg(MessageEnums.MSG_EMAIL_EXIST.toString());
+        return responseDto;
+    }
+
+    private boolean isInvalidCredentionals(UserDto userDto) {
+        return userDto.getPass() == null || userDto.getEmail() == null;
+    }
+
+    private ResponseDto createInvalidCredentionalResponse() {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
+        responseDto.setState(false);
+        return responseDto;
     }
 
     @Override
@@ -179,7 +233,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         String valueKey = RandomStringUtils.randomAlphabetic(10);
         responseDto = mailService.sendResetPasswordMail(userDto.getEmail(), valueKey);
-        if (responseDto.getState()){
+        if (responseDto.getState()) {
             loadedUser.setValueKey(valueKey);
             userRepository.save(loadedUser);
             return responseDto;
@@ -196,23 +250,23 @@ public class RegistrationServiceImpl implements RegistrationService {
             responseDto.setMsg(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
             responseDto.setState(false);
             return responseDto;
-        } else {
-            current.setPassword(resetPasswordDto.getNewPassword());
-            current.setValueKey(null);
-            userRepository.save(current);
-            AuthDto authDto = new AuthDto(mapper.toDTO(current), generateToken.generateToken(current));
-            responseDto.setMsg(MessageEnums.MSG_PASS_CHANGED.toString());
-            responseDto.setState(true);
-            responseDto.setResult(authDto);
-            return responseDto;
         }
+        current.setPassword(resetPasswordDto.getNewPassword());
+        current.setValueKey(null);
+        userRepository.save(current);
+        AuthDto authDto = new AuthDto(mapper.toDTO(current), generateToken.generateToken(current));
+        responseDto.setMsg(MessageEnums.MSG_PASS_CHANGED.toString());
+        responseDto.setState(true);
+        responseDto.setResult(authDto);
+        return responseDto;
+
     }
 
     @Override
     public ResponseDto checkEmail(String email) {
         boolean emailExist = userRepository.existsByEmail(email);
         ResponseDto responseDto = new ResponseDto();
-        if(emailExist) {
+        if (emailExist) {
             responseDto.setMsg(MessageEnums.MSG_EMAIL_EXIST.toString());
             responseDto.setState(false);
             return responseDto;
@@ -227,7 +281,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public ResponseDto checkKey(String key) {
         User current = userRepository.findByValueKey(key);
         ResponseDto responseDto = new ResponseDto();
-        if(current == null) {
+        if (current == null) {
             responseDto.setMsg(MessageEnums.MSG_EMAIL_NOT_EXIST.toString());
             responseDto.setState(false);
             return responseDto;

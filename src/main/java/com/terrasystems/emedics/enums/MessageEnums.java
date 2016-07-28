@@ -18,5 +18,10 @@ public enum MessageEnums {
     MSG_PASS_CHANGED,
     MSG_VALID_EMAIL,
     MSG_VALID_KEY,
-    MSG_TYPE_IS_NULL
+    MSG_TYPE_IS_NULL,
+    MSG_PAT_REF,
+    MSG_DOC_REF,
+    MSG_REF_REMOVED,
+    MSG_REF_ADDED,
+    MSG_USER_NOT_FOUND
 }
