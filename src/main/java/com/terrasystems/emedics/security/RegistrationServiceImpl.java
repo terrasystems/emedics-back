@@ -49,8 +49,8 @@ public class RegistrationServiceImpl implements RegistrationService {
     public ResponseDto registerUser(UserDto userDto) {
         TypeMapper mapper = TypeMapper.getInstance();
 
-        if (isInvalidCredentionals(userDto)) {
-            return createInvalidCredentionalResponse();
+        if (isInvalidCredentials(userDto)) {
+            return createInvalidCredentialResponse();
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
@@ -115,7 +115,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private boolean isDoctorOrOrg(UserDto userDto) {
-        return UserType.DOCTOR.equals(userDto.getUserType()) || userDto.getUserType() == UserType.ORG;
+        return UserType.DOCTOR.equals(userDto.getUserType()) || UserType.ORG.equals(userDto.getUserType());
     }
 
     private void bindUserRole(User registerUser, Role role) {
@@ -152,11 +152,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         return responseDto;
     }
 
-    private boolean isInvalidCredentionals(UserDto userDto) {
+    private boolean isInvalidCredentials(UserDto userDto) {
         return userDto.getPass() == null || userDto.getEmail() == null;
     }
 
-    private ResponseDto createInvalidCredentionalResponse() {
+    private ResponseDto createInvalidCredentialResponse() {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMsg(MessageEnums.MSG_REQUIRED_FIELDS_EXCEPTION.toString());
         responseDto.setState(false);

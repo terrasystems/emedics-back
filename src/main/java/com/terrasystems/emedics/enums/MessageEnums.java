@@ -23,5 +23,7 @@ public enum MessageEnums {
     MSG_DOC_REF,
     MSG_REF_REMOVED,
     MSG_REF_ADDED,
-    MSG_USER_NOT_FOUND
+    MSG_USER_NOT_FOUND,
+    MSG_REF_CREATED,
+    MSG_NOT_SUPPORTED
 }

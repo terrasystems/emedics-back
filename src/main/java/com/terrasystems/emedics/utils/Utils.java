@@ -2,7 +2,9 @@ package com.terrasystems.emedics.utils;
 
 
 import com.terrasystems.emedics.model.User;
+import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 
 public interface Utils {
-    String getCurrentUserId();
+    User getCurrentUser();
+    ResponseDto generateResponse(boolean state, String msg, Object result);
 }

@@ -48,8 +48,9 @@ public class ReferenceControllerV2 {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto createReferences(@RequestBody ReferenceDto request) {
-        return new ResponseDto(true, "Base msg");
+    public ResponseDto createReferences(@RequestBody ReferenceDto referenceDto) {
+        ResponseDto responseDto = referencesService.createReference(referenceDto);
+        return responseDto;
     }
 
     @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
