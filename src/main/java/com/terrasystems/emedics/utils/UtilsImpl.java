@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UtilsImpl implements Utils {
 
+    public static final long allowedFormsCount = 2;
+
     @Autowired
     UserRepository userRepository;
 

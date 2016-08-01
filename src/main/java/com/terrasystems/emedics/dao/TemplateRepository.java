@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface TemplateRepository extends JpaRepository<Template, String> {
     List<Template> findByTypeEnum(TypeEnum type);
+    List<Template> findByNameContainingIgnoreCase(String name);
 }

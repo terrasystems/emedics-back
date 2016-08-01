@@ -3,6 +3,8 @@ package com.terrasystems.emedics.controllersV2;
 import com.terrasystems.emedics.model.dtoV2.CriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TemplateDto;
+import com.terrasystems.emedics.services.CatalogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,6 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v2/catalog")
 public class CatalogControllerV2 {
+
+    @Autowired
+    CatalogService catalogService;
 
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
@@ -30,7 +35,7 @@ public class CatalogControllerV2 {
     @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto addCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg");
+        return catalogService.addTemplate(id);
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
