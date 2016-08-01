@@ -30,6 +30,8 @@ public class ReferencesServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private Utils utils;
+    @Mock
+    private MailService mailService;
 
 
     @InjectMocks
@@ -41,6 +43,7 @@ public class ReferencesServiceImplTest {
     @Test
     public void test_will_return_all_references_where_current_is_DOCTOR() {
         User userDoctor = new User();
+        userDoctor.setId("a");
         CriteriaDto criteriaDto = new CriteriaDto();
         criteriaDto.setSearch("a");
         criteriaDto.setType(UserType.DOCTOR);
@@ -49,9 +52,10 @@ public class ReferencesServiceImplTest {
         List<ReferenceDto> refs = new ArrayList<>();
 
         userDoctor.setUserType(UserType.DOCTOR);
-        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase("id", UserType.PATIENT, "a", "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a")).thenReturn(users);
         when(utils.getCurrentUser()).thenReturn(userDoctor);
-        when(userRepository.findByEmail("id")).thenReturn(userDoctor);
         when(utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs)).thenReturn(responseDto);
 
         assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
@@ -60,18 +64,188 @@ public class ReferencesServiceImplTest {
     }
 
     @Test
+    public void test_will_return_my_references_where_current_is_DOCTOR() {
+        User userDoctor = new User();
+        userDoctor.setId("a");
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.DOCTOR);
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_DOC_REF.toString(), converter.convertFromUsers(users));
+        List<ReferenceDto> refs = new ArrayList<>();
+
+        userDoctor.setUserType(UserType.DOCTOR);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userDoctor);
+        when(utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.myReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.myReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.myReferences(criteriaDto).getMsg());
+    }
+
+    @Test
+    public void test_will_return_all_references_where_current_is_ORG() {
+        User userDoctor = new User();
+        userDoctor.setId("a");
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.ORG);
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_DOC_REF.toString(), converter.convertFromUsers(users));
+        List<ReferenceDto> refs = new ArrayList<>();
+
+        userDoctor.setUserType(UserType.ORG);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userDoctor);
+        when(utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getAllReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getAllReferences(criteriaDto).getMsg());
+    }
+
+    @Test
+    public void test_will_return_my_references_where_current_is_ORG() {
+        User userDoctor = new User();
+        userDoctor.setId("a");
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.ORG);
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_DOC_REF.toString(), converter.convertFromUsers(users));
+        List<ReferenceDto> refs = new ArrayList<>();
+
+        userDoctor.setUserType(UserType.ORG);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a", userDoctor.getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a", userDoctor.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a", userDoctor.getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userDoctor);
+        when(utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.myReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.myReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.myReferences(criteriaDto).getMsg());
+    }
+
+    @Test
     public void test_will_return_all_references_where_current_is_STAFF() {
         User userStaff = new User();
+        User orgDoc = new User();
+        orgDoc.setId("a");
+        userStaff.setUserOrg(orgDoc);
         CriteriaDto criteriaDto = new CriteriaDto();
         criteriaDto.setSearch("a");
         criteriaDto.setType(UserType.STAFF);
+        List<ReferenceDto> refs = new ArrayList<>();
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_STAFF_REF.toString(), converter.convertFromUsers(users));
 
         userStaff.setUserType(UserType.STAFF);
-        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase("id", UserType.PATIENT, "a", "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.PATIENT, "a", userStaff.getUserOrg().getId(), UserType.PATIENT, "a", userStaff.getUserOrg().getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.DOCTOR, "a", userStaff.getUserOrg().getId(), UserType.DOCTOR, "a", userStaff.getUserOrg().getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.ORG, "a", userStaff.getUserOrg().getId(), UserType.ORG, "a", userStaff.getUserOrg().getId(), UserType.ORG, "a")).thenReturn(users);
         when(utils.getCurrentUser()).thenReturn(userStaff);
-        when(userRepository.findByEmail("id")).thenReturn(userStaff);
+        when(utils.generateResponse(true, MessageEnums.MSG_STAFF_REF.toString(), refs)).thenReturn(responseDto);
 
-        assertEquals(null, referencesServiceImpl.getAllReferences(criteriaDto));
+        assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getAllReferences(criteriaDto).getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getAllReferences(criteriaDto).getState());
+    }
+
+    @Test
+    public void test_will_return_my_references_where_current_is_STAFF() {
+        User userStaff = new User();
+        User orgDoc = new User();
+        orgDoc.setId("a");
+        userStaff.setUserOrg(orgDoc);
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.STAFF);
+        List<ReferenceDto> refs = new ArrayList<>();
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_STAFF_REF.toString(), converter.convertFromUsers(users));
+
+        userStaff.setUserType(UserType.STAFF);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.PATIENT, "a", userStaff.getUserOrg().getId(), UserType.PATIENT, "a", userStaff.getUserOrg().getId(), UserType.PATIENT, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.DOCTOR, "a", userStaff.getUserOrg().getId(), UserType.DOCTOR, "a", userStaff.getUserOrg().getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userStaff.getUserOrg().getId(), UserType.ORG, "a", userStaff.getUserOrg().getId(), UserType.ORG, "a", userStaff.getUserOrg().getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userStaff);
+        when(utils.generateResponse(true, MessageEnums.MSG_STAFF_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.myReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.myReferences(criteriaDto).getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.myReferences(criteriaDto).getState());
+    }
+
+    @Test
+    public void test_will_return_all_references_where_current_is_PATIENT() {
+        User userPatient = new User();
+        userPatient.setId("a");
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.PATIENT);
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_PAT_REF.toString(), converter.convertFromUsers(users));
+        List<ReferenceDto> refs = new ArrayList<>();
+
+        userPatient.setUserType(UserType.PATIENT);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userPatient.getId(), UserType.DOCTOR, "a", userPatient.getId(), UserType.DOCTOR, "a", userPatient.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userPatient.getId(), UserType.ORG, "a", userPatient.getId(), UserType.ORG, "a", userPatient.getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userPatient);
+        when(utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getAllReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getAllReferences(criteriaDto).getMsg());
+    }
+
+    @Test
+    public void test_will_return_my_references_where_current_is_PATIENT() {
+        User userPatient = new User();
+        userPatient.setId("a");
+        CriteriaDto criteriaDto = new CriteriaDto();
+        criteriaDto.setSearch("a");
+        criteriaDto.setType(UserType.PATIENT);
+        ReferenceConverter converter = new ReferenceConverter();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_PAT_REF.toString(), converter.convertFromUsers(users));
+        List<ReferenceDto> refs = new ArrayList<>();
+
+        userPatient.setUserType(UserType.PATIENT);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userPatient.getId(), UserType.DOCTOR, "a", userPatient.getId(), UserType.DOCTOR, "a", userPatient.getId(), UserType.DOCTOR, "a")).thenReturn(users);
+        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(userPatient.getId(), UserType.ORG, "a", userPatient.getId(), UserType.ORG, "a", userPatient.getId(), UserType.ORG, "a")).thenReturn(users);
+        when(utils.getCurrentUser()).thenReturn(userPatient);
+        when(utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.myReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.myReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.myReferences(criteriaDto).getMsg());
+    }
+
+    @Test
+    public void test_will_return_msg_search_is_null_when_call_allReferences_where_search_is_null() {
+        CriteriaDto criteriaDto = new CriteriaDto();
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null);
+        when(utils.generateResponse(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getAllReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getAllReferences(criteriaDto).getMsg());
+    }
+
+    @Test
+    public void test_will_return_msg_search_is_null_when_call_myReferences_where_search_is_null() {
+        CriteriaDto criteriaDto = new CriteriaDto();
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null);
+        when(utils.generateResponse(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getResult(), referencesServiceImpl.myReferences(criteriaDto).getResult());
+        assertEquals(responseDto.getState(), referencesServiceImpl.myReferences(criteriaDto).getState());
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.myReferences(criteriaDto).getMsg());
     }
 
     @Test (expected = IndexOutOfBoundsException.class)
@@ -84,34 +258,12 @@ public class ReferencesServiceImplTest {
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_PAT_REF.toString(), refs);
 
         user.setUserType(UserType.PATIENT);
-        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase("id", UserType.PATIENT, "a", "a")).thenReturn(users);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.findByEmail("id")).thenReturn(user);
         when(utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs)).thenReturn(responseDto);
 
         List<ReferenceDto> referenceDtos = (List<ReferenceDto>) referencesServiceImpl.getAllReferences(criteriaDto).getResult();
         referenceDtos.get(0);
-    }
-
-    @Test
-    public void test_will_return_all_references_where_current_is_PATIENT() {
-        User userPatient = new User();
-        CriteriaDto criteriaDto = new CriteriaDto();
-        criteriaDto.setSearch("a");
-        criteriaDto.setType(UserType.PATIENT);
-        ReferenceConverter converter = new ReferenceConverter();
-        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_PAT_REF.toString(), converter.convertFromUsers(users));
-        List<ReferenceDto> refs = new ArrayList<>();
-
-        userPatient.setUserType(UserType.PATIENT);
-        when(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase("id", UserType.PATIENT, "a", "a")).thenReturn(users);
-        when(utils.getCurrentUser()).thenReturn(userPatient);
-        when(userRepository.findByEmail("id")).thenReturn(userPatient);
-        when(utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs)).thenReturn(responseDto);
-
-        assertEquals(responseDto.getResult(), referencesServiceImpl.getAllReferences(criteriaDto).getResult());
-        assertEquals(responseDto.getState(), referencesServiceImpl.getAllReferences(criteriaDto).getState());
-        assertEquals(responseDto.getMsg(), referencesServiceImpl.getAllReferences(criteriaDto).getMsg());
     }
 
     @Test
@@ -298,19 +450,88 @@ public class ReferencesServiceImplTest {
     }
 
     @Test
-    public void test_return_null_if_type_not_doctor_or_not_patient() {
+    public void test_will_return_null_if_type_not_doctor_or_not_patient() {
         User user = new User();
         user.setReferences(new HashSet<>());
         ReferenceDto referenceDto = new ReferenceDto();
         referenceDto.setUserType(UserType.DOCTOR);
         referenceDto.setId("not_exist_id");
         ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_NOT_SUPPORTED.toString(), null);
-        when(userRepository.findByEmail("current_id")).thenReturn(user);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.existsByEmail("not_exist_id")).thenReturn(false);
         when(utils.generateResponse(false, MessageEnums.MSG_NOT_SUPPORTED.toString(), null)).thenReturn(responseDto);
 
         assertEquals(responseDto.getMsg(), referencesServiceImpl.createReference(referenceDto).getMsg());
         assertEquals(responseDto.getState(), referencesServiceImpl.createReference(referenceDto).getState());
+    }
+
+    @Test
+    public void test_will_return_id_is_null_to_method_getReferenceById() {
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_BAD_REQUEST.toString(), null);
+
+        when(utils.generateResponse(false, MessageEnums.MSG_BAD_REQUEST.toString(), null)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getReferenceById(null).getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById(null).getState());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById(null).getState());
+    }
+
+    @Test
+    public void test_will_return_ref_by_id_not_found() {
+        User user = new User();
+        user.setReferences(new HashSet<>());
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
+
+        when(utils.getCurrentUser()).thenReturn(user);
+        when(utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getReferenceById("").getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById("").getState());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById("").getState());
+    }
+
+    @Test
+    public void test_will_return_ref_by_id() {
+        User user = new User();
+        user.setReferences(new HashSet<>());
+        User refById = new User();
+        refById.setId("refId");
+        user.getReferences().add(refById);
+        ReferenceConverter converter = new ReferenceConverter();
+        List<User> currentRefs = new ArrayList<>();
+        currentRefs.addAll(user.getReferences());
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_REF_BY_ID.toString(), converter.convertFromUsers(currentRefs));
+
+        when(utils.getCurrentUser()).thenReturn(user);
+        when(utils.generateResponse(true, MessageEnums.MSG_REF_BY_ID.toString(), converter.convertFromUsers(currentRefs))).thenReturn(responseDto);
+
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.getReferenceById("refId").getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById("refId").getState());
+        assertEquals(responseDto.getState(), referencesServiceImpl.getReferenceById("refId").getState());
+    }
+
+    @Test
+    public void test_will_return_user_not_found_to_method_invite() {
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
+
+        when(userRepository.findOne("")).thenReturn(null);
+        when(utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null)).thenReturn(responseDto);
+
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.invite("").getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.invite("").getState());
+        assertEquals(responseDto.getState(), referencesServiceImpl.invite("").getState());
+    }
+
+    @Test
+    public void test_will_invite_to_user() {
+        User user = new User();
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_SEND_MAIL.toString(), null);
+
+        when(userRepository.findOne("")).thenReturn(user);
+        when(mailService.sendRegistrationMail(user.getEmail(),user.getActivationToken(),user.getPassword())).thenReturn(responseDto);
+
+        assertEquals(responseDto.getMsg(), referencesServiceImpl.invite("").getMsg());
+        assertEquals(responseDto.getState(), referencesServiceImpl.invite("").getState());
+        assertEquals(responseDto.getState(), referencesServiceImpl.invite("").getState());
     }
 }

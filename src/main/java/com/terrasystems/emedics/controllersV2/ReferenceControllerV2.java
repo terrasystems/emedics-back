@@ -7,9 +7,6 @@ import com.terrasystems.emedics.services.ReferencesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v2/references")
 public class ReferenceControllerV2 {
@@ -27,16 +24,15 @@ public class ReferenceControllerV2 {
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getReference(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new ReferenceDto("id"));
+        ResponseDto responseDto = referencesService.getReferenceById(id);
+        return responseDto;
     }
 
     @RequestMapping(value = "/my", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto myReferences(@RequestBody CriteriaDto criteria) {
-        List<ReferenceDto> referenceDtos = new ArrayList<>();
-        referenceDtos.add(new ReferenceDto("id"));
-        referenceDtos.add(new ReferenceDto("id"));
-        return new ResponseDto(true, "Base msg", referenceDtos);
+        ResponseDto responseDto = referencesService.myReferences(criteria);
+        return responseDto;
     }
 
     @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)

@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     List<User> findAll(Iterable<String> ids);
     User findByActivationToken(String link);
 
-    List<User> findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String id, UserType userType, String name, String email);
+    List<User> findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(String id, UserType userType, String name, String id2, UserType userType2, String email, String id3, UserType userType3, String type);
 
 
 

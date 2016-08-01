@@ -10,4 +10,7 @@ public interface ReferencesService {
     ResponseDto removeReference(String id);
     ResponseDto addReference(String id);
     ResponseDto createReference(ReferenceDto referenceDto);
+    ResponseDto myReferences(CriteriaDto criteriaDto);
+    ResponseDto getReferenceById(String id);
+    ResponseDto invite(String id);
 }

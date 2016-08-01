@@ -13,7 +13,6 @@ import com.terrasystems.emedics.model.mapping.TypeMapper;
 import com.terrasystems.emedics.utils.Utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ReferencesServiceImpl implements ReferencesService {
@@ -29,24 +29,46 @@ public class ReferencesServiceImpl implements ReferencesService {
     Utils utils;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    MailService mailService;
 
     @Override
     @Transactional
     public ResponseDto getAllReferences(CriteriaDto criteriaDto) {
+        if (criteriaDto.getSearch() == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null);
+        }
         User currentUser = utils.getCurrentUser();
-        List<ReferenceDto> refs = new ArrayList<>();
-        ReferenceConverter converter = new ReferenceConverter();
         if (isPatient(currentUser)) {
-            refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch(), criteriaDto.getSearch())));
-            return utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs);
-        } else if (isDoctor(currentUser)) {
-            refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch(), criteriaDto.getSearch())));
-            refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrEmailContainingIgnoreCase(currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch(), criteriaDto.getSearch())));
-            return utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs);
-        } else {
-            return null;
+            return getAllReferencesForPatient(currentUser, criteriaDto);
+        }
+        if (isDoctor(currentUser) || isOrg(currentUser)) {
+            return getAllReferencesForDoctorOrOrg(currentUser, criteriaDto);
+        }
+        if (isStaff(currentUser)){
+            return getAllReferencesForStaff(currentUser, criteriaDto);
+        }
+        return utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto myReferences(CriteriaDto criteriaDto) {
+        if (criteriaDto.getSearch() == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_SEARCH_IS_NULL.toString(), null);
+        }
+        User currentUser = utils.getCurrentUser();
+        if (isPatient(currentUser)) {
+            return myReferencesForPatient(currentUser, criteriaDto);
+        }
+        if (isDoctor(currentUser) || isOrg(currentUser)) {
+            return myReferencesForDoctorOrOrg(currentUser, criteriaDto);
+        }
+        if (isStaff(currentUser)) {
+            return myReferencesForStaff(currentUser, criteriaDto);
         }
 
+        return utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
     }
 
     @Override
@@ -80,6 +102,7 @@ public class ReferencesServiceImpl implements ReferencesService {
     }
 
     @Override
+    @Transactional
     public ResponseDto createReference(ReferenceDto referenceDto) {
         User current = utils.getCurrentUser();
         if (userRepository.existsByEmail(referenceDto.getEmail())) {
@@ -91,6 +114,33 @@ public class ReferencesServiceImpl implements ReferencesService {
         } else if (isDoctor(current)) {
             return createReferenceLogicCurrentDoctor(current, referenceDto);
         } else return utils.generateResponse(false, MessageEnums.MSG_NOT_SUPPORTED.toString(), null);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto getReferenceById(String id) {
+        if (id == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_BAD_REQUEST.toString(), null);
+        }
+        ReferenceConverter converter = new ReferenceConverter();
+        User currentUser = utils.getCurrentUser();
+        List<User> currentRefs = currentUser.getReferences().stream()
+                .filter(ref -> ref.getId().equals(id))
+                .collect(Collectors.toList());
+        if (currentRefs.isEmpty()) {
+            return utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
+        }
+        return utils.generateResponse(true, MessageEnums.MSG_REF_BY_ID.toString(), converter.convertFromUsers(currentRefs));
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto invite(String id) {
+        User user = userRepository.findOne(id);
+        if (user == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
+        }
+        return mailService.sendRegistrationMail(user.getEmail(),user.getActivationToken(),user.getPassword());
     }
 
     private ResponseDto createReferenceLogicCurrentPatient(User current, ReferenceDto referenceDto) {
@@ -119,7 +169,7 @@ public class ReferencesServiceImpl implements ReferencesService {
 
     private User createDoctor(ReferenceDto referenceDto) {
 
-        String activateToken = createActivationMark(referenceDto);
+        String activateToken = createActivationMark();
         User userDoctor = createUser(referenceDto, activateToken);
         Role role = createRole(referenceDto, userDoctor);
         TypeMapper mapper = TypeMapper.getInstance();
@@ -132,7 +182,7 @@ public class ReferencesServiceImpl implements ReferencesService {
     }
 
     private User createPatient(ReferenceDto referenceDto) {
-        String activateToken = createActivationMark(referenceDto);
+        String activateToken = createActivationMark();
         User userPatient = createUser(referenceDto, activateToken);
         Role role = createRole(referenceDto, userPatient);
         bindUserRole(userPatient, role);
@@ -153,7 +203,7 @@ public class ReferencesServiceImpl implements ReferencesService {
         return role;
     }
 
-    private String createActivationMark(ReferenceDto referenceDto) {
+    private String createActivationMark() {
         String activateToken = RandomStringUtils.random(10, 'a', 'b', 'c', 'd', 'e', 'f');
         return activateToken;
     }
@@ -178,6 +228,85 @@ public class ReferencesServiceImpl implements ReferencesService {
         return createUser;
     }
 
+    private ResponseDto getAllReferencesForPatient(User currentUser, CriteriaDto criteriaDto) {
+        List<ReferenceDto> refs = new ArrayList<>();
+        ReferenceConverter converter = new ReferenceConverter();
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase())));
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase())));
+        return utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs);
+    }
+
+    private ResponseDto getAllReferencesForDoctorOrOrg(User currentUser, CriteriaDto criteriaDto) {
+        List<ReferenceDto> refs = new ArrayList<>();
+        ReferenceConverter converter = new ReferenceConverter();
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase())));
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase())));
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase())));
+        return utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs);
+    }
+
+    private ResponseDto getAllReferencesForStaff(User currentUser, CriteriaDto criteriaDto) {
+        List<ReferenceDto> refs = new ArrayList<>();
+        ReferenceConverter converter = new ReferenceConverter();
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase())));
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase())));
+        refs.addAll(converter.convertFromUsers(userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase())));
+        return utils.generateResponse(true, MessageEnums.MSG_STAFF_REF.toString(), refs);
+    }
+
+    private ResponseDto myReferencesForPatient(User currentUser, CriteriaDto criteriaDto) {
+        ReferenceConverter converter = new ReferenceConverter();
+        Set<User> currentRefs = currentUser.getReferences();
+        List<ReferenceDto> refs = new ArrayList<>();
+        List<User> doctorsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(doctor -> currentRefs.contains(doctor))
+                .collect(Collectors.toList());
+        List<User> orgsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(org -> currentRefs.contains(org))
+                .collect(Collectors.toList());
+        refs.addAll(converter.convertFromUsers(doctorsRefs));
+        refs.addAll(converter.convertFromUsers(orgsRefs));
+        return utils.generateResponse(true, MessageEnums.MSG_PAT_REF.toString(), refs);
+    }
+
+    private ResponseDto myReferencesForDoctorOrOrg(User currentUser, CriteriaDto criteriaDto) {
+        ReferenceConverter converter = new ReferenceConverter();
+        Set<User> currentRefs = currentUser.getReferences();
+        List<ReferenceDto> refs = new ArrayList<>();
+        List<User> doctorsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(doctor -> currentRefs.contains(doctor))
+                .collect(Collectors.toList());
+        List<User> patientsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(doctor -> currentRefs.contains(doctor))
+                .collect(Collectors.toList());
+        List<User> orgsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(org -> currentRefs.contains(org))
+                .collect(Collectors.toList());
+        refs.addAll(converter.convertFromUsers(doctorsRefs));
+        refs.addAll(converter.convertFromUsers(orgsRefs));
+        refs.addAll(converter.convertFromUsers(patientsRefs));
+        return utils.generateResponse(true, MessageEnums.MSG_DOC_REF.toString(), refs);
+    }
+
+    private ResponseDto myReferencesForStaff(User currentUser, CriteriaDto criteriaDto) {
+        ReferenceConverter converter = new ReferenceConverter();
+        Set<User> currentRefs = currentUser.getReferences();
+        List<ReferenceDto> refs = new ArrayList<>();
+        List<User> doctorsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.DOCTOR, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(doctor -> currentRefs.contains(doctor))
+                .collect(Collectors.toList());
+        List<User> patientsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.PATIENT, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(doctor -> currentRefs.contains(doctor))
+                .collect(Collectors.toList());
+        List<User> orgsRefs = userRepository.findByIdIsNotAndUserTypeAndNameContainingIgnoreCaseOrIdIsNotAndUserTypeAndEmailContainingIgnoreCaseOrIdIsNotAndUserTypeAndType_NameContainingIgnoreCase(currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase(), currentUser.getUserOrg().getId(), UserType.ORG, criteriaDto.getSearch().toLowerCase()).stream()
+                .filter(org -> currentRefs.contains(org))
+                .collect(Collectors.toList());
+        refs.addAll(converter.convertFromUsers(doctorsRefs));
+        refs.addAll(converter.convertFromUsers(orgsRefs));
+        refs.addAll(converter.convertFromUsers(patientsRefs));
+        return utils.generateResponse(true, MessageEnums.MSG_STAFF_REF.toString(), refs);
+    }
+
     private boolean isPatient(User current) {
         return UserType.PATIENT.equals(current.getUserType());
     }
@@ -186,6 +315,13 @@ public class ReferencesServiceImpl implements ReferencesService {
         return UserType.DOCTOR.equals(current.getUserType());
     }
 
+    private boolean isStaff(User current) {
+        return UserType.STAFF.equals(current.getUserType());
+    }
+
+    private boolean isOrg(User current) {
+        return UserType.ORG.equals(current.getUserType());
+    }
 
 
 }
