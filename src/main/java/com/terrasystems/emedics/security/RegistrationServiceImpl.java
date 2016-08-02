@@ -13,6 +13,7 @@ import com.terrasystems.emedics.model.mapping.TypeMapper;
 import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.security.JWT.JwtTokenUtil;
 import com.terrasystems.emedics.services.MailService;
+import com.terrasystems.emedics.utils.Utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,8 @@ public class RegistrationServiceImpl implements RegistrationService {
     MailService mailService;
     @Autowired
     private JwtTokenUtil generateToken;
+    @Autowired
+    Utils utils;
 
     @Autowired
     public RegistrationServiceImpl(@Value("${token.secret}") String secret) {
@@ -178,6 +181,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);*/
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user != null && user.getPassword().equals(loginDto.getPassword())) {
+            if (!user.isEnabled()) {
+                return utils.generateResponse(false, MessageEnums.MSG_NOT_ACTIVATE.toString(), null);
+            }
             final String token = generateToken.generateToken(user);
             AuthDto authDto = new AuthDto(userMapper.toDTO(user), token);
             responseDto.setState(true);
@@ -244,6 +250,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public ResponseDto changePassword(ResetPasswordDto resetPasswordDto) {
         UserMapper mapper = UserMapper.getInstance();
+        if (resetPasswordDto.getValidKey() == null || resetPasswordDto.getNewPassword() == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
+        }
         User current = userRepository.findByValueKey(resetPasswordDto.getValidKey());
         ResponseDto responseDto = new ResponseDto();
         if (current == null) {
