@@ -42,10 +42,11 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     @Transactional
     public ResponseDto getAllTemplates(CriteriaDto criteriaDto) {
-        List<Template> templates = templateRepository.findByNameContainingIgnoreCase(criteriaDto.getSearch());
-        if (templates == null) {
-            return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST_NULL.toString(), null);
+        User user = utils.getCurrentUser();
+        if (isPatient(user)) {
+            return getAllTemplatesForPatient(criteriaDto);
         }
+        List<Template> templates = templateRepository.findByNameContainingIgnoreCase(criteriaDto.getSearch());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
     }
 
@@ -54,31 +55,6 @@ public class CatalogServiceImpl implements CatalogService {
     public ResponseDto addTemplate(String id) {
         User user = utils.getCurrentUser();
         Template template = templateRepository.findOne(id);
-        if (isPatient(user)) {
-            return addTemplateForPatient(user, template);
-        }
-        if (isDoctor(user) || isOrg(user)) {
-            return addTemplateForDoctorOrOrg(user, template);
-        }
-        return null;
-    }
-
-    private boolean isAlreadyLoad(User user, Template template) {
-        UserTemplate userTemplate = userTemplateRepository.findByUser_IdAndTemplate_Id(user.getId(), template.getId());
-        if (userTemplate != null) {
-            return true;
-        }
-        return false;
-    }
-
-    private ResponseDto addTemplateForDoctorOrOrg(User user, Template template) {
-        return null;
-    }
-
-    private ResponseDto addTemplateForPatient(User user, Template template) {
-        if (isMedicalTemplate(template)) {
-            return utils.generateResponse(false, MessageEnums.MSG_PAT_CANT_LOAD_MED_TEMPL.toString(), null);
-        }
         if (isAlreadyLoad(user, template)) {
             return utils.generateResponse(true, MessageEnums.MSG_ALREADY_HAVE_THIS_TEMPL.toString(), null);
         }
@@ -89,6 +65,28 @@ public class CatalogServiceImpl implements CatalogService {
             return addUserTemplate(user, template);
         }
         return utils.generateResponse(false, MessageEnums.MSG_ALLOW_FORM_IS_FULL.toString(), null);
+    }
+
+    @Override
+    public ResponseDto previewTemplate(String id) {
+        Template template = templateRepository.findOne(id);
+        if (template == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_TEMPL_NOT_FOUND.toString(), null);
+        }
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
+    }
+
+    private ResponseDto getAllTemplatesForPatient(CriteriaDto criteriaDto) {
+        List<Template> templates = templateRepository.findByNameContainingIgnoreCaseAndTypeEnum(criteriaDto.getSearch(), TypeEnum.PATIENT);
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
+    }
+
+    private boolean isAlreadyLoad(User user, Template template) {
+        UserTemplate userTemplate = userTemplateRepository.findByUser_IdAndTemplate_Id(user.getId(), template.getId());
+        if (userTemplate != null) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isCountAllowed(User user) {

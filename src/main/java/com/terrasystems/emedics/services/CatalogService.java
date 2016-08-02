@@ -7,4 +7,5 @@ public interface CatalogService {
     ResponseDto getTemplateById(String id);
     ResponseDto getAllTemplates(CriteriaDto criteriaDto);
     ResponseDto addTemplate(String id);
+    ResponseDto previewTemplate(String id);
 }
