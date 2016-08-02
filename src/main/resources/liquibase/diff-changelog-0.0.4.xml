@@ -6,51 +6,22 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
-    <changeSet author="tester (generated)" id="1466166147491-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="admin" type="bool"/>
+
+    <changeSet author="melnyk (generated)" id="1470144101728-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addColumn tableName="event_journal">
+            <column name="patient_id" type="varchar(255 BYTE)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="stuff">
-            <column name="doctor_id" type="varchar(255 BYTE)"/>
-        </addColumn>
+    <changeSet author="melnyk (generated)" id="1470144101728-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="patient_id" baseTableName="event_journal" constraintName="fkrnpr88if7obv7i4k1f9hmkbyi" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="org_address" type="varchar(255 BYTE)"/>
-        </addColumn>
+    <changeSet author="melnyk (generated)" id="1470144101728-3">
+        <dropForeignKeyConstraint baseTableName="event_journal" constraintName="fkjyx2e6k59ct2ysnrnrs61995i"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="org_description" type="varchar(255 BYTE)"/>
-        </addColumn>
+    <changeSet author="melnyk (generated)" id="1470144101728-4">
+        <dropColumn columnName="user_id" tableName="event_journal"/>
     </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="org_name" type="varchar(255 BYTE)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="org_type" type="varchar(255 BYTE)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addColumn tableName="doctors">
-            <column name="org_website" type="varchar(255 BYTE)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addForeignKeyConstraint baseColumnNames="doctor_id" baseTableName="stuff" constraintName="fk9rrhjcaqr11ha4f0f2xprl382" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="doctors"/>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-9">
-        <dropForeignKeyConstraint baseTableName="stuff" constraintName="fk3xl5fyohik0p4c7egh09t2sq4"/>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-10">
-        <dropColumn columnName="admin" tableName="stuff"/>
-    </changeSet>
-    <changeSet author="tester (generated)" id="1466166147491-11">
-        <dropColumn columnName="organization_id" tableName="stuff"/>
+    <changeSet author="melnyk (generated)" id="1470144101728-5">
+        <modifyDataType columnName="type" newDataType="int" tableName="user_templates"/>
     </changeSet>
 </databaseChangeLog>

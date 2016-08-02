@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRepository<Event, String> {
-    List<Event> findByToUser_IdAndStatus(String id, StatusEnum status);
-    /*boolean existsByPatient_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateI);
-    boolean existsByToUser_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateId);*/
+    /*List<Event> findByToUser_IdAndStatus(String id, StatusEnum status);
+    *//*boolean existsByPatient_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateI);
+    boolean existsByToUser_IdAndStatusAndTemplate_Id(String patientId, StatusEnum status, String templateId);*//*
     List<Event> findByFromUser_IdAndStatus(String id, StatusEnum status);
     List<Event> findByStatusAndFromUser_IdOrToUser_Id(StatusEnum status, String fromUserId, String toUserId);
     Long countByFromUser_IdAndTemplate_IdAndStatus (String userId, String templateId, StatusEnum status);
@@ -32,12 +32,15 @@ public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRep
     List<String> findTemplate_IdByStuff_Id(@Param("stuffId") String stuffId);
 
 
-   /* List<Event> findByTemplate_IdAndStatusAndFromUser_Id(String templateId, StatusEnum statusEnum, String fromUserId);
+   *//* List<Event> findByTemplate_IdAndStatusAndFromUser_Id(String templateId, StatusEnum statusEnum, String fromUserId);
     List<Event> findByTemplate_IdAndStatusAndToUser_Id(String templateId, StatusEnum statusEnum, String toUserId);
     List<Event> findByFromUser_IdAndToUser_IdAndStatus(String fromId, String toId, StatusEnum statusEnum);
-    List<Event> findByPatient_IdAndToUser_IdAndStatus(String patientId, String toId, StatusEnum statusEnum);*/
+    List<Event> findByPatient_IdAndToUser_IdAndStatus(String patientId, String toId, StatusEnum statusEnum);*//*
     List<Event> findByDateBetween(Date date, Date date2);
     List<Event> findByTemplate_IdAndFromUser_IdAndPatient_IdAndDateBetween(String templateId, String fromUserId, String userId, Date dateFrom, Date dateTo);
+    */
+    List<Event> findByPatient_Id_AndStatus(String patientId, StatusEnum status);
+    List<Event> findByFromUser_IdAndStatus(String fromUserId, StatusEnum status);
 
 
 }

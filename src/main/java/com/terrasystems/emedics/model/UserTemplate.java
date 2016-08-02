@@ -4,6 +4,7 @@ package com.terrasystems.emedics.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import com.terrasystems.emedics.enums.FormEnum;
+import com.terrasystems.emedics.enums.TypeEnum;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,7 +18,7 @@ public class UserTemplate extends BaseEntity{
 
     private static final long serialVersionUID = -4933760370608608485L;
     @Column(name = "type")
-    private String type;
+    private TypeEnum type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -31,11 +32,11 @@ public class UserTemplate extends BaseEntity{
 
     public UserTemplate() {}
 
-    public String getType() {
+    public TypeEnum getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeEnum type) {
         this.type = type;
     }
 
@@ -73,7 +74,6 @@ public class UserTemplate extends BaseEntity{
 
         return new EqualsBuilder()
                 .append(id, that.id)
-                .append(type, that.type)
                 .append(description, that.description)
                 .isEquals();
     }
@@ -82,7 +82,6 @@ public class UserTemplate extends BaseEntity{
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(type)
                 .append(description)
                 .toHashCode();
     }

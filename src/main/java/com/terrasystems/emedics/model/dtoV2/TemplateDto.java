@@ -2,6 +2,7 @@ package com.terrasystems.emedics.model.dtoV2;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.terrasystems.emedics.enums.TypeEnum;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,7 +14,7 @@ public class TemplateDto implements Serializable {
     private static final long serialVersionUID = -8991369486552245506L;
     private String id;
     private JsonNode body;
-    private String type;
+    private TypeEnum type;
     private String name;
     private Boolean commerce;
     private Boolean paid;
@@ -28,7 +29,7 @@ public class TemplateDto implements Serializable {
         this.id = id;
     }
 
-    public TemplateDto(String id, JsonNode body, String type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr) {
+    public TemplateDto(String id, JsonNode body, TypeEnum type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr) {
         this.id = id;
         this.body = body;
         this.type = type;
@@ -56,11 +57,11 @@ public class TemplateDto implements Serializable {
         this.body = body;
     }
 
-    public String getType() {
+    public TypeEnum getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeEnum type) {
         this.type = type;
     }
 

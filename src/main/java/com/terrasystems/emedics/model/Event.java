@@ -22,7 +22,7 @@ public class Event extends BaseEntity {
     private StatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "patient_id")
     private User patient;
 
     @ManyToOne(fetch = FetchType.LAZY)

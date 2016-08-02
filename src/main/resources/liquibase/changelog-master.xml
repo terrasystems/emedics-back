@@ -7,9 +7,10 @@
     <include file="classpath:/liquibase/diff-changelog-0.0.1.xml"/>
     <include file="classpath:/liquibase/diff-changelog-0.0.2.xml"/>
     <include file="classpath:/liquibase/diff-changelog-0.0.3.xml"/>
+    <include file="classpath:/liquibase/diff-changelog-0.0.4.xml"/>
 
-    <include file="classpath:/liquibase/template.sql"/>
-    <include file="classpath:/liquibase/doctypes.sql"/>
+    <!--<include file="classpath:/liquibase/template.sql"/>
+    <include file="classpath:/liquibase/doctypes.sql"/>-->
 
 
 </databaseChangeLog>

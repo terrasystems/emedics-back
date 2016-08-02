@@ -20,16 +20,13 @@ public class CatalogControllerV2 {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto getAllCatalog(@RequestBody CriteriaDto criteria) {
-        List<TemplateDto> templateDtos = new ArrayList<>();
-        templateDtos.add(new TemplateDto("id"));
-        templateDtos.add(new TemplateDto("id"));
-        return new ResponseDto(true, "Base msg", templateDtos);
+        return catalogService.getAllTemplates(criteria);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto getCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TemplateDto("id"));
+        return catalogService.getTemplateById(id);
     }
 
     @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)
@@ -38,15 +35,15 @@ public class CatalogControllerV2 {
         return catalogService.addTemplate(id);
     }
 
-    @RequestMapping(value = "/remove/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseDto removeCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg");
-    }
-
     @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseDto viewCatalog(@PathVariable String id) {
-        return new ResponseDto(true, "Base msg", new TemplateDto("id"));
+        return catalogService.previewTemplate(id);
+    }
+
+    @RequestMapping(value = "/usedByUser/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseDto userByUsed(@PathVariable String id) {
+        return catalogService.usedByUser(id);
     }
 }
