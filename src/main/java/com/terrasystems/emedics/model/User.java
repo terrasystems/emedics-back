@@ -52,6 +52,9 @@ public class User extends BaseEntity implements UserDetails{
     @Column
     protected String phone;
 
+    @Column
+    protected String address;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "birth_date")
     protected Date birth;
@@ -161,6 +164,14 @@ public class User extends BaseEntity implements UserDetails{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Date getBirth() {
@@ -340,6 +351,7 @@ public class User extends BaseEntity implements UserDetails{
                 .append("email", email)
                 .append("typeExp", typeExp)
                 .append("enabled", enabled)
+                .append("address", address)
                 .toString();
     }
 

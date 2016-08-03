@@ -30,9 +30,9 @@ public class UserMapper {
         dto.setDob(entity.getBirth());
         dto.setEmail(entity.getEmail());
         dto.setPhone(entity.getPhone());
+        dto.setAddress(entity.getAddress());
         dto.setAdmin(entity.isAdmin());
         if (dto.getAdmin()) {
-            dto.setAddress(entity.getOrganization().getAddress());
             dto.setOrgName(entity.getOrganization().getName());
             dto.setWebsite(entity.getOrganization().getWebsite());
             dto.setDescr(entity.getOrganization().getDescr());

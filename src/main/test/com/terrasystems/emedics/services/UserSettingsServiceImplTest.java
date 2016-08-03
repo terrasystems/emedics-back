@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 import com.terrasystems.emedics.dao.UserRepository;
 import com.terrasystems.emedics.enums.MessageEnums;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.Organization;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.*;
@@ -110,7 +111,7 @@ public class UserSettingsServiceImplTest {
     public void test_will_change_password_for_user() {
         User user = new User();
         ChangePasswordDto changePasswordDto = new ChangePasswordDto();
-        changePasswordDto.setNewPass("old");
+        changePasswordDto.setNewPass("new");
         changePasswordDto.setOldPass("old");
         user.setPassword("old");
         UserMapper userMapper = UserMapper.getInstance();
@@ -122,10 +123,11 @@ public class UserSettingsServiceImplTest {
         when(generateToken.generateToken(user)).thenReturn("token");
         when(utils.generateResponse(true, MessageEnums.MSG_PASS_CHANGED.toString(), authDto)).thenReturn(responseDto);
 
-        //TODO ?????????????????????????????????????????????????????????????????????????????????????????????
-        assertEquals(responseDto.getResult(), userSettingsService.changePassword(changePasswordDto).getResult());
-        assertEquals(responseDto.getState(), userSettingsService.changePassword(changePasswordDto).getState());
-        assertEquals(responseDto.getMsg(), userSettingsService.changePassword(changePasswordDto).getMsg());
+        ResponseDto responseDto1 = userSettingsService.changePassword(changePasswordDto);
+
+        assertEquals(responseDto.getResult(), responseDto1.getResult());
+        assertEquals(responseDto.getState(), responseDto1.getState());
+        assertEquals(responseDto.getMsg(), responseDto1.getMsg());
     }
 
     @Test
@@ -149,12 +151,12 @@ public class UserSettingsServiceImplTest {
     @Test
     public void test_will_edit_settings_for_patient() {
         User user = new User();
+        user.setUserType(UserType.PATIENT);
         UserMapper userMapper = UserMapper.getInstance();
         AuthDto authDto = new AuthDto(userMapper.toDTO(user), "token");
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_USER_EDITED.toString(), authDto);
         UserDto dto = new UserDto();
 
-        when(utils.isPatient(user)).thenReturn(true);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.save(user)).thenReturn(null);
         when(generateToken.generateToken(user)).thenReturn("token");
@@ -168,13 +170,12 @@ public class UserSettingsServiceImplTest {
     @Test
     public void test_will_edit_settings_for_staff() {
         User user = new User();
+        user.setUserType(UserType.STAFF);
         UserMapper userMapper = UserMapper.getInstance();
         AuthDto authDto = new AuthDto(userMapper.toDTO(user), "token");
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_USER_EDITED.toString(), authDto);
         UserDto dto = new UserDto();
 
-        when(utils.isPatient(user)).thenReturn(false);
-        when(utils.isStaff(user)).thenReturn(true);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.save(user)).thenReturn(null);
         when(generateToken.generateToken(user)).thenReturn("token");
@@ -188,6 +189,7 @@ public class UserSettingsServiceImplTest {
     @Test
     public void test_will_edit_settings_for_doctor() {
         User user = new User();
+        user.setUserType(UserType.DOCTOR);
         UserMapper userMapper = UserMapper.getInstance();
         AuthDto authDto = new AuthDto(userMapper.toDTO(user), "token");
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_USER_EDITED.toString(), authDto);
@@ -195,9 +197,6 @@ public class UserSettingsServiceImplTest {
         TypeDto typeDto = new TypeDto();
         dto.setType(typeDto);
 
-        when(utils.isPatient(user)).thenReturn(false);
-        when(utils.isStaff(user)).thenReturn(false);
-        when(utils.isDoctor(user)).thenReturn(true);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.save(user)).thenReturn(null);
         when(generateToken.generateToken(user)).thenReturn("token");
@@ -230,6 +229,7 @@ public class UserSettingsServiceImplTest {
     @Test
     public void test_will_edit_settings_for_admin() {
         User user = new User();
+        user.setUserType(UserType.ORG);
         UserMapper userMapper = UserMapper.getInstance();
         AuthDto authDto = new AuthDto(userMapper.toDTO(user), "token");
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_USER_EDITED.toString(), authDto);
@@ -239,10 +239,6 @@ public class UserSettingsServiceImplTest {
         Organization organization = new Organization();
         user.setOrganization(organization);
 
-        when(utils.isPatient(user)).thenReturn(false);
-        when(utils.isStaff(user)).thenReturn(false);
-        when(utils.isDoctor(user)).thenReturn(false);
-        when(utils.isOrg(user)).thenReturn(true);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.save(user)).thenReturn(null);
         when(generateToken.generateToken(user)).thenReturn("token");
@@ -254,39 +250,13 @@ public class UserSettingsServiceImplTest {
     }
 
     @Test
-    public void test_will_return_user_have_no_org() {
-        User user = new User();
-        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_USER_HAVE_NO_ORG.toString(), null);
-        UserDto dto = new UserDto();
-        TypeDto typeDto = new TypeDto();
-        dto.setType(typeDto);
-
-        when(utils.isPatient(user)).thenReturn(false);
-        when(utils.isStaff(user)).thenReturn(false);
-        when(utils.isDoctor(user)).thenReturn(false);
-        when(utils.isOrg(user)).thenReturn(true);
-        when(utils.getCurrentUser()).thenReturn(user);
-        when(userRepository.save(user)).thenReturn(null);
-        when(generateToken.generateToken(user)).thenReturn("token");
-        when(utils.generateResponse(false, MessageEnums.MSG_USER_HAVE_NO_ORG.toString(), null)).thenReturn(responseDto);
-
-        assertEquals(responseDto.getResult(), userSettingsService.editUser(dto).getResult());
-        assertEquals(responseDto.getState(), userSettingsService.editUser(dto).getState());
-        assertEquals(responseDto.getMsg(), userSettingsService.editUser(dto).getMsg());
-    }
-
-    @Test
-    public void test_will_return_incorrect_request_for_editUser_without_type_for_org() {
+    public void test_will_return_incorrect_request_for_editUser_without_user_type() {
         User user = new User();
         ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
         UserDto dto = new UserDto();
         Organization organization = new Organization();
         user.setOrganization(organization);
 
-        when(utils.isPatient(user)).thenReturn(false);
-        when(utils.isStaff(user)).thenReturn(false);
-        when(utils.isDoctor(user)).thenReturn(false);
-        when(utils.isOrg(user)).thenReturn(true);
         when(utils.getCurrentUser()).thenReturn(user);
         when(userRepository.save(user)).thenReturn(null);
         when(generateToken.generateToken(user)).thenReturn("token");

@@ -17,18 +17,15 @@ public class Organization extends BaseEntity {
     @Column
     private String website;
     @Column
-    private String address;
-    @Column
     private String descr;
     /*@OneToMany(cascade = CascadeType.ALL, mappedBy = "organization", fetch = FetchType.LAZY)
     private List<Stuff> stuff;*/
 
 
-    public Organization(String name, String fullName, String website, String address, String descr) {
+    public Organization(String name, String fullName, String website,String descr) {
         this.name = name;
         this.fullName = fullName;
         this.website = website;
-        this.address = address;
         this.descr = descr;
 
     }
@@ -64,14 +61,6 @@ public class Organization extends BaseEntity {
 
     public void setWebsite(String website) {
         this.website = website;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getDescr() {

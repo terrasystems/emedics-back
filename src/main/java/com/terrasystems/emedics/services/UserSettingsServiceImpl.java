@@ -53,14 +53,8 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Override
     public ResponseDto editUser(UserDto dto) {
         User user = utils.getCurrentUser();
-        if (utils.isPatient(user) || utils.isStaff(user)) {
+        if (user.getUserType() != null) {
             return editSettings(user, dto);
-        }
-        if (utils.isDoctor(user)) {
-            return editSettingsForDoctor(user, dto);
-        }
-        if (utils.isOrg(user)) {
-            return editSettingsForOrg(user, dto);
         }
         return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
     }
@@ -76,30 +70,30 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         user.setPhone(dto.getPhone());
         user.setEmail(dto.getEmail());
         user.setBirth(dto.getDob());
+        user.setAddress(dto.getAddress());
+        if (user.getOrganization() != null) {
+            user = setOrg(user, dto);
+        }
+        if (dto.getType() != null) {
+            user = setType(user, dto);
+        }
         userRepository.save(user);
         UserMapper userMapper = UserMapper.getInstance();
         AuthDto authDto = new AuthDto(userMapper.toDTO(user), generateToken.generateToken(user));
         return utils.generateResponse(true, MessageEnums.MSG_USER_EDITED.toString(), authDto);
     }
 
-    private ResponseDto editSettingsForDoctor(User user, UserDto dto) {
-        if (dto.getType() == null) {
-            return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
-        }
+    private User setType (User user, UserDto dto) {
         TypeMapper mapper = TypeMapper.getInstance();
         user.setType(mapper.toEntity(dto.getType()));
-        return editSettings(user, dto);
+        return user;
     }
 
-    private ResponseDto editSettingsForOrg(User user, UserDto dto) {
-        if (user.getOrganization() == null) {
-            return utils.generateResponse(false, MessageEnums.MSG_USER_HAVE_NO_ORG.toString(), null);
-        }
+    private User setOrg(User user, UserDto dto) {
         user.getOrganization().setDescr(dto.getDescr());
         user.getOrganization().setWebsite(dto.getWebsite());
         user.getOrganization().setName(dto.getOrgName());
-        user.getOrganization().setAddress(dto.getAddress());
-        return editSettingsForDoctor(user, dto);
+        return user;
     }
 
 

@@ -81,6 +81,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             registerUser.setAdmin(true);
             Organization organization = createOrganization(userDto, registerUser);
             organizationRepository.save(organization);
+            registerUser.setOrganization(organization);
         }
         userRepository.save(registerUser);
         return createSuccessRegistrationResponse();
@@ -103,7 +104,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Organization createOrganization(UserDto userDto, User registerUser) {
         Organization organization = new Organization();
         registerUser.setOrganization(organization);
-        organization.setAddress(userDto.getAddress());
         organization.setName(userDto.getOrgName());
         organization.setWebsite(userDto.getWebsite());
         organization.setDescr(userDto.getDescr());
@@ -145,6 +145,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         registerUser.setPhone(userDto.getPhone());
         registerUser.setUserType(userDto.getUserType());
         registerUser.setActivationToken(activateToken);
+        registerUser.setAddress(userDto.getAddress());
         return registerUser;
     }
 

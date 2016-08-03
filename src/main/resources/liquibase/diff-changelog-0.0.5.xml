@@ -5,9 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="tester (generated)" id="1466417192615-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="melnyk (generated)" id="1470226985857-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addColumn tableName="users">
-            <column name="is_org" type="bool"/>
+            <column name="address" type="varchar(255 BYTE)"/>
         </addColumn>
+    </changeSet>
+    <changeSet author="melnyk (generated)" id="1470226985857-2">
+        <dropColumn columnName="address" tableName="organizations"/>
     </changeSet>
 </databaseChangeLog>
