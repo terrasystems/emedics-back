@@ -30,4 +30,16 @@ public class TemplateMapper {
         dto.setType(entity.getTypeEnum());
         return dto;
     }
+
+    public Template toEntity(TemplateDto dto) {
+        Template entity = new Template();
+        entity.setName(dto.getName());
+        entity.setCommercialEnum(dto.getCommerce());
+        entity.setCategory(dto.getCategory());
+        entity.setDescr(dto.getDescr());
+        entity.setNumber(dto.getNumber());
+        entity.setTypeEnum(dto.getType());
+        entity.setBody(dto.getBody().toString());
+        return entity;
+    }
 }

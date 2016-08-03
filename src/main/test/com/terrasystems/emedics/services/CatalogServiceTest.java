@@ -14,6 +14,7 @@ import com.terrasystems.emedics.model.UserTemplate;
 import com.terrasystems.emedics.model.dtoV2.CriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TemplateDto;
+import com.terrasystems.emedics.model.mapping.TemplateMapper;
 import com.terrasystems.emedics.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +49,7 @@ public class CatalogServiceTest {
     CatalogServiceImpl catalogServiceImpl = new CatalogServiceImpl();
 
     @Test
-    public void test_will_return_template_not_found_for_method_getTemplateById() {
+    public void test_will_return_template_not_found_for_method_getTemplateById() throws IOException {
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_TEMPL_NOT_FOUND.toString(), null);
 
         when(templateRepository.findOne("")).thenReturn(null);
@@ -59,11 +61,14 @@ public class CatalogServiceTest {
     }
 
     @Test
-    public void test_will_return_template_by_id() {
-        Template template = new Template();
+    public void test_will_return_template_by_id() throws IOException {
+        Template templateEntity = new Template();
+        templateEntity.setBody("{}");
+        TemplateMapper mapper = TemplateMapper.getInstance();
+        TemplateDto template = mapper.toDto(templateEntity);
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
 
-        when(templateRepository.findOne("")).thenReturn(template);
+        when(templateRepository.findOne("")).thenReturn(templateEntity);
         when(utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template)).thenReturn(responseDto);
 
         assertEquals(responseDto.getResult(), catalogServiceImpl.getTemplateById("").getResult());
@@ -123,7 +128,7 @@ public class CatalogServiceTest {
     }
 
     @Test
-    public void test_will_return_template_not_found_for_preview() {
+    public void test_will_return_template_not_found_for_preview() throws IOException {
         Template template = null;
         ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_TEMPL_NOT_FOUND.toString(), null);
 
@@ -136,11 +141,14 @@ public class CatalogServiceTest {
     }
 
     @Test
-    public void test_will_return_template_for_preview() {
-        Template template = new Template();
+    public void test_will_return_template_for_preview() throws IOException {
+        Template templateEntity = new Template();
+        templateEntity.setBody("{}");
+        TemplateMapper mapper = TemplateMapper.getInstance();
+        TemplateDto template = mapper.toDto(templateEntity);
         ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
 
-        when(templateRepository.findOne("id")).thenReturn(template);
+        when(templateRepository.findOne("id")).thenReturn(templateEntity);
         when(utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template)).thenReturn(responseDto);
 
         assertEquals(responseDto.getResult(), catalogServiceImpl.previewTemplate("id").getResult());

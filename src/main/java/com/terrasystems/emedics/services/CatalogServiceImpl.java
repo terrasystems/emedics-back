@@ -44,12 +44,13 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     @Transactional
-    public ResponseDto getTemplateById(String id) {
+    public ResponseDto getTemplateById(String id) throws IOException {
         Template template = templateRepository.findOne(id);
         if (template == null) {
             return utils.generateResponse(true, MessageEnums.MSG_TEMPL_NOT_FOUND.toString(), null);
         }
-        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
+        TemplateMapper mapper = TemplateMapper.getInstance();
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), mapper.toDto(template));
     }
 
     @Override
@@ -62,23 +63,38 @@ public class CatalogServiceImpl implements CatalogService {
         if (isPatient(user)) {
             return getAllTemplatesForPatient(criteriaDto);
         }
-        List<Template> templates = templateRepository.findByNameContainingIgnoreCase(criteriaDto.getSearch());
+        List<TemplateDto> templates = templateRepository.findByNameContainingIgnoreCase(criteriaDto.getSearch()).stream()
+                .map(template -> {
+                    TemplateMapper mapper = TemplateMapper.getInstance();
+                    try {
+                        return mapper.toDto(template);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toList());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
     }
 
     @Override
     @Transactional
     public ResponseDto createTemplate(TemplateDto templateDto) {
-        return null;
+        if (templateDto.getBody() == null) {
+            return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
+        }
+        TemplateMapper mapper = TemplateMapper.getInstance();
+        templateRepository.save(mapper.toEntity(templateDto));
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_CREATED.toString(), null);
     }
 
     @Override
-    public ResponseDto previewTemplate(String id) {
+    public ResponseDto previewTemplate(String id) throws IOException {
         Template template = templateRepository.findOne(id);
         if (template == null) {
             return utils.generateResponse(false, MessageEnums.MSG_TEMPL_NOT_FOUND.toString(), null);
         }
-        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
+        TemplateMapper mapper = TemplateMapper.getInstance();
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), mapper.toDto(template));
     }
 
     @Override
@@ -127,24 +143,8 @@ public class CatalogServiceImpl implements CatalogService {
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
     }
 
-
-
-    private boolean isMedicalTemplate(Template template) {return TypeEnum.MEDICAL.equals(template.getTypeEnum());}
-
     private boolean isPatient(User current) {
         return UserType.PATIENT.equals(current.getUserType());
-    }
-
-    private boolean isDoctor(User current) {
-        return UserType.DOCTOR.equals(current.getUserType());
-    }
-
-    private boolean isStaff(User current) {
-        return UserType.STAFF.equals(current.getUserType());
-    }
-
-    private boolean isOrg(User current) {
-        return UserType.ORG.equals(current.getUserType());
     }
 
 }

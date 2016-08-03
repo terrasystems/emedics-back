@@ -21,6 +21,7 @@ public class TemplateDto implements Serializable {
     private String number;
     private Boolean load;
     private String descr;
+    private String category;
 
     public TemplateDto() {
     }
@@ -111,6 +112,14 @@ public class TemplateDto implements Serializable {
 
     public void setPaid(Boolean paid) {
         this.paid = paid;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override
