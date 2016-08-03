@@ -71,6 +71,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         user.setEmail(dto.getEmail());
         user.setBirth(dto.getDob());
         user.setAddress(dto.getAddress());
+        user.setName(setName(dto));
         if (user.getOrganization() != null) {
             user = setOrg(user, dto);
         }
@@ -94,6 +95,16 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         user.getOrganization().setWebsite(dto.getWebsite());
         user.getOrganization().setName(dto.getOrgName());
         return user;
+    }
+
+    public String setName(UserDto dto) {
+        if ((dto.getFirstName() == null) && (dto.getLastName() == null)) {
+            return dto.getEmail();
+        } else if (dto.getFirstName() == null) {
+            return dto.getLastName();
+        } else if (dto.getLastName() == null) {
+            return dto.getFirstName();
+        } else return dto.getFirstName() + " " + dto.getLastName();
     }
 
 

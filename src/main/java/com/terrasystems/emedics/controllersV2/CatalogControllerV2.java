@@ -7,9 +7,6 @@ import com.terrasystems.emedics.services.CatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v2/catalog")
 public class CatalogControllerV2 {
@@ -29,10 +26,10 @@ public class CatalogControllerV2 {
         return catalogService.getTemplateById(id);
     }
 
-    @RequestMapping(value = "/add/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto addCatalog(@PathVariable String id) {
-        return catalogService.addTemplate(id);
+    public ResponseDto addCatalog(TemplateDto templateDto) {
+        return catalogService.createTemplate(templateDto);
     }
 
     @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)

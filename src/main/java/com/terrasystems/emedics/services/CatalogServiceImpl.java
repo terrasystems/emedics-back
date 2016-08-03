@@ -68,19 +68,8 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     @Transactional
-    public ResponseDto addTemplate(String id) {
-        User user = utils.getCurrentUser();
-        Template template = templateRepository.findOne(id);
-        if (isAlreadyLoad(user, template)) {
-            return utils.generateResponse(true, MessageEnums.MSG_ALREADY_HAVE_THIS_TEMPL.toString(), null);
-        }
-        if (template.isCommercialEnum()) {
-            return addUserTemplate(user, template);
-        }
-        if (isCountAllowed(user)) {
-            return addUserTemplate(user, template);
-        }
-        return utils.generateResponse(false, MessageEnums.MSG_ALLOW_FORM_IS_FULL.toString(), null);
+    public ResponseDto createTemplate(TemplateDto templateDto) {
+        return null;
     }
 
     @Override
@@ -138,27 +127,7 @@ public class CatalogServiceImpl implements CatalogService {
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
     }
 
-    private boolean isAlreadyLoad(User user, Template template) {
-        UserTemplate userTemplate = userTemplateRepository.findByUser_IdAndTemplate_Id(user.getId(), template.getId());
-        if (userTemplate != null) {
-            return true;
-        }
-        return false;
-    }
 
-    private boolean isCountAllowed(User user) {
-        return allowedFormsCount > userTemplateRepository.countByUser_IdAndTemplate_CommercialEnumIsFalse(user.getId());
-    }
-
-    private ResponseDto addUserTemplate(User user, Template template) {
-        UserTemplate userTemplate = new UserTemplate();
-        userTemplate.setUser(user);
-        userTemplate.setTemplate(template);
-        userTemplate.setType(template.getTypeEnum());
-        userTemplate.setDescription(template.getDescr());
-        userTemplateRepository.save(userTemplate);
-        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_ADDED.toString(), null);
-    }
 
     private boolean isMedicalTemplate(Template template) {return TypeEnum.MEDICAL.equals(template.getTypeEnum());}
 

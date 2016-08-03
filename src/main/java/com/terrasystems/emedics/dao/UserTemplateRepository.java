@@ -17,4 +17,5 @@ public interface UserTemplateRepository extends JpaRepository<UserTemplate, Stri
     List<UserTemplate> findByUser_Id(String userId);
     Long countByUser_IdAndTemplate_CommercialEnumIsFalse(String id);
     UserTemplate findByUser_IdAndTemplate_Id(String userId, String templateId);
+    List<UserTemplate> findByUserAndTemplate_NameContainingIgnoreCase(User user, String name);
 }
