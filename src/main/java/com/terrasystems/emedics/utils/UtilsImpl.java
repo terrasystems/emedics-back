@@ -2,6 +2,7 @@ package com.terrasystems.emedics.utils;
 
 
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.UserType;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,25 @@ public class UtilsImpl implements Utils {
     public ResponseDto generateResponse(boolean state, String msg, Object result) {
         ResponseDto responseDto = new ResponseDto(state, msg, result);
         return responseDto;
+    }
+
+    @Override
+    public boolean isPatient(User current) {
+        return UserType.PATIENT.equals(current.getUserType());
+    }
+
+    @Override
+    public boolean isDoctor(User current) {
+        return UserType.DOCTOR.equals(current.getUserType());
+    }
+
+    @Override
+    public boolean isStaff(User current) {
+        return UserType.STAFF.equals(current.getUserType());
+    }
+
+    @Override
+    public boolean isOrg(User current) {
+        return UserType.ORG.equals(current.getUserType());
     }
 }

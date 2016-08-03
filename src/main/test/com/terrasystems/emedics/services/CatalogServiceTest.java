@@ -21,13 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.terrasystems.emedics.utils.UtilsImpl.allowedFormsCount;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
