@@ -37,7 +37,7 @@ public class MyTemplateServiceImpl implements MyTemplateService {
             return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
         }
         User user = utils.getCurrentUser();
-        List<TemplateDto> userTemplates = userTemplateRepository.findByUserAndTemplate_NameContainingIgnoreCase(user, criteriaDto.getSearch()).stream()
+        List<TemplateDto> templateDtos = userTemplateRepository.findByUserAndTemplate_NameContainingIgnoreCase(user, criteriaDto.getSearch()).stream()
                 .map(userTemplate -> {
                     TemplateMapper mapper = TemplateMapper.getInstance();
                     try {
@@ -47,7 +47,7 @@ public class MyTemplateServiceImpl implements MyTemplateService {
                     }
                     return null;
                 }).collect(Collectors.toList());
-        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), userTemplates);
+        return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templateDtos);
     }
 
     @Override
