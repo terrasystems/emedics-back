@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.terrasystems.emedics.utils.UtilsImpl.allowedFormsCount;
-import static java.util.stream.Collectors.*;
 
 @Service
 public class MyTemplateServiceImpl implements MyTemplateService {
@@ -43,7 +42,7 @@ public class MyTemplateServiceImpl implements MyTemplateService {
                     try {
                         TemplateDto dto = new TemplateDto();
                         dto = mapper.toDto(userTemplate.getTemplate());
-                        dto.setMyTemplateDtoId(userTemplate.getId());
+                        dto.setMyTemplateId(userTemplate.getId());
                         return dto;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -61,7 +60,7 @@ public class MyTemplateServiceImpl implements MyTemplateService {
         }
         TemplateMapper mapper = TemplateMapper.getInstance();
         TemplateDto template = mapper.toDto(userTemplate.getTemplate());
-        template.setMyTemplateDtoId(userTemplate.getId());
+        template.setMyTemplateId(userTemplate.getId());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
     }
 

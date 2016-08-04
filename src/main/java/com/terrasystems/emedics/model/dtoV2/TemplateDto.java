@@ -22,7 +22,7 @@ public class TemplateDto implements Serializable {
     private Boolean load;
     private String descr;
     private String category;
-    private String myTemplateDtoId;
+    private String myTemplateId;
 
     public TemplateDto() {
     }
@@ -31,7 +31,7 @@ public class TemplateDto implements Serializable {
         this.id = id;
     }
 
-    public TemplateDto(String id, JsonNode body, TypeEnum type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr, String myTemplateDtoId) {
+    public TemplateDto(String id, JsonNode body, TypeEnum type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr, String myTemplateId) {
         this.id = id;
         this.body = body;
         this.type = type;
@@ -41,7 +41,7 @@ public class TemplateDto implements Serializable {
         this.number = number;
         this.load = load;
         this.descr = descr;
-        this.myTemplateDtoId = myTemplateDtoId;
+        this.myTemplateId = myTemplateId;
     }
 
     public String getId() {
@@ -124,12 +124,12 @@ public class TemplateDto implements Serializable {
         this.category = category;
     }
 
-    public String getMyTemplateDtoId() {
-        return myTemplateDtoId;
+    public String getMyTemplateId() {
+        return myTemplateId;
     }
 
-    public void setMyTemplateDtoId(String myTemplateDtoId) {
-        this.myTemplateDtoId = myTemplateDtoId;
+    public void setMyTemplateId(String myTemplateId) {
+        this.myTemplateId = myTemplateId;
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TemplateDto implements Serializable {
                 .append("number", number)
                 .append("load", load)
                 .append("descr", descr)
-                .append("myTemplateDtoId", myTemplateDtoId)
+                .append("myTemplateId", myTemplateId)
                 .toString();
     }
 
@@ -165,7 +165,7 @@ public class TemplateDto implements Serializable {
                 .append(number, that.number)
                 .append(load, that.load)
                 .append(descr, that.descr)
-                .append(myTemplateDtoId, that.myTemplateDtoId)
+                .append(myTemplateId, that.myTemplateId)
                 .isEquals();
     }
 
@@ -180,7 +180,7 @@ public class TemplateDto implements Serializable {
                 .append(number)
                 .append(load)
                 .append(descr)
-                .append(myTemplateDtoId)
+                .append(myTemplateId)
                 .toHashCode();
     }
 }
