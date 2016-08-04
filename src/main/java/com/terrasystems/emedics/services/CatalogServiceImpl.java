@@ -139,7 +139,16 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     private ResponseDto getAllTemplatesForPatient(CriteriaDto criteriaDto) {
-        List<Template> templates = templateRepository.findByNameContainingIgnoreCaseAndTypeEnum(criteriaDto.getSearch(), TypeEnum.PATIENT);
+        List<TemplateDto> templates = templateRepository.findByNameContainingIgnoreCaseAndTypeEnum(criteriaDto.getSearch(), TypeEnum.PATIENT).stream()
+                .map(template -> {
+                    TemplateMapper mapper = TemplateMapper.getInstance();
+                    try {
+                        return mapper.toDto(template);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toList());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
     }
 
