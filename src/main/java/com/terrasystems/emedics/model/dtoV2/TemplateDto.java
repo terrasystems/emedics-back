@@ -22,6 +22,7 @@ public class TemplateDto implements Serializable {
     private Boolean load;
     private String descr;
     private String category;
+    private String myTemplateDtoId;
 
     public TemplateDto() {
     }
@@ -30,7 +31,7 @@ public class TemplateDto implements Serializable {
         this.id = id;
     }
 
-    public TemplateDto(String id, JsonNode body, TypeEnum type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr) {
+    public TemplateDto(String id, JsonNode body, TypeEnum type, String name, Boolean commerce, Boolean paid, String number, Boolean load, String descr, String myTemplateDtoId) {
         this.id = id;
         this.body = body;
         this.type = type;
@@ -40,6 +41,7 @@ public class TemplateDto implements Serializable {
         this.number = number;
         this.load = load;
         this.descr = descr;
+        this.myTemplateDtoId = myTemplateDtoId;
     }
 
     public String getId() {
@@ -122,6 +124,14 @@ public class TemplateDto implements Serializable {
         this.category = category;
     }
 
+    public String getMyTemplateDtoId() {
+        return myTemplateDtoId;
+    }
+
+    public void setMyTemplateDtoId(String myTemplateDtoId) {
+        this.myTemplateDtoId = myTemplateDtoId;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -134,6 +144,7 @@ public class TemplateDto implements Serializable {
                 .append("number", number)
                 .append("load", load)
                 .append("descr", descr)
+                .append("myTemplateDtoId", myTemplateDtoId)
                 .toString();
     }
 
@@ -154,6 +165,7 @@ public class TemplateDto implements Serializable {
                 .append(number, that.number)
                 .append(load, that.load)
                 .append(descr, that.descr)
+                .append(myTemplateDtoId, that.myTemplateDtoId)
                 .isEquals();
     }
 
@@ -168,6 +180,7 @@ public class TemplateDto implements Serializable {
                 .append(number)
                 .append(load)
                 .append(descr)
+                .append(myTemplateDtoId)
                 .toHashCode();
     }
 }

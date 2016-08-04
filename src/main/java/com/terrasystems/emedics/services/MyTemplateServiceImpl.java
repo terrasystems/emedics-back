@@ -41,7 +41,10 @@ public class MyTemplateServiceImpl implements MyTemplateService {
                 .map(userTemplate -> {
                     TemplateMapper mapper = TemplateMapper.getInstance();
                     try {
-                        return mapper.toDto(userTemplate.getTemplate());
+                        TemplateDto dto = new TemplateDto();
+                        dto = mapper.toDto(userTemplate.getTemplate());
+                        dto.setMyTemplateDtoId(userTemplate.getId());
+                        return dto;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -58,6 +61,7 @@ public class MyTemplateServiceImpl implements MyTemplateService {
         }
         TemplateMapper mapper = TemplateMapper.getInstance();
         TemplateDto template = mapper.toDto(userTemplate.getTemplate());
+        template.setMyTemplateDtoId(userTemplate.getId());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_BY_ID.toString(), template);
     }
 
