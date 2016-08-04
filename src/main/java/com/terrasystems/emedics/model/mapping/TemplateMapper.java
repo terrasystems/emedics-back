@@ -21,6 +21,7 @@ public class TemplateMapper {
     public TemplateDto toDto(Template entity) throws IOException {
         objectMapper = new ObjectMapper();
         TemplateDto dto = new TemplateDto();
+        dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setNumber(entity.getNumber());
         dto.setDescr(entity.getDescr());
