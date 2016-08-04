@@ -4,6 +4,7 @@ package com.terrasystems.emedics.dao;
 import com.terrasystems.emedics.enums.StatusEnum;
 import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
+import com.terrasystems.emedics.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -41,6 +42,8 @@ public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRep
     */
     List<Event> findByPatient_Id_AndStatus(String patientId, StatusEnum status);
     List<Event> findByFromUser_IdAndStatus(String fromUserId, StatusEnum status);
+    Long countByFromUserAndTemplateAndStatus(User fromUser, Template template, StatusEnum statusEnum);
+    Long countByToUserAndTemplateAndStatus(User toUser, Template template, StatusEnum statusEnum);
 
 
 }

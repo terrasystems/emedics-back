@@ -16,11 +16,11 @@ public class TaskDto implements Serializable {
 
     private static final long serialVersionUID = 3691342243947887480L;
     private String id;
-    private User fromUser;
-    private User toUser;
+    private UserDto fromUser;
+    private UserDto toUser;
     private String descr;
-    private Template template;
-    private User patient;
+    private TemplateDto templateDto;
+    private UserDto patient;
     private Date date;
     private StatusEnum status;
     private JsonNode model;
@@ -35,12 +35,12 @@ public class TaskDto implements Serializable {
         this.id = id;
     }
 
-    public TaskDto(String id, User fromUser, User toUser, String descr, Template template, User patient, Date date, StatusEnum status, JsonNode model, String _id, String _rev, String _type) {
+    public TaskDto(String id, UserDto fromUser, UserDto toUser, String descr, TemplateDto templateDto, UserDto patient, Date date, StatusEnum status, JsonNode model, String _id, String _rev, String _type) {
         this.id = id;
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.descr = descr;
-        this.template = template;
+        this.templateDto = templateDto;
         this.patient = patient;
         this.date = date;
         this.status = status;
@@ -58,19 +58,19 @@ public class TaskDto implements Serializable {
         this.id = id;
     }
 
-    public User getFromUser() {
+    public UserDto getFromUser() {
         return fromUser;
     }
 
-    public void setFromUser(User fromUser) {
+    public void setFromUser(UserDto fromUser) {
         this.fromUser = fromUser;
     }
 
-    public User getToUser() {
+    public UserDto getToUser() {
         return toUser;
     }
 
-    public void setToUser(User toUser) {
+    public void setToUser(UserDto toUser) {
         this.toUser = toUser;
     }
 
@@ -82,19 +82,19 @@ public class TaskDto implements Serializable {
         this.descr = descr;
     }
 
-    public Template getTemplate() {
-        return template;
+    public TemplateDto getTemplateDto() {
+        return templateDto;
     }
 
-    public void setTemplate(Template template) {
-        this.template = template;
+    public void setTemplateDto(TemplateDto templateDto) {
+        this.templateDto = templateDto;
     }
 
-    public User getPatient() {
+    public UserDto getPatient() {
         return patient;
     }
 
-    public void setPatient(User patient) {
+    public void setPatient(UserDto patient) {
         this.patient = patient;
     }
 
@@ -153,7 +153,7 @@ public class TaskDto implements Serializable {
                 .append("fromUser", fromUser)
                 .append("toUser", toUser)
                 .append("descr", descr)
-                .append("template", template)
+                .append("templateDto", templateDto)
                 .append("patient", patient)
                 .append("date", date)
                 .append("status", status)

@@ -2,7 +2,9 @@ package com.terrasystems.emedics.utils;
 
 
 import com.terrasystems.emedics.dao.UserRepository;
+import com.terrasystems.emedics.enums.TypeEnum;
 import com.terrasystems.emedics.enums.UserType;
+import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +49,10 @@ public class UtilsImpl implements Utils {
     @Override
     public boolean isOrg(User current) {
         return UserType.ORG.equals(current.getUserType());
+    }
+
+    @Override
+    public boolean isMedicalForm(Template template) {
+        return TypeEnum.MEDICAL.equals(template.getTypeEnum());
     }
 }
