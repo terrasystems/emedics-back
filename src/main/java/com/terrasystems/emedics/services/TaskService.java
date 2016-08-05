@@ -2,6 +2,7 @@ package com.terrasystems.emedics.services;
 
 
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
+import com.terrasystems.emedics.model.dtoV2.TaskCriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.TaskDto;
 
 import java.io.IOException;
@@ -14,4 +15,6 @@ public interface TaskService {
     ResponseDto closeTask(String id);
     ResponseDto multiCreateTask(List<TaskDto> taskDtos);
     ResponseDto sendTask(TaskDto taskDto);
+    ResponseDto getAllTasks(TaskCriteriaDto criteria);
+    ResponseDto getHistory(TaskCriteriaDto criteria);
 }

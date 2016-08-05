@@ -10,17 +10,24 @@ import com.terrasystems.emedics.model.Event;
 import com.terrasystems.emedics.model.Template;
 import com.terrasystems.emedics.model.User;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
+import com.terrasystems.emedics.model.dtoV2.TaskCriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.TaskDto;
-import com.terrasystems.emedics.model.dtoV2.UserDto;
 import com.terrasystems.emedics.model.mapping.TaskMapper;
-import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -110,6 +117,138 @@ public class TaskServiceImpl implements TaskService {
         return sendTaskAction(user, recipient, event, taskDto);
     }
 
+    @Override
+    public ResponseDto getAllTasks(TaskCriteriaDto criteria) {
+        User current = utils.getCurrentUser();
+        List<Event> events = allTasksByCriteria(current, criteria);
+        return utils.generateResponse(true, MessageEnums.MSG_ALL_TASKS.toString(), events.stream()
+        .map(event -> {
+            return mapperTaskList(event);
+        }).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ResponseDto getHistory(TaskCriteriaDto criteria) {
+        User current = utils.getCurrentUser();
+        List<Event> events = allHistoryByCriteria(current, criteria);
+        return utils.generateResponse(true, MessageEnums.MSG_ALL_HISTORY.toString(), events.stream()
+                .map(event -> {
+                    return mapperTaskList(event);
+                }).collect(Collectors.toList()));
+    }
+
+    private List<Event> allHistoryByCriteria(User current, TaskCriteriaDto criteria) {
+        return eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate to = b.equal(r.<User>get("toUser").get("id"), current.getId());
+            Predicate fromto = b.or(from,to);
+            Predicate close =  b.equal(r.<StatusEnum>get("status"), StatusEnum.CLOSED);
+            return b.and(fromto, close);
+        }).and((r, q, b) -> {
+            return getTemplate(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getPatientName(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getStatus(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getFromUser(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getPeriod(criteria, b, r);
+        }));
+    }
+
+    private List<Event> allTasksByCriteria(User current, TaskCriteriaDto criteria) {
+        return eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
+            Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());
+            Predicate statusNew = b.equal(r.<StatusEnum>get("status"), StatusEnum.NEW);
+            Predicate statusProcessed = b.equal(r.<StatusEnum>get("status"), StatusEnum.PROCESSED);
+            Predicate fromNew = b.and(from, statusNew);
+            Predicate toProcessed = b.and(from, statusProcessed);
+            return b.or(fromNew, toProcessed);
+        }).and((r, q, b) -> {
+            return getTemplate(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getPatientName(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getStatus(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getFromUser(criteria, b, r);
+        }).and((r, q, b) -> {
+            return getPeriod(criteria, b, r);
+        }));
+    }
+
+    private TaskDto mapperTaskList(Event event) {
+        TaskMapper mapper = TaskMapper.getInstance();
+        try {
+            TaskDto taskDto = mapper.toDto(event);
+            return taskDto;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Predicate getTemplate(TaskCriteriaDto criteria, CriteriaBuilder b, Root<Event> r) {
+        if (criteria.getTemplateName() == null || criteria.getTemplateName().isEmpty()) return  null;
+        return b.like(b.lower(r.<Template>get("template").get("name")), "%" + criteria.getTemplateName().toLowerCase() + "%");
+    }
+
+    private Predicate getPatientName(TaskCriteriaDto criteria, CriteriaBuilder b, Root<Event> r) {
+        if (criteria.getPatientName() == null || criteria.getPatientName().isEmpty()) return  null;
+        return b.like(b.lower(r.<User>get("patient").get("name")), "%" + criteria.getPatientName().toLowerCase() + "%");
+    }
+
+    private Predicate getFromUser(TaskCriteriaDto criteria, CriteriaBuilder b, Root<Event> r) {
+        if (criteria.getFromName() == null || criteria.getFromName().isEmpty()) return  null;
+        return b.like(b.lower(r.<User>get("fromUser").get("name")), "%" + criteria.getFromName().toLowerCase() + "%");
+    }
+
+    private Predicate getStatus(TaskCriteriaDto criteria, CriteriaBuilder b, Root r) {
+        if (criteria.getStatus() == null) return  null;
+        return b.equal(r.<StatusEnum>get("status"), criteria.getStatus());
+    }
+
+    private Predicate getPeriod(TaskCriteriaDto criteria, CriteriaBuilder b, Root r) {
+        if (criteria.getPeriod() == 1) return getPeriodEqualsOne(b , r);
+        if (criteria.getPeriod() == 2) return getPeriodEqualsTwo(b , r);
+        if (criteria.getPeriod() == 3) return getPeriodEqualsThree(b , r);
+        if (criteria.getPeriod() == 4) return getPeriodEqualsFour(b , r);
+        return null;
+    }
+
+    private Predicate getPeriodEqualsOne(CriteriaBuilder b, Root<Event> r) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalTime timeNow = now.toLocalTime();
+        int hours = timeNow.getHour();
+        LocalDateTime before = now.minusHours(hours);
+        return b.between(r.get("date"), Date.from(before.atZone(ZoneId.systemDefault()).toInstant()), Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private Predicate getPeriodEqualsTwo(CriteriaBuilder b, Root<Event> r) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalTime timeNow = now.toLocalTime();
+        int hours = timeNow.getHour();
+        LocalDateTime to = now.minusHours(hours);
+        LocalDateTime from = to.minusDays(1);
+        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private Predicate getPeriodEqualsThree(CriteriaBuilder b, Root<Event> r) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now;
+        LocalDateTime from = to.minusDays(7);
+        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private Predicate getPeriodEqualsFour(CriteriaBuilder b, Root<Event> r) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now;
+        LocalDateTime from = to.minusMonths(1);
+        return b.between(r.get("date"), Date.from(from.atZone(ZoneId.systemDefault()).toInstant()), Date.from(to.atZone(ZoneId.systemDefault()).toInstant()));
+
+    }
+
     private ResponseDto addUserToRef(User user, User recipient, Event event, TaskDto taskDto) {
         user.getReferences().add(recipient);
         recipient.getReferences().add(user);
@@ -119,7 +258,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private ResponseDto sendTaskAction(User user, User recipient, Event event, TaskDto taskDto) {
-        User patient =userRepository.findOne(taskDto.getPatient().getId());
+        User patient = userRepository.findOne(taskDto.getPatient().getId());
         if (patient == null) return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
         event.setStatus(StatusEnum.SENT);
         event.setFromUser(user);

@@ -2,6 +2,7 @@ package com.terrasystems.emedics.controllersV2;
 
 import com.terrasystems.emedics.model.dtoV2.CriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.ResponseDto;
+import com.terrasystems.emedics.model.dtoV2.TaskCriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.TaskDto;
 import com.terrasystems.emedics.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,8 @@ public class TaskControllerV2 {
 
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto getAllTasks(@RequestBody CriteriaDto criteria) {
-        List<TaskDto> taskDtos = new ArrayList<>();
-        taskDtos.add(new TaskDto("id"));
-        taskDtos.add(new TaskDto("id"));
-        return new ResponseDto(true, "Base msg", taskDtos);
+    public ResponseDto getAllTasks(@RequestBody TaskCriteriaDto taskCriteriaDto) {
+        return taskService.getAllTasks(taskCriteriaDto);
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
@@ -59,8 +57,8 @@ public class TaskControllerV2 {
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto sendTask(@RequestBody TaskDto request) {
-        return new ResponseDto(true, "Base msg");
+    public ResponseDto sendTask(@RequestBody TaskDto taskDto) {
+        return taskService.sendTask(taskDto);
     }
 
     @RequestMapping(value = "/assign", method = RequestMethod.POST)
@@ -71,11 +69,8 @@ public class TaskControllerV2 {
 
     @RequestMapping(value = "/history", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto getHistory(@RequestBody CriteriaDto criteria) {
-        List<TaskDto> taskDtos = new ArrayList<>();
-        taskDtos.add(new TaskDto("id"));
-        taskDtos.add(new TaskDto("id"));
-        return new ResponseDto(true, "Base msg", taskDtos);
+    public ResponseDto getHistory(@RequestBody TaskCriteriaDto taskCriteriaDto) {
+        return taskService.getHistory(taskCriteriaDto);
     }
 
 

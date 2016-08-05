@@ -50,5 +50,7 @@ public enum MessageEnums {
     MSG_TASK_EDITED,
     MSG_TASK_CLOSED,
     MSG_YOU_CANT_SEND_MED_FORM_TO_PAT,
-    MSG_TASK_SENT
+    MSG_TASK_SENT,
+    MSG_ALL_TASKS,
+    MSG_ALL_HISTORY
 }
