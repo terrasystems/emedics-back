@@ -137,6 +137,11 @@ public class TaskServiceImpl implements TaskService {
                 }).collect(Collectors.toList()));
     }
 
+    @Override
+    public ResponseDto assignTask(TaskDto taskDto) {
+        return utils.generateResponse(false, MessageEnums.MSG_NOT_SUPPORTED.toString(), null);
+    }
+
     private List<Event> allHistoryByCriteria(User current, TaskCriteriaDto criteria) {
         return eventRepository.findAll(Specifications.<Event>where((r, p, b) -> {
             Predicate from = b.equal(r.<User>get("fromUser").get("id"), current.getId());

@@ -63,7 +63,7 @@ public class TaskControllerV2 {
 
     @RequestMapping(value = "/assign", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseDto assignTask(@RequestBody TaskDto request) {
+    public ResponseDto assignTask(@RequestBody TaskDto taskDto) {
         return new ResponseDto(true, "Base msg");
     }
 

@@ -17,4 +17,5 @@ public interface TaskService {
     ResponseDto sendTask(TaskDto taskDto);
     ResponseDto getAllTasks(TaskCriteriaDto criteria);
     ResponseDto getHistory(TaskCriteriaDto criteria);
+    ResponseDto assignTask(TaskDto taskDto);
 }
