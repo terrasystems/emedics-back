@@ -499,7 +499,6 @@ public class TaskServiceImplTest {
     @Test
     public void test_will_return_incorrect_request_without_event() {
         User user = new User();
-        Event event = new Event();
         User recipient = new User();
         TaskDto taskDto = new TaskDto();
         TemplateDto templateDto = new TemplateDto();
@@ -524,7 +523,6 @@ public class TaskServiceImplTest {
     public void test_will_return_incorrect_request_without_recipient() {
         User user = new User();
         Event event = new Event();
-        User recipient = new User();
         TaskDto taskDto = new TaskDto();
         TemplateDto templateDto = new TemplateDto();
         UserDto userDto = new UserDto();
@@ -663,5 +661,47 @@ public class TaskServiceImplTest {
         assertEquals(responseDto.getState(), responseDto1.getState());
         assertEquals(responseDto.getMsg(), responseDto1.getMsg());
     }*/
+
+    @Test
+    public void test_will_return_incorrect_request_for_assignTask() {
+        ResponseDto responseDto = new ResponseDto(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
+        TaskDto taskDto = new TaskDto();
+        TemplateDto templateDto = new TemplateDto();
+        UserDto fromUser = new UserDto();
+        taskDto.setTemplateDto(templateDto);
+        taskDto.setFromUser(fromUser);
+
+        when(eventRepository.findOne(taskDto.getTemplateDto().getMyTemplateId())).thenReturn(null);
+        when(userRepository.findOne(taskDto.getFromUser().getId())).thenReturn(null);
+        when(utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null)).thenReturn(responseDto);
+
+        ResponseDto responseDto1 = taskServiceImpl.assignTask(taskDto);
+
+        assertEquals(responseDto.getResult(), responseDto1.getResult());
+        assertEquals(responseDto.getState(), responseDto1.getState());
+        assertEquals(responseDto.getMsg(), responseDto1.getMsg());
+    }
+
+    @Test
+    public void test_will_assign_task() {
+        ResponseDto responseDto = new ResponseDto(true, MessageEnums.MSG_TASK_ASSIGNED.toString(), null);
+        TaskDto taskDto = new TaskDto();
+        TemplateDto templateDto = new TemplateDto();
+        User user = new User();
+        UserDto fromUser = new UserDto();
+        taskDto.setTemplateDto(templateDto);
+        taskDto.setFromUser(fromUser);
+        Event event = new Event();
+
+        when(eventRepository.findOne(taskDto.getId())).thenReturn(event);
+        when(userRepository.findOne(taskDto.getFromUser().getId())).thenReturn(user);
+        when(utils.generateResponse(true, MessageEnums.MSG_TASK_ASSIGNED.toString(), null)).thenReturn(responseDto);
+
+        ResponseDto responseDto1 = taskServiceImpl.assignTask(taskDto);
+
+        assertEquals(responseDto.getResult(), responseDto1.getResult());
+        assertEquals(responseDto.getState(), responseDto1.getState());
+        assertEquals(responseDto.getMsg(), responseDto1.getMsg());
+    }
 
 }

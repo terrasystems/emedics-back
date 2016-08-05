@@ -64,7 +64,7 @@ public class TaskControllerV2 {
     @RequestMapping(value = "/assign", method = RequestMethod.POST)
     @ResponseBody
     public ResponseDto assignTask(@RequestBody TaskDto taskDto) {
-        return new ResponseDto(true, "Base msg");
+        return taskService.assignTask(taskDto);
     }
 
     @RequestMapping(value = "/history", method = RequestMethod.POST)

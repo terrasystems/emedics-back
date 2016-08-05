@@ -13,6 +13,7 @@ import com.terrasystems.emedics.model.dtoV2.ResponseDto;
 import com.terrasystems.emedics.model.dtoV2.TaskCriteriaDto;
 import com.terrasystems.emedics.model.dtoV2.TaskDto;
 import com.terrasystems.emedics.model.mapping.TaskMapper;
+import com.terrasystems.emedics.model.mapping.UserMapper;
 import com.terrasystems.emedics.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specifications;
@@ -109,7 +110,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ResponseDto sendTask(TaskDto taskDto) {
         User user = utils.getCurrentUser();
-        Event event = eventRepository.findOne(taskDto.getTemplateDto().getMyTemplateId());
+        Event event = eventRepository.findOne(taskDto.getId());
         User recipient = userRepository.findOne(taskDto.getToUser().getId());
         if (event == null || recipient == null) return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
         if (utils.isPatient(recipient) && utils.isMedicalForm(event.getTemplate())) return utils.generateResponse(false, MessageEnums.MSG_YOU_CANT_SEND_MED_FORM_TO_PAT.toString(), null);
@@ -139,7 +140,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public ResponseDto assignTask(TaskDto taskDto) {
-        return utils.generateResponse(false, MessageEnums.MSG_NOT_SUPPORTED.toString(), null);
+        Event event = eventRepository.findOne(taskDto.getId());
+        User userFrom = userRepository.findOne(taskDto.getFromUser().getId());
+        if (userFrom == null || event == null) return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
+        event.setStatus(StatusEnum.PROCESSED);
+        event.setFromUser(userFrom);
+        event.setDate(new Date());
+        eventRepository.save(event);
+        return utils.generateResponse(true, MessageEnums.MSG_TASK_ASSIGNED.toString(), null);
     }
 
     private List<Event> allHistoryByCriteria(User current, TaskCriteriaDto criteria) {
