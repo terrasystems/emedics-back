@@ -60,7 +60,7 @@ public class CatalogServiceImpl implements CatalogService {
             return utils.generateResponse(false, MessageEnums.MSG_REQUEST_INCORRECT.toString(), null);
         }
         User user = utils.getCurrentUser();
-        if (isPatient(user)) {
+        if (utils.isPatient(user)) {
             return getAllTemplatesForPatient(criteriaDto);
         }
         List<TemplateDto> templates = templateRepository.findByNameContainingIgnoreCase(criteriaDto.getSearch()).stream()
@@ -104,7 +104,7 @@ public class CatalogServiceImpl implements CatalogService {
         if (user == null) {
             return utils.generateResponse(false, MessageEnums.MSG_USER_NOT_FOUND.toString(), null);
         }
-        if (isPatient(user)) {
+        if (utils.isPatient(user)) {
             return usedByUserPatient(user);
         }
         return usedByUserNotPatient(user);
@@ -150,10 +150,6 @@ public class CatalogServiceImpl implements CatalogService {
                     return null;
                 }).collect(Collectors.toList());
         return utils.generateResponse(true, MessageEnums.MSG_TEMPL_LIST.toString(), templates);
-    }
-
-    private boolean isPatient(User current) {
-        return UserType.PATIENT.equals(current.getUserType());
     }
 
 }

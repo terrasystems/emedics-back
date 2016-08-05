@@ -44,6 +44,6 @@ public interface EventRepository extends JpaSpecificationExecutor<Event>, JpaRep
     List<Event> findByFromUser_IdAndStatus(String fromUserId, StatusEnum status);
     Long countByFromUserAndTemplateAndStatus(User fromUser, Template template, StatusEnum statusEnum);
     Long countByToUserAndTemplateAndStatus(User toUser, Template template, StatusEnum statusEnum);
-
+    List<Event> findByToUser_IdAndStatusAndTemplate_NameContainingIgnoreCaseOrToUser_IdAndStatusAndFromUser_NameContainingIgnoreCase(String userId, StatusEnum statusEnum, String templateName,String UserId2, StatusEnum statusEnum2, String fromUserName);
 
 }
