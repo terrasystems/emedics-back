@@ -72,8 +72,7 @@ public class NotificationServiceImpl implements NotificationService {
     private ResponseDto checkAlreadyHaveThisTask(User user, Event event) {
         Long countNew = eventRepository.countByFromUserAndTemplateAndStatus(user,event.getTemplate(),StatusEnum.NEW);
         Long countNewByFrom = eventRepository.countByFromUserAndTemplateAndStatus(user,event.getTemplate(),StatusEnum.PROCESSED);
-        Long countProcessed = eventRepository.countByToUserAndTemplateAndStatus(user,event.getTemplate(),StatusEnum.PROCESSED);
-        if (countNew > 0 || countProcessed > 0 || countNewByFrom > 0) return utils.generateResponse(false, MessageEnums.MSG_YOU_ALREADY_HAVE_THIS_TASK.toString(), null);
+        if (countNew > 0 || countNewByFrom > 0) return utils.generateResponse(false, MessageEnums.MSG_YOU_ALREADY_HAVE_THIS_TASK.toString(), null);
         return acceptNotificationLogic(user, event);
     }
 
